@@ -15,7 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const OTPVerification = ({ navigation,route }) => {
   const [otp, setOtp] = useState('');
   const DEFAULT_OTP = '123456'; // Default OTP for testing
-  const { name } = route.params;
+  const { name,mobileNumber } = route.params;
 const handleVerifyOTP = async () => {
   if (otp === DEFAULT_OTP) {
     try {
@@ -26,9 +26,9 @@ const handleVerifyOTP = async () => {
       setTimeout(() => {
               // Alert.alert('Success', 'OTP Verified Successfully!');
 
-        navigation.replace('MainScreen', { name });
+        navigation.replace('MainScreen', { name,mobileNumber });
       }, 2000);
-
+console.log(mobileNumber)
     } catch (error) {
       console.error("Failed to save login status", error);
     }

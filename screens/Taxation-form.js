@@ -2,8 +2,9 @@ import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useTranslation } from "react-i18next";
+import axios from 'axios';
 
-const ITRScreen = ({ navigation }) => {
+const taxationForm = ({ navigation }) => {
   const { t } = useTranslation();
 
   const [selectedProfession, setSelectedProfession] = useState("");
@@ -36,14 +37,21 @@ const ITRScreen = ({ navigation }) => {
 
   const isFormValid = formData.name && formData.contact && formData.email;
 
-  const handleSave = () => {
-    if (validateForm()) {
-      console.log(
-        t("messages.formData"), 
-        formData, selectedCategories, selectedProfession
-      );
-    }
-  };
+  const handleSave = async () => {
+  if (!validateForm()) return;
+
+  try {
+    const response = await axios.post('http://192.168.29.22:5000/api/itr', {
+      ...formData,
+      categories: selectedCategories,
+      profession: selectedProfession
+    });
+    alert(response.data.message);
+  } catch (error) {
+    console.error('Submission Error:', error);
+    alert('Error submitting ITR form');
+  }
+};
 
   const handleReset = () => {
     setFormData({ name: "", contact: "", email: "", city: "", income: "" });
@@ -238,4 +246,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default ITRScreen;
+export default taxationForm;

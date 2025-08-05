@@ -13,7 +13,6 @@ const languages = [
   { code: 'kn', label: 'ಕನ್ನಡ (Kannada)' },
   { code: 'ml', label: 'മലയാളം (Malayalam)' },
   { code: 'pa', label: 'ਪੰਜਾਬੀ (Punjabi)' },
-  { code: 'ur', label: 'اردو (Urdu)', rtl: true }, // RTL support
 ];
 
 export default function ChangeLanguage() {
@@ -54,7 +53,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FAFAFA',
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 20,
   },
   header: {
     fontSize: 26,

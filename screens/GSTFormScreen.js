@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet,Alert } from "react-native";
 import { useTranslation } from "react-i18next";
 
 const GSTFormScreen = () => {
@@ -41,9 +41,18 @@ const GSTFormScreen = () => {
     selectedPeriod;
 
   const handleSave = () => {
-    if (validateForm()) {
-      console.log("Form Data:", formData, selectedPeriod);
-    }
+    fetch('http://192.168.29.22:5000/api/gst', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    ...formData,
+    period: selectedPeriod,
+  }),
+})
+  .then(res => res.json())
+  .then(data => console.log(data))
+  .catch(err => console.error("Submission Error:", err));
+    Alert.alert("✅ GST Form submitted successfully");
   };
 
   const handleReset = () => {

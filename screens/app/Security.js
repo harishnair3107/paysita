@@ -44,7 +44,7 @@ export default Security;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f9f9f9",
   },
   option: {
     flexDirection: "row",
@@ -52,8 +52,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 16,
     marginVertical: 8,
-    borderRadius: 12,
-    backgroundColor: "#f9f9f9",
+    marginHorizontal:16,
+    borderRadius: 16,
+    backgroundColor: "#fff",
   },
   optionContent: {
     flex: 1,

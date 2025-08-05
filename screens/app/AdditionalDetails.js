@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,11 +6,26 @@ import {
   StatusBar,
   Pressable,
   FlatList,
-  TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import { Picker } from "@react-native-picker/picker";
 import { useTranslation } from "react-i18next";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const STORAGE_KEY = "user_additional_details";
+
+const dropdownOptions = {
+  1: ["Male", "Female", "Other"],
+  2: ["18-25", "26-35", "36-45", "46+"],
+  3: ["Single", "Married", "Divorced", "Widowed"],
+  4: ["School", "High School", "Graduate", "Postgraduate", "PhD"],
+  5: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+  6: ["Often", "Sometimes", "Rarely", "Never"],
+  7: ["Often", "Sometimes", "Rarely", "Never"],
+  8: ["Music", "Reading", "Sports", "Cooking", "Gaming", "Dance", "ArtCraft"],
+  9: ["Action", "Drama", "Comedy", "Romance", "Horror"],
+};
 
 const sections = [
   {
@@ -20,7 +35,7 @@ const sections = [
       { id: 2, labelKey: "age", subtextKey: "age_subtext" },
       { id: 3, labelKey: "marital_status", subtextKey: "marital_status_subtext" },
       { id: 4, labelKey: "education_qualification", subtextKey: "education_qualification_subtext" },
-      { id: 5, labelKey: "family_members", subtextKey: "family_members_subtext" }
+      { id: 5, labelKey: "family_members", subtextKey: "family_members_subtext" },
     ],
   },
   {
@@ -29,7 +44,7 @@ const sections = [
       { id: 6, labelKey: "domestic_travel", subtextKey: "domestic_travel_subtext" },
       { id: 7, labelKey: "international_travel", subtextKey: "international_travel_subtext" },
       { id: 8, labelKey: "personal_interests", subtextKey: "personal_interests_subtext" },
-      { id: 9, labelKey: "movies", subtextKey: "movies_subtext" }
+      { id: 9, labelKey: "movies", subtextKey: "movies_subtext" },
     ],
   },
 ];
@@ -40,9 +55,37 @@ const AdditionalDetails = () => {
   const [expandedSection, setExpandedSection] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
 
-  const toggleSection = (index) => setExpandedSection(expandedSection === index ? null : index);
+  useEffect(() => {
+    loadSavedData();
+  }, []);
 
-  const handleSelect = (id, choice) => setSelectedOptions((prev) => ({ ...prev, [id]: choice }));
+  const loadSavedData = async () => {
+    try {
+      const json = await AsyncStorage.getItem(STORAGE_KEY);
+      if (json != null) {
+        setSelectedOptions(JSON.parse(json));
+      }
+    } catch (error) {
+      console.log("Error loading saved data", error);
+    }
+  };
+
+  const saveData = async (data) => {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (error) {
+      console.log("Error saving data", error);
+    }
+  };
+
+  const toggleSection = (index) =>
+    setExpandedSection(expandedSection === index ? null : index);
+
+  const handleSelect = (id, value) => {
+    const updated = { ...selectedOptions, [id]: value };
+    setSelectedOptions(updated);
+    saveData(updated);
+  };
 
   return (
     <View style={styles.container}>
@@ -52,7 +95,10 @@ const AdditionalDetails = () => {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
           <View style={styles.section}>
-            <Pressable onPress={() => toggleSection(index)} style={styles.sectionHeader}>
+            <Pressable
+              onPress={() => toggleSection(index)}
+              style={styles.sectionHeader}
+            >
               <Text style={styles.sectionTitle}>{t(item.titleKey)}</Text>
               <Ionicons
                 name={expandedSection === index ? "chevron-up" : "chevron-down"}
@@ -68,29 +114,18 @@ const AdditionalDetails = () => {
                     <Text style={styles.label}>{t(detail.labelKey)}</Text>
                     <Text style={styles.subtext}>{t(detail.subtextKey)}</Text>
                   </View>
-                  <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                      style={[
-                        styles.button,
-                        selectedOptions[detail.id] === "Yes" && styles.selectedYes,
-                      ]}
-                      onPress={() => handleSelect(detail.id, "Yes")}
+                  <View style={styles.pickerWrapper}>
+                    <Picker
+                      selectedValue={selectedOptions[detail.id] || ""}
+                      onValueChange={(value) => handleSelect(detail.id, value)}
+                      style={styles.picker}
+                      mode="dropdown"
                     >
-                      <Text style={[styles.buttonText, selectedOptions[detail.id] === "Yes" && styles.selectedText]}>
-                        {t('yes')}
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={[
-                        styles.button,
-                        selectedOptions[detail.id] === "No" && styles.selectedNo,
-                      ]}
-                      onPress={() => handleSelect(detail.id, "No")}
-                    >
-                      <Text style={[styles.buttonText, selectedOptions[detail.id] === "No" && styles.selectedText]}>
-                        {t('no')}
-                      </Text>
-                    </TouchableOpacity>
+                      <Picker.Item label={t("select_option")} value="" />
+                      {(dropdownOptions[detail.id] || []).map((option) => (
+                        <Picker.Item key={option} label={option} value={option} />
+                      ))}
+                    </Picker>
                   </View>
                 </View>
               ))}
@@ -107,22 +142,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f8f9fa",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-    backgroundColor: "#ffffff",
-    elevation: 2,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    marginLeft: 16,
-    color: "#333",
   },
   section: {
     backgroundColor: "#fff",
@@ -146,16 +165,14 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   detailItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: "column",
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
   textContainer: {
-    flex: 1,
+    marginBottom: 10,
   },
   label: {
     fontSize: 16,
@@ -163,44 +180,22 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   subtext: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#6c757d",
     marginTop: 4,
   },
-  buttonContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  button: {
+  pickerWrapper: {
     borderWidth: 1,
-    borderColor: "#6c44d9",
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    marginLeft: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    width: 80,
+    borderColor: "#ccc",
+    borderRadius: 8,
     height: 40,
+    overflow: "hidden",
+    backgroundColor: "#fff",
   },
-  buttonText: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#6c44d9",
-  },
-  selectedYes: {
-    backgroundColor: "#28a745",
-    borderColor: "#28a745",
-  },
-  selectedNo: {
-    backgroundColor: "#dc3545",
-    borderColor: "#dc3545",
-  },
-  selectedText: {
-    color: "#fff",
-  },
-  sectionIcon: {
-    fontSize: 18,
-    color: "#6c44d9",
+  picker: {
+    height: 55,
+    marginTop: -10,
+    fontSize: 16,
+    width: "100%",
   },
 });

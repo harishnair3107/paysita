@@ -43,6 +43,7 @@
   "landmark_placeholder": "Ex. Behind Wipro Park",
   "save_as": "Save As",
   "work": "WORK",
+  "home": "HOME",
   "other": "OTHER",
   "cancel": "CANCEL",
   "save": "SAVE",
@@ -749,8 +750,9 @@
     "12+": "12+",
     "Undergraduate": "स्नातक",
     "Postgraduate": "स्नातकोत्तर"
-  },
-  "form": {
+  }, "light_mode": "Light Mode",
+  "dark_mode": "Dark Mode",
+  "formpst": {
     "title": "Donation And Charity Form",
     "name": "Name *",
     "contact": "Contact *",
@@ -763,7 +765,7 @@
     "submit": "Submit",
     "reset": "Reset",
     "error_title": "Error",
-    "error_required_fields": "Please fill in the required fields: Name and Contact",
+    "error_required_fields": "Please fill in the required fields: Name , Contact,Email",
     "methods": {
       "upi": "UPI",
       "credit_card": "Credit Card",
@@ -827,6 +829,8 @@
     "include_family": "Include Family Members",
     "completed": "Completed",
     "yes": "Yes",
+      "health_insurance":"Health Insurance"
+,
     "no": "No",
     "error": "Error",
     "success": "Success",
@@ -861,6 +865,30 @@
 
   "gen_ins_form": {
     "title": "General Insurance Form",
+     "validation_alert_title": "Form Incomplete",
+  "error_name_required": "Name is required.",
+  "error_contact_required": "Contact number is required.",
+  "invalid_email": "Please enter a valid email address.",
+  "success_title": "Success",
+  "success_message": "Form submitted successfully!",
+  "validation_alert_title": "Form Incomplete",
+  "error_name_required": "Name is required.",
+  "error_contact_required": "Contact number is required.",
+  "invalid_email": "Please enter a valid email address.",
+  "error_insurance_type_required": "Please select at least one insurance type.",
+  "error_additional_coverage_required": "Please select at least one additional coverage option.",
+  "success_title": "Success",
+  "success_message": "Form submitted successfully!",
+  "failed_title": "Submission Failed",
+  "failed_message": "An error occurred while submitting.",
+  "network_error": "Network Error",
+  "network_error_message": "Could not connect to the server.",
+  "failed_title": "Submission Failed",
+  "failed_message": "An error occurred while submitting.",
+  "network_error": "Network Error",
+  "network_error_message": "Could not connect to the server.",
+    "error_required": "This field is required.",
+  "invalid_email": "Please enter a valid email address.",
     "name": "Insurer Name *",
     "contact": "Contact *",
     "email": "Email",
@@ -901,6 +929,16 @@
   },
 
 
+  "form_error_name_required": "Name is required.",
+  "form_error_contact_required": "Contact number is required.",
+  "form_error_contact_invalid": "Enter a valid 10-digit contact number.",
+  "form_error_email_required": "Email is required.",
+  "form_error_email_invalid": "Enter a valid email address.",
+  "form_error_gender_required": "Please select a gender.",
+  "form_error_service_required": "Please select a service type.",
+  "form_success": "Form submitted successfully!",
+  "form_error_submit": "Submission failed. Please try again."
+,
   
   "home_service_form": {
     
@@ -961,12 +999,13 @@
   "name": "Name *",
   "email": "Email",
   "contact": "Contact *",
+  "success_title":"Form Submitted Successfully",
   "gender": "Gender",
   "genders": { "male": "Male", "female": "Female", "other": "Other" },
   "service_type": "Service Type",
   "services": {
     "flight": "Flight",
-    "train": "Train",
+    "bus": "Bus",
     "hotel": "Hotel",
     "packages": "Packages"
   },
@@ -976,7 +1015,7 @@
   "submit": "Submit",
   "reset": "Reset",
   "error_title": "Error",
-  "error_message": "Please enter a valid Name and 10-digit Contact Number"
+  "error_message": "Please enter a valid Name,Email,Budget and 10-digit Contact Number"
 },
 "want_to_hire": {
   "title": "Post a Job",
@@ -1206,7 +1245,17 @@
     "rzone_land": "R Zone Land",
     "na_plot": "N.A Plot",
     "school_hotel": "School/Hotel",
-    "taxation": "Taxation"
+    "taxation": "Taxation",
+    "legal_consulting": "Legal Consulting",
+    "registration_services": "Registration Services",
+    "web_app_developer": "Web/App Developer",
+    "metromony": "Matrimony",
+    "marriage_registration": "Marriage Registration",
+    "digital_marketing": "Digital Marketing",
+    "sales_agreement": "Sales Agreement",
+    "sales_deed": "Sales Deed",
+    "udyam_gst_registration": "Udyam/GST Registration"
+
   },
   "taxation": {
     "itr_filing": "ITR Filing",
@@ -1230,11 +1279,171 @@
     "udyam_gst_registration": "Udyam/GST Registration"
   },
   "buttons": {
-    "view_all": "View All"
+    "view_all": "View All",
+      "reset":"Reset",
+      "save":"Save"
   },
   "section_titles": {
     "other_services": "Other Services"
-  }
+  },"deals": {
+  "trending_now": "Trending Now",
+  "featured": "Featured",
+  "partner_offers": "Partner Offers",
+  "featured_title": "Special Featured Deal ☕",
+  "featured_desc": "Discount with a special limited-time offer.",
+  "dominos_title": "50% Off on Dominos 🍕",
+  "dominos_desc": "Get flat 50% off on your first order.",
+  "amazon_title": "10% Cashback on Amazon 🛒",
+  "amazon_desc": "Get 10% cashback on UPI payments.",
+  "flight_title": "Flight Offer ✈️",
+  "flight_desc": "Up to ₹1000 off on domestic flights.",
+  "swiggy_title": "30% Off on Swiggy 🍔",
+  "swiggy_desc": "Exclusive meals at discounted prices.",
+  "bigbasket_title": "BigBasket Offer 🥦",
+  "bigbasket_desc": "Groceries delivered to your home.",
+  "myntra_title": "Myntra Flash Sale 👗",
+  "myntra_desc": "Up to 60% off on clothing and accessories.",
+  "uber_title": "Uber Ride Discount 🚗",
+  "uber_desc": "Flat ₹100 off on your first ride.",
+  "amazon_grocery_title": "Amazon Grocery Sale 🥬",
+  "amazon_grocery_desc": "Fresh groceries delivered to your doorstep.",
+  "coffee_title": "Café Coffee Day Offer ☕",
+  "coffee_desc": "Buy 1 Get 1 Free on all beverages."
+}
+,
+  "rewards": {
+  "big_reward_title": "Big Reward for You 🎯",
+  "big_reward_desc": "Collect your reward and get a chance to win big.",
+  "daily_offers": "Daily Offers",
+  "earned": "You have earned",
+  "top_rewards": "Top Rewards",
+  "cashback_50": "₹50 Cashback 🎉",
+  "cashback_50_desc": "Received on mobile recharge.",
+  "wallet_20": "₹20 Wallet Credit 💰",
+  "wallet_20_desc": "Reward for daily login.",
+  "scratch_card": "Scratch Card 🎁",
+  "scratch_card_desc": "Win up to ₹500 on your next payment.",
+  "referral": "Referral Bonus 🤝",
+  "referral_desc": "Earn by inviting friends.",
+  "loyalty": "Loyalty Points ⭐",
+  "loyalty_desc": "Redeem for special rewards.",
+  "recharge_cashback": "Recharge Cashback 💸",
+  "recharge_cashback_desc": "₹10 cashback on your next recharge.",
+  "bonus_points": "Bonus Points 🎯",
+  "bonus_points_desc": "Earn by completing tasks.",
+  "voucher": "Gift Voucher 🎁",
+  "voucher_desc": "Get ₹100 voucher on every purchase.",
+  "exclusive_access": "Exclusive Access 🔑",
+  "exclusive_access_desc": "Unlock premium content and deals."
+},
+  "check_-balance": "Check balance",
+
+"forms": {
+    "name": "Full Name",
+    "email": "Email",
+    "contact": "Contact Number",
+    "qualification": "Qualification",
+    "income": "Annual Income",
+    "course_interest": "Course of Interest",
+    "university_interest": "Preferred University",
+    "country_interest": "Preferred Country",
+    "additional_requirement": "Additional Requirements",
+    "mode_of_study": "Mode of Study",
+    "save": "Save",
+    "reset": "Reset",
+    "required_fields_warning": "Please fill in all required fields",
+    "terms": "Terms & Conditions",
+    "terms_prefix": "By submitting this form, you agree to the",
+    "course_interest": "Interested Course",
+    "university_interest": "Interested University",
+    "country_interest": "Interested Country"
+  },
+  "form": {
+    "privacy": "Privacy Policy",
+    "contact": "Contact",
+    "email": "Email"
+  },
+  "common": {
+    "and": "and"
+  },
+  "mode": {
+    "Online": "Online",
+    "Offline": "Offline",
+    "Hybrid": "Hybrid"
+  },
+  "qualificationOptions": {
+    "10+": "10th Pass",
+    "12+": "12th Pass",
+    "Undergraduate": "Undergraduate",
+    "Postgraduate": "Postgraduate"
+  },
+  "address": {
+  "home": "Home"}
+,
+
+  "about_us": "About Us",
+  "about_us_para1": "Our goal is to make digital payments so easy, safe, and universally accepted that people never feel the need to carry cash or cards again. We believe India is at the cusp of a new mobile revolution, which will change the way we manage our money on the go. We see ourselves facilitating this change, through technology and dogged customer centricity.",
+  "updated_on": "Updated On:",
+  "all_versions": "All Versions",
+  "company_info": "IndiaaPay is a brand owned by {{company}} (CIN - {{cin}}). It is licensed by the Government of India for issuance and operation of a Semi Closed Prepaid Payment system."
+,
+ "about_app": "About IndiaaPay",
+  "privacy_policy": "Privacy Policy",
+  "terms_conditions": "Terms & Conditions",
+  "grievance_redressal": "Grievance Redressal",
+  
+  "grievance_title": "Grievance Redressal",
+  "grievance_content": "If you have any complaints or grievances, please reach out to us at:\n\nEmail: support@indiaapay.com\n\nAddress: IndiaaPay Pvt. Ltd., Mumbai, Maharashtra",
+  
+  "privacy_title": "Privacy Policy",
+  "privacy_content": "We value your privacy and are committed to safeguarding your data. This policy outlines the types of personal information we collect and how we use, disclose, and protect that information...",
+
+  "terms_title": "Terms and Conditions",
+  "terms_effective": "Effective Date: [24/6/2025]",
+  "terms_updated": "Last Updated: [24/6/2025]",
+  "terms_intro": "Welcome to IndiaaPay. These Terms and Conditions (\"Terms\") govern your access to and use of our mobile application...",
+  "terms_agreement": "By using our Platform, you agree to these Terms...",
+  "section_1": "1. Eligibility",
+  "section_1_text": "You must be an individual aged 18 years or older...",
+  "section_2": "2. Services Offered",
+  "section_2a": "a. Digital Wallet & UPI",
+  "section_2a_text": "You may use our wallet or linked bank account through UPI for transactions...",
+  "section_2b": "b. Recharge & Bill Payments",
+  "section_2b_text": "We facilitate prepaid/postpaid mobile recharges...",
+  "section_2c": "c. Money Transfer",
+  "section_2c_text": "You can transfer money using UPI...",
+  "section_2d": "d. Real Estate Services",
+  "section_2d_text": "Property listings are aggregated for your convenience...",
+  "section_2e": "e. Investments",
+  "section_2e_text": "Investment options like mutual funds, gold, fixed deposits...",
+  "section_2f": "f. Insurance",
+  "section_2f_text": "Insurance services are offered in partnership...",
+  "section_2g": "g. Tours & Travels",
+  "section_2g_text": "We allow flight, hotel, bus, and holiday package bookings...",
+  "section_2h": "h. Other Services",
+  "section_2h_text": "We may offer additional digital and financial services...",
+  "section_3": "3. User Obligations",
+  "section_3_text": "You must ensure all information provided is accurate...",
+  "section_4": "4. KYC & Compliance",
+  "section_4_text": "You may be required to complete KYC verification...",
+  "section_5": "5. Fees & Charges",
+  "section_5_text": "We may charge convenience or service fees...",
+  "section_6": "6. Refunds & Cancellations",
+  "section_6_text": "Refunds are only applicable in the case of failed transactions...",
+  "section_7": "7. Third-party Links & Partners",
+  "section_7_text": "Our services are integrated with third-party APIs...",
+  "section_8": "8. Privacy & Data Use",
+  "section_8_text": "We collect and use your data as described...",
+  "section_9": "9. Intellectual Property",
+  "section_9_text": "All content, code, and trademarks are owned...",
+  "section_10": "10. Suspension & Termination",
+  "section_10_text": "We may suspend or terminate your access...",
+  "section_11": "11. Limitation of Liability",
+  "section_11_text": "We are not liable for indirect, incidental...",
+  "section_12": "12. Indemnification",
+  "section_12_text": "You agree to indemnify and hold harmless...",
+  "section_13": "13. Governing Law",
+  "section_13_text": "These Terms are governed by the laws of India..."
 
 
 }

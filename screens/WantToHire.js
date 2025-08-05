@@ -12,6 +12,7 @@ import React, { useState } from "react";
 import * as DocumentPicker from "expo-document-picker";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+  import axios from 'axios'; // at the top
 
 const WantToHire = () => {
   const navigation = useNavigation();
@@ -58,26 +59,51 @@ const WantToHire = () => {
     }
   };
 
-  const handleSubmit = () => {
-    if (
-      !formData.jobTitle ||
-      !formData.companyName ||
-      !formData.location ||
-      !formData.salary ||
-      !formData.contactEmail ||
-      !formData.description ||
-      !formData.fileName
-    ) {
-      Alert.alert(
-        t("want_to_hire.alerts.missing_fields_title"),
-        t("want_to_hire.alerts.missing_fields_msg")
-      );
-      return;
-    }
 
-    console.log("Form Submitted:", formData);
-    Alert.alert(t("want_to_hire.alerts.success"), t("want_to_hire.alerts.success_msg"));
-  };
+const handleSubmit = async () => {
+  if (
+    !formData.jobTitle ||
+    !formData.companyName ||
+    !formData.location ||
+    !formData.salary ||
+    !formData.contactEmail ||
+    !formData.description ||
+    !formData.fileUri
+  ) {
+    Alert.alert(
+      t("want_to_hire.alerts.missing_fields_title"),
+      t("want_to_hire.alerts.missing_fields_msg")
+    );
+    return;
+  }
+
+  const form = new FormData();
+  form.append('category', formData.category);
+  form.append('jobTitle', formData.jobTitle);
+  form.append('companyName', formData.companyName);
+  form.append('location', formData.location);
+  form.append('salary', formData.salary);
+  form.append('contactEmail', formData.contactEmail);
+  form.append('description', formData.description);
+  form.append('file', {
+    uri: formData.fileUri,
+    name: formData.fileName,
+    type: formData.fileType || 'application/pdf',
+  });
+
+  try {
+    const response = await axios.post('http://192.168.29.22:5000/want-to-hire', form, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    Alert.alert(t("want_to_hire.alerts.success"), response.data.message);
+  } catch (error) {
+    console.error("Submission error:", error);
+    Alert.alert(t("want_to_hire.alerts.error"), "Something went wrong!");
+  }
+};
 
   return (
     <SafeAreaView style={styles.safeArea}>

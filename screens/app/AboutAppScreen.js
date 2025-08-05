@@ -1,54 +1,36 @@
 import { View, Text, StyleSheet, Pressable, StatusBar } from "react-native";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const AboutAppScreen = () => {
-  // Static translations (English only for now)
-  const translations = {
-    en: {
-      aboutUs: "About Us",
-      aboutUsPara1:
-        "Our goal is to make digital payments so easy, safe, and universally accepted that people never feel the need to carry cash or cards again. We believe India is at the cusp of a new mobile revolution, which will change the way we manage our money on the go. We see ourselves facilitating this change, through technology and dogged customer centricity.",
-      updatedOn: "Updated On:",
-      allVersions: "All Versions",
-    },
-  };
-
-  const currentTranslations = translations.en;
+  const { t } = useTranslation();
 
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
 
-      {/* Header */}
-      {/* <View style={styles.header}>
-        <Text style={styles.headerText}>{currentTranslations.aboutUs}</Text>
-      </View> */}
+      <Text style={styles.title}>{t("about_us")}</Text>
 
-      {/* About Us Content */}
-      <Text style={styles.title}>{currentTranslations.aboutUs}</Text>
-
-      <Text style={styles.description}>{currentTranslations.aboutUsPara1}</Text>
+      <Text style={styles.description}>{t("about_us_para1")}</Text>
 
       <Text style={styles.description}>
-        IndiaaPay is a brand owned by{" "}
-        <Text style={styles.boldText}>
-          GURUDIPAK SALVI PRIVATE LIMITED (GSPL)
-        </Text>{" "}
-        (CIN - U66190MH2023PTC414067). It is licensed by the Government of
-        India for issuance and operation of a Semi Closed Prepaid Payment
-        system.
+        {t("company_info", {
+          company: "GURUDIPAK SALVI PRIVATE LIMITED (GSPL)",
+          cin: "U66190MH2023PTC414067",
+        })}
       </Text>
 
       <Text style={styles.updatedOn}>
-        {currentTranslations.updatedOn} 24/6/2025, 3:58:34 pm (IST)
+        {t("updated_on")} 24/6/2025, 3:58:34 pm (IST)
       </Text>
 
       <Pressable onPress={() => {}} style={styles.linkContainer}>
-        <Text style={styles.linkText}>{currentTranslations.allVersions}</Text>
+        <Text style={styles.linkText}>{t("all_versions")}</Text>
       </Pressable>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

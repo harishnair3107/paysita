@@ -29,9 +29,7 @@ const MobileRecharge = () => {
 const [token1, setToken1] = useState(null);
 const [token2, setToken2] = useState(null);
 const [token3, setToken3] = useState(null);
-
-  const navigation = useNavigation();
-
+const navigation = useNavigation();
   // 🔐 Get Token from backend
   useEffect(() => {
     const fetchToken = async () => {

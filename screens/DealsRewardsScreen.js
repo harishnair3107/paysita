@@ -87,8 +87,8 @@ const Rewards = () => {
     <ScrollView style={styles.tabContent}>
       <View style={[styles.hCard, styles.largeCard]}>
         <Image source={require('../assets/bonus.jpeg')} style={styles.hImage} />
-        <Text style={styles.hTitle}>{t('rewards.big_reward_title')}</Text>
-        <Text style={styles.hDesc}>{t('rewards.big_reward_desc')}</Text>
+        <Text style={styles.hTitle1}>{t('rewards.big_reward_title')}</Text>
+        <Text style={styles.hDesc1}>{t('rewards.big_reward_desc')}</Text>
       </View>
       <Text style={styles.sectionTitle}>{t('rewards.daily_offers')}</Text>
       <HorizontalCards data={rewardsData.slice(0, 4)} />
@@ -214,12 +214,23 @@ const styles = StyleSheet.create({
   hTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
     marginBottom: 4
   },
   hDesc: {
     fontSize: 14,
-    color: '#666',
+    color: '#fff',
+    textAlign: 'center'
+  },
+  hTitle1: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 4
+  },
+  hDesc1: {
+    fontSize: 14,
+    color: '#000',
     textAlign: 'center'
   },
   vList: {
@@ -238,8 +249,8 @@ const styles = StyleSheet.create({
     elevation: 3
   },
   vImage: {
-    width: 180,
-    height: 100,
+    width: 140,
+    height: 70,
     borderRadius: 12,
     marginRight: 16,
     resizeMode: 'cover'
@@ -266,11 +277,11 @@ const styles = StyleSheet.create({
   vTitle: {
     fontSize: 17,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
     marginBottom: 4
   },
   vDesc: {
     fontSize: 14,
-    color: '#666'
+    color: '#fff'
   }
 });

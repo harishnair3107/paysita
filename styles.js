@@ -1,6 +1,5 @@
 import { StyleSheet } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-
 export default StyleSheet.create({
   containerss: {
     marginTop: 20,
@@ -144,7 +143,7 @@ export default StyleSheet.create({
 
     sliderContainer: {
       height: hp('20%'),
-      marginVertical: 2,
+      marginVertical: 0,
       
     },
     sliderContainers: {
@@ -163,7 +162,7 @@ export default StyleSheet.create({
       justifyContent: "center",
       alignItems: "center",
       padding: 0,
-      backgroundColor: "#1d1534",
+      // backgroundColor: "#1d1534",
       marginHorizontal: 5.7,
       borderRadius: 10,
     },
@@ -212,21 +211,21 @@ export default StyleSheet.create({
   
   transferSection: {
     backgroundColor: "#fff",
-    padding: 10,
+    padding: 19,
     marginTop: 2,
     borderRadius: 10,
   },
   transferTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 3,
+    marginBottom: 15,
   },
   transferButtons: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
   upiContainer: {
-    marginTop: 1,
+    marginTop: 10,
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -254,10 +253,10 @@ export default StyleSheet.create({
   },
   circle: {
     position: 'absolute',
-    top: -17,
+    top: -8,
     left: 7,
-    width: 45,
-    height:45,
+    width: 35,
+    height:35,
     borderRadius: 40,
     backgroundColor: 'red',
     justifyContent: 'center',
@@ -267,14 +266,14 @@ export default StyleSheet.create({
   circleText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 16,
   },
   
 // recharge and bill 
 container: {
   flex: 1,
   backgroundColor: "#fff",
-  padding: 10,
+ padding: 19,
   marginTop: -20,
   paddingBottom: 4,
  
@@ -283,7 +282,7 @@ card: {
   backgroundColor: "#fff",
   padding: 0,
   borderRadius: 10,
-  marginTop: -4,
+  marginTop: -9,
   marginBottom:10,
 },
 header: {
@@ -329,7 +328,7 @@ serviceText: {
   fontSize: 11,
   color: "#000",
   textAlign: "center",
-  marginTop: 5,
+  marginTop: 2,
   fontWeight: "bold",
 },
 serviceItems: {
@@ -352,7 +351,7 @@ modalContainer: {
   flex: 1,
   justifyContent: "center",
   alignItems: "center",
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  // backgroundColor: "rgba(0, 0, 0, 0.5)",
 },
 modalContent: {
   width: "0%",
@@ -415,71 +414,109 @@ closeButtonText: {
     marginTop: -10,
     marginBottom: -10,
   },
-  jobButton: {
-    backgroundColor: "#50B5AD",
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderLeftWidth: 2,
-    borderRightWidth: 0,
-    borderColor: "#1d154a",
-    flexDirection: "row",
-    alignItems: "center",
-   borderBottomLeftRadius:10,
-   borderTopLeftRadius:10,
-    width: wp('48'),
-    height: hp('8.4'),
-    marginLeft:wp("-1%"),
-   
-  },
-  jobImage: {
-    marginTop:1.1,
-    borderRightWidth: 0,
-    borderColor: "#1d154a",
-    borderBottomLeftRadius:10,
-    borderTopLeftRadius:10,
-    width: wp('20'),
-    height: hp('8.2'),
-    marginLeft:-1,
-    marginRight: 13,
-  },
-  jobText: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "#fff",
-  },
-  hireButton: {
-    backgroundColor: "#50B5AD",
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderColor: "#1d154a",
-    flexDirection: "row",
-    alignItems: "center",
-    borderRightRadius: 10,
-    borderBottomRightRadius:10,
-    borderTopRightRadius:10,
-    width: wp('50'),
-    height: hp('8.4'),
-  },
-  hireImage: {
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderLeftRadius:20,
-    borderColor: "#1d154a",
-    width: wp('20'),
-    height: hp('8.1'),
-    marginRight: 13,
-    marginTop:0,
-  },
-  hireText: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "#fff",
-  },
 
+   container: {
+    marginTop: -40,
+     marginBottom: -10,
+    flex: 1,
+    backgroundColor: '#eaeaea',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  hireGradients: {
+  width: wp('25%'),
+  height: hp('8.4%'),
+  borderRadius: 10,
+  marginRight: 80,
+  marginLeft:0,
+marginTop: 1,
+  backgroundColor: '#f9f4ef',
+  // ✅ Border on all sides (we'll override bottom later)
+  borderTopWidth: 5,
+  borderLeftWidth: 5,
+  borderRightWidth: 1,
+  borderBottomWidth: 1,
+  // ✅ Default border color for all sides
+  borderColor: '#231b52ff', // grey for bottom + sides
+  // ✅ Override top border with white
+  borderTopColor: '#ffffff',
+  justifyContent: 'center',
+  alignItems: 'center',
+ shadowColor: '#231b52ff', // deeper, warmer glow
+  shadowOffset: { width: 18, height: 8 }, // upward shadow
+  shadowOpacity: 0.6,
+  shadowRadius: 10,
+  elevation: 18, // no Android shadow
+},
+buttonRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingVertical: 0,
+  marginTop:-10,
+
+},
+
+gifContainer: {
+  marginHorizontal: -80,
+  marginLeft:-74,
+  marginTop:2,
+},
+
+gifStyle: {
+height:70,
+  // width:178,
+  width:185,
+  borderRadius:10,
+},
+
+
+hireGradient: {
+  width: wp('25%'),
+  height: hp('8.4%'),
+  borderRadius: 10,
+  marginLeft: 85,
+  marginTop: -1,
+  backgroundColor: '#f9f4ef',
+  // ✅ Border on all sides (we'll override bottom later)
+  borderTopWidth: 5,
+  borderLeftWidth: 5,
+  borderRightWidth: 1,
+  borderBottomWidth: 1,
+  // ✅ Default border color for all sides
+  borderColor: '#cab91fff',  // ✅ Override top border with white
+  justifyContent: 'center',
+  alignItems: 'center',
+ shadowColor: '#eef075ff', // deeper, warmer glow
+  shadowOffset: { width: 8, height: 8 }, // upward shadow
+  shadowOpacity: 0.6,
+  shadowRadius: 10,
+  elevation: 16, // no Android shadow
+},
+
+  hireButtonStyled: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
+hireTextStyled: {
+  fontSize: 16,
+  color: '#383836e5', // slightly deeper than #333 for clarity
+  fontWeight: '900', // slightly bolder for contrast
+  textAlign: 'center',
+  letterSpacing: 0.2, // improves readability
+  lineHeight: 25, // better vertical alignment
+
+  // Optional subtle shadow for text lift
+  // textShadowColor: '#ffb84d', 
+  // textShadowOffset: { width: 0, height: 1 },
+  // textShadowRadius: 1,
+},
+hireTextHighlight:{
+  fontSize:25,
+  
+},
   // Insurance Section
   insuranceContainer: {
     backgroundColor: "#fff",

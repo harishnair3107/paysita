@@ -46,13 +46,33 @@ const EducationalFormScreen = () => {
 
   const isFormValid = form.name.trim() && form.contact.trim() && form.email.trim();
 
-  const handleSubmit = () => {
-    if (!isFormValid) {
-      alert(t('form.required_fields_warning'));
-      return;
+ const handleSubmit = async () => {
+  if (!isFormValid) {
+    alert(t('form.required_fields_warning'));
+    return;
+  }
+
+  try {
+    const response = await fetch('http://192.168.29.22:5000/api/education-form', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert('Form submitted successfully!');
+      handleReset();
+    } else {
+      alert('Submission failed: ' + result.message);
     }
-    console.log('Form Submitted:', form);
-  };
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Something went wrong. Try again.');
+  }
+};
+
 
   return (
     <View style={styles.container}>

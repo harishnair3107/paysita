@@ -32,10 +32,36 @@ const CashbackAndReferral = () => {
     setReferralData({ ...referralData, [field]: value });
   };
 
-  const handleSubmit = () => {
-    console.log("Referral Data:", referralData);
-    alert(t("cashback_referral.referral_submitted"));
-  };
+const handleSubmit = async () => {
+  try {
+    const response = await fetch('http://192.168.29.22:5000/api/referral', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(referralData),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert(t("cashback_referral.referral_submitted"));
+      setReferralData({
+        name: "",
+        email: "",
+        contact: "",
+        category: "",
+        message: "",
+      });
+    } else {
+      alert("Error: " + result.message);
+    }
+  } catch (error) {
+    console.error("Submission error:", error);
+    alert("Something went wrong.");
+  }
+};
+
 
   const cashbackOffers = {
     [t("cashback_referral.recharge")]: [
@@ -66,15 +92,19 @@ const CashbackAndReferral = () => {
 
   return (
     <SafeAreaView style={styles.safeContainer}>
-      <Pressable onPress={() => navigation.goBack()}>
+      <Pressable  style={{ backgroundColor: "#f8f9fa", alignItems: "left", marginTop: 20 }} onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back" size={24} color="black" />
+           <Text style={{ fontSize: 22, fontWeight: "bold", color: "#333",textAlign: "center",marginBottom:40 ,marginTop:-29}}>
+          {t("cashback_referral.title")}
+        </Text>
       </Pressable>
-
+{/* 
       <View style={{ backgroundColor: "#f8f9fa", alignItems: "center", padding: 20 }}>
+       
         <Text style={{ fontSize: 24, fontWeight: "bold", color: "#333" }}>
           {t("cashback_referral.title")}
         </Text>
-      </View>
+      </View> */}
 
       <View style={styles.tabContainer}>
         <TouchableOpacity
@@ -184,40 +214,41 @@ const CashbackAndReferral = () => {
 export default CashbackAndReferral;
 
 const styles = StyleSheet.create({
-  safeContainer: { flex: 1, backgroundColor: "#f8f9fa", padding: 10 },
+  safeContainer: { flex: 1, backgroundColor: "#f8f9fa", padding: 30,margintop:20 },
   tabContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
     backgroundColor: "#f8f9fa",
     borderBottomWidth: 2,
+  
     borderBottomColor: "#ddd",
   },
   tab: { flex: 1, alignItems: "center" },
   activeTab: {
     borderBottomWidth: 3,
-    borderBottomColor: "#FFA500",
+    borderBottomColor: "#FFA500"
   },
   tabText: { fontSize: 20, fontWeight: "500", color: "#555" },
-  activeTabText: { color: "#FFA500", fontWeight: "bold" },
+  activeTabText: { color: "#583d09ff", fontWeight: "bold" },
   listContainer: { paddingVertical: 10 },
   section: { marginBottom: 10 },
   sectionTitle: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#1D154A",
-    marginLeft: 10,
+    marginLeft: 0,
     marginBottom: 5,
   },
-  row: { justifyContent: "space-between" },
+  row: { justifyContent: "space-around" },
   card: {
     backgroundColor: "#F5F5F5",
     borderRadius: 15,
     padding: 15,
     marginVertical: 5,
-    marginRight: 15,
-    width: "47%",
-    height: 220,
-    justifyContent: "space-between",
+    marginRight: 5,
+    width: "49.3%",
+    height: 250,
+    justifyContent: "space-around",
     elevation: 4,
     shadowColor: "#aaa",
     shadowOffset: { width: 0, height: 2 },
@@ -227,15 +258,16 @@ const styles = StyleSheet.create({
   },
   cardHeader: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
   actionText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
-    color: "#FFA500",
+    color: "#0e0d0dff",
     textAlign: "justify",
   },
   descriptionText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#444",
     textAlign: "justify",
+    marginTop:-25,
   },
   boldText: { fontWeight: "bold", color: "#000" },
   cardFooter: {
@@ -245,8 +277,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   claimButton: {
-    backgroundColor: "green",
-    paddingVertical: 10,
+    backgroundColor: "black",
+    paddingVertical: 6,
     borderRadius: 8,
     alignItems: "center",
     width: "100%",
@@ -260,7 +292,8 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
     borderRadius: 10,
-    margin: 10,
+    margin: 15,
+    marginTop:70,
     elevation: 5,
   },
   input: {

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Animated, Alert } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -44,7 +43,10 @@ const IndiayaPayLogin = () => {
       if (user) {
         const parsedUser = JSON.parse(user);
         // If user data exists, navigate to OTP verification or home screen
-        navigation.replace('MainScreen', { name: parsedUser.name }); // Replace the current screen with MainScreen
+navigation.replace('MainScreen', { 
+  name: parsedUser.name, 
+  mobile: parsedUser.mobileNumber 
+});
       }
     };  
 
@@ -72,7 +74,7 @@ const IndiayaPayLogin = () => {
       <View style={styles.card}>
         <View style={styles.avatarWrapper}>
           <View style={styles.avatarCircle}>
-            <Icon name="user" size={40} color="#fff" />
+            {/* <Icon name="user" size={40} color="#fff" /> */}
           </View>
         </View>
 
@@ -84,7 +86,7 @@ const IndiayaPayLogin = () => {
         </View>
 
         <View style={styles.inputContainer}>
-          <Icon name="phone" size={20} color="#FF6F00" style={styles.icon} />
+          {/* <Icon name="phone" size={20} color="#FF6F00" style={styles.icon} /> */}
           <TextInput
             style={styles.input}
             placeholder="Mobile Number"
@@ -108,12 +110,12 @@ const IndiayaPayLogin = () => {
           </TouchableOpacity>
         </Animated.View>
 
-        <Text style={styles.orText}>Or sign up with</Text>
+        {/* <Text style={styles.orText}>Or sign up with</Text>
         <View style={styles.socialRow}>
           <Icon name="google" size={24} color="#DB4437" style={styles.socialIcon} />
           <Icon name="facebook" size={24} color="#4267B2" style={styles.socialIcon} />
           <Icon name="apple" size={24} color="#000" style={styles.socialIcon} />
-        </View>
+        </View> */}
       </View>
     </ImageBackground>
   );

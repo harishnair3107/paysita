@@ -21,32 +21,31 @@ const Addaddress = () => {
     });
   };
 
-  const renderOption = (type, iconName, labelKey) => {
-    return (
-      <TouchableOpacity
-        style={[styles.optionButton, selectedType === type && styles.selectedOption]}
-        onPress={() => setSelectedType(type)}
-      >
-        <Ionicons name={iconName} size={24} color={selectedType === type ? "white" : "#1D154A"} />
-        <Text style={[styles.optionText, selectedType === type && styles.selectedOptionText]}>
-          {t(labelKey)}
-        </Text>
-      </TouchableOpacity>
-    );
-  };
+  const renderOption = (type, iconName, labelKey) => (
+    <TouchableOpacity
+      style={[styles.optionCard, selectedType === type && styles.optionCardSelected]}
+      onPress={() => setSelectedType(type)}
+    >
+      <Ionicons
+        name={iconName}
+        size={24}
+        color={selectedType === type ? "#fff" : "#1D154A"}
+      />
+      <Text style={[styles.optionLabel, selectedType === type && styles.optionLabelSelected]}>
+        {t(labelKey)}
+      </Text>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#f5f5f5" barStyle="dark-content" />
-
-      <View style={styles.header}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <View style={{ flexDirection: "row", gap: 20 }}>
-            <Ionicons name="arrow-back" size={24} color="black" />
-            <Text style={styles.headerText}>{t('add_address')}</Text>
-          </View>
+      {/* <View style={styles.header}>
+        <Pressable onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="#1D154A" />
+          <Text style={styles.headerText}>{t('add_address')}</Text>
         </Pressable>
-      </View>
+      </View> */}
 
       <Text style={styles.label}>{t('house_flat_floor_number')}</Text>
       <TextInput
@@ -73,109 +72,132 @@ const Addaddress = () => {
       />
 
       <Text style={styles.label}>{t('save_as')}</Text>
-      <View style={styles.optionsContainer}>
-        {renderOption("home", "home-outline", "home")}
+      <View style={styles.optionsRow}>
+{renderOption("home", "home-outline", "address.home")}
         {renderOption("work", "briefcase-outline", "work")}
         {renderOption("other", "location-outline", "other")}
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.cancelButton}>{t('cancel')}</Text>
+      <View style={styles.buttonRow}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.cancelButton}>
+          <Text style={styles.cancelText}>{t('cancel')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.nextButton, !selectedType && styles.disabledButton]}
+          style={[styles.saveButton, !selectedType && styles.saveButtonDisabled]}
           disabled={!selectedType}
           onPress={handleSaveAddress}
         >
-          <Text style={styles.nextButtonText}>{t('save')}</Text>
+          <Text style={styles.saveText}>{t('save')}</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-// Styles stay the same...
+export default Addaddress;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: "#fff",
+    padding: 20,
+    backgroundColor: "#F8F9FA",
   },
   header: {
+    marginBottom: 20,
+  },
+  backButton: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: 5,
-    marginBottom: 20,
-    gap: 20,
+    gap: 10,
   },
   headerText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
+    color: "#1D154A",
   },
   label: {
-    fontSize: 18,
-    color: "black",
-    fontWeight: "bold",
-    marginBottom: 5,
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 6,
+    marginTop: 10,
   },
   input: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 14,
+    fontSize: 16,
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
+    borderColor: "#ddd",
     marginBottom: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
   },
-  optionsContainer: {
+  optionsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: "auto",
+    marginVertical: 15,
   },
-  optionButton: {
+  optionCard: {
+    flex: 1,
+    marginHorizontal: 4,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
+    padding: 12,
+    backgroundColor: "#fff",
     borderColor: "#1D154A",
+    borderWidth: 1,
     borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    flex: 1,
-    marginHorizontal: 5,
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.07,
+    shadowRadius: 2,
+    elevation: 2,
   },
-  selectedOption: {
+  optionCardSelected: {
     backgroundColor: "#1D154A",
   },
-  optionText: {
-    marginLeft: 5, 
-    fontWeight: "bold",
+  optionLabel: {
+    marginLeft: 8,
+    fontWeight: "600",
+    color: "#1D154A",
   },
-  selectedOptionText: {
-    color: "white",
+  optionLabelSelected: {
+    color: "#fff",
   },
-  buttonContainer: {
+  buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginTop: "auto",
+    paddingTop: 30,
   },
   cancelButton: {
-    color: "#1D154A",
-    fontSize: 16,
-  },
-  nextButton: {
-    backgroundColor: "#1D154A",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
   },
-  disabledButton: {
-    backgroundColor: "#ccc",
-  },
-  nextButtonText: {
-    color: "white",
+  cancelText: {
     fontSize: 16,
-    fontWeight: "bold",
+    color: "#1D154A",
+    fontWeight: "600",
+  },
+  saveButton: {
+    backgroundColor: "#1D154A",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    marginBottom:200
+  },
+  saveButtonDisabled: {
+    backgroundColor: "#aaa",
+  },
+  saveText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
-
-export default Addaddress;

@@ -25,7 +25,7 @@ const CurrentBank = ({ navigation }) => {
 
         <Pressable style={styles.optionRow}>
           <Feather name="credit-card" size={22} color="black" />
-          <Text style={styles.optionText}>{t('check_balance')}</Text>
+          <Text style={styles.optionText}>{t('check_-balance')}</Text>
           <Text style={styles.optionAction} onPress={() => navigation.navigate("BankUPISelectionScreen")}>
             {t('check')}
           </Text>

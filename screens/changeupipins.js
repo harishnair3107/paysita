@@ -73,11 +73,7 @@ const ChangeUpiPins = ({ route }) => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
-      <View style={styles.header}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={28} color="black" />
-        </Pressable>
-      </View>
+      
 
       <Text style={styles.headerText}>{mobile}</Text>
       <Text style={styles.headerText}>{t("change_upi.enter_otp")}</Text>

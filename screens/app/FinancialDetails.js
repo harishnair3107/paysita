@@ -1,63 +1,83 @@
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  ScrollView
+} from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
-import { useTranslation } from 'react-i18next'; // ✅ import i18n
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
+
+const STORAGE_KEY = "financial_details_selection";
 
 const FinancialDetails = () => {
   const navigation = useNavigation();
-  const { t } = useTranslation(); // ✅ get translation function
+  const { t } = useTranslation();
   const [selectedOptions, setSelectedOptions] = useState({});
 
   const financialQuestions = [
-    { id: 1, title: t("house_ownership"), subtitle: t("house_ownership_question") },
-    { id: 2, title: t("car_ownership"), subtitle: t("car_ownership_question") },
-    { id: 3, title: t("two_wheeler_ownership"), subtitle: t("two_wheeler_ownership_question") },
-    { id: 4, title: t("annual_income"), subtitle: t("annual_income_question") },
-    { id: 5, title: t("occupation"), subtitle: t("occupation_question") },
-    { id: 6, title: t("earning_members"), subtitle: t("earning_members_question") },
-    { id: 7, title: t("insurances"), subtitle: t("insurances_question") },
-    { id: 8, title: t("investments"), subtitle: t("investments_question") },
+    { id: 1, title: t("house_ownership"), subtitle: t("house_ownership_question"), options: ["Own", "Rent"] },
+    { id: 2, title: t("car_ownership"), subtitle: t("car_ownership_question"), options: ["Yes", "No"] },
+    { id: 3, title: t("two_wheeler_ownership"), subtitle: t("two_wheeler_ownership_question"), options: ["Yes", "No"] },
+    { id: 4, title: t("annual_income"), subtitle: t("annual_income_question"), options: ["<1L", "1-5L", "5-10L", ">10L"] },
+    { id: 5, title: t("occupation"), subtitle: t("occupation_question"), options: ["Salaried", "Self-employed", "Unemployed", "Student"] },
+    { id: 6, title: t("earning_members"), subtitle: t("earning_members_question"), options: ["1", "2", "3+", "None"] },
+    { id: 7, title: t("insurances"), subtitle: t("insurances_question"), options: ["Yes", "No"] },
+    { id: 8, title: t("investments"), subtitle: t("investments_question"), options: ["Stocks", "FDs", "Real Estate", "None"] },
   ];
 
-  const handleSelect = (id, choice) => {
-    setSelectedOptions((prev) => ({ ...prev, [id]: choice }));
+  useEffect(() => {
+    const loadStoredData = async () => {
+      try {
+        const json = await AsyncStorage.getItem(STORAGE_KEY);
+        if (json !== null) {
+          setSelectedOptions(JSON.parse(json));
+        }
+      } catch (e) {
+        console.log("Failed to load financial data:", e);
+      }
+    };
+    loadStoredData();
+  }, []);
+
+  const handleSelect = async (id, value) => {
+    const updated = { ...selectedOptions, [id]: value };
+    setSelectedOptions(updated);
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    } catch (e) {
+      console.log("Failed to save financial data:", e);
+    }
   };
 
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
-      <ScrollView>
-        <View style={styles.content}>
-          {financialQuestions.map((item) => (
-            <View key={item.id} style={styles.questionContainer}>
-              <View style={styles.textContainer}>
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.subtitle}>{item.subtitle}</Text>
-              </View>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={[
-                    styles.button,
-                    selectedOptions[item.id] === "Yes" ? styles.yesSelected : styles.unselected,
-                  ]}
-                  onPress={() => handleSelect(item.id, "Yes")}
-                >
-                  <Text style={styles.buttonText}>{t("yes")}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.button,
-                    selectedOptions[item.id] === "No" ? styles.noSelected : styles.unselected,
-                  ]}
-                  onPress={() => handleSelect(item.id, "No")}
-                >
-                  <Text style={styles.buttonText}>{t("no")}</Text>
-                </TouchableOpacity>
-              </View>
+      <ScrollView contentContainerStyle={styles.content}>
+        {financialQuestions.map((item) => (
+          <View key={item.id} style={styles.questionContainer}>
+            <View style={styles.textContainer}>
+              <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.subtitle}>{item.subtitle}</Text>
             </View>
-          ))}
-        </View>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={selectedOptions[item.id] || ""}
+                onValueChange={(value) => handleSelect(item.id, value)}
+                style={styles.picker}
+                mode="dropdown"
+              >
+                <Picker.Item label={t("select_option")} value="" />
+                {item.options.map((option) => (
+                  <Picker.Item key={option} label={t(option)} value={option} />
+                ))}
+              </Picker>
+            </View>
+          </View>
+        ))}
       </ScrollView>
     </View>
   );
@@ -66,90 +86,52 @@ const FinancialDetails = () => {
 export default FinancialDetails;
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: "#fff",
-    },
-    header: {
-      flexDirection: "row",
-      alignItems: "center",
-      paddingVertical: 16,
-      paddingHorizontal: 20,
-      borderBottomWidth: 1,
-      borderBottomColor: "#ddd",
-      backgroundColor: "#f8f9fa",
-      elevation: 2,
-    },
-    headerTitle: {
-      fontSize: 20,
-      fontWeight: "700",
-      marginLeft: 16,
-      color: "#333",
-    },
-    content: {
-      padding: 20,
-      paddingTop: 10,
-    },
-    questionContainer: {
-      backgroundColor: "#ffffff",
-      borderRadius: 12,
-      padding: 20,
-      marginBottom: 20,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      shadowColor: "#000",
-      shadowOpacity: 0.15,
-      shadowOffset: { width: 0, height: 3 },
-      shadowRadius: 6,
-      elevation: 3,
-    },
-    textContainer: {
-      flex: 1,
-    },
-    title: {
-      fontSize: 18,
-      fontWeight: "700",
-      color: "#333",
-      marginBottom: 6,
-    },
-    subtitle: {
-      fontSize: 14,
-      color: "#666",
-      marginTop: 4,
-    },
-    buttonContainer: {
-      flexDirection: "row",
-      justifyContent: "flex-end",
-    },
-    button: {
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      borderRadius: 30,
-      marginLeft: 12,
-      borderWidth: 2,
-      borderColor: "#1D154A",
-      width: 80,
-      height: 40,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    buttonText: {
-      fontWeight: "bold",
-      color: "#00000",
-      fontSize: 14,
-    },
-    yesSelected: {
-      backgroundColor: "#28a745", // Green for 'Yes'
-      borderColor: "#28a745", // Matching border color
-    },
-    noSelected: {
-      backgroundColor: "#dc3545", // Red for 'No'
-      borderColor: "#dc3545", // Matching border color
-    },
-    unselected: {
-      backgroundColor: "#f0f0f0", // Light gray for unselected options
-      borderColor: "#ddd", // Gray border for unselected options
-    },
-  });
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  content: {
+    padding: 20,
+    paddingTop: 10,
+  },
+  questionContainer: {
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  textContainer: {
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#333",
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 4,
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    overflow: "hidden",
+    backgroundColor: "#fff",
+    height: 48,
+    justifyContent: "center",
+  },
+ picker: {
+    height: 55,
+    marginTop: -10,
+    fontSize: 16,
+    width: "100%",
+  }
+});
 

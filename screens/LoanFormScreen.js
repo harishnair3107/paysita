@@ -41,15 +41,27 @@ const LoanFinanceForm = () => {
         : [...prevForm.selectedLoans, loan],
     }));
   };
+const handleSubmit = async () => {
+  if (!form.name || form.contact.length !== 10) {
+    Alert.alert(t("alerts.error"), t("alerts.invalid_name_contact"));
+    return;
+  }
 
-  const handleSubmit = () => {
-    if (!form.name || !form.contact || form.contact.length !== 10) {
-      Alert.alert(t("alerts.error"), t("alerts.invalid_name_contact"));
-      return;
-    }
-    console.log('Form Submitted:', form);
-    Alert.alert(t("alerts.success"), t("alerts.form_submitted"));
-  };
+  try {
+    const response = await fetch('http://192.168.29.22:5000/loan-finance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form)
+    });
+
+    const data = await response.json();
+    Alert.alert(t("alerts.success"), data.message);
+  } catch (error) {
+    console.error('Submission error:', error);
+    Alert.alert(t("alerts.error"), "Something went wrong.");
+  }
+};
+
 
   const handleReset = () => {
     setForm({

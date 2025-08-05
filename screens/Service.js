@@ -139,7 +139,7 @@ return (
         <View style={styles.header}>
           <Text style={styles.title}>{t('service.home_services')}</Text>
           <TouchableOpacity onPress={() => setHomeServicesModalVisible(true)} style={styles.moreButton}>
-            <Text style={styles.moreButtonText}>{t('common.view_all')}</Text>
+            <Text style={styles.moreButtonText}>{t('buttons.view_all')}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.iconRow}>
@@ -156,8 +156,8 @@ return (
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Text style={styles.title}>{t('service.real_estate')}</Text>
-          <TouchableOpacity onPress={() => setRealEstateModalVisible(true)} style={styles.viewAllButton}>
-            <Text style={styles.viewAllText}>{t('common.view_all')}</Text>
+          <TouchableOpacity onPress={() => setRealEstateModalVisible(true)} style={styles.moreButton}>
+            <Text style={styles.moreButtonText}>{t('buttons.view_all')}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.itemsRow}>
@@ -208,19 +208,18 @@ return (
         <View style={styles.header}>
           <Text style={styles.modalTitle}>{t('section_titles.other_services')}</Text>
           <TouchableOpacity onPress={() => setOtherServicesModelVisible(true)} style={styles.moreButton}>
-            <Text style={styles.moreButtonText}>{t('common.view_all')}</Text>
+            <Text style={styles.moreButtonText}>{t('buttons.view_all')}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.iconRow}>
           {otherServicesItems.slice(0, 4).map((item, index) => (
             <TouchableOpacity key={index} style={styles.iconWrapper} onPress={() => navigation.navigate(item.screen)}>
               <Image source={item.img} style={styles.icon} />
-              <Text style={styles.iconText}>{t(`service.${item.key}`)}</Text>
+              <Text style={styles.iconText}>{t(`servic.${item.key}`)}</Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
-
       {/* Donation & Charity */}
       <View style={styles.container}>
         <View style={styles.header}>
@@ -271,10 +270,15 @@ return (
           <Text style={styles.modalTitle}>{t('service.home_services')}</Text>
           <ScrollView contentContainerStyle={styles.modalContent}>
             {homeServicesItems.map((item, index) => (
-              <View key={index} style={styles.modeliconWrapper}>
+              <TouchableOpacity key={index} style={styles.modeliconWrapper}
+                  onPress={() => {
+                  setHomeServicesModalVisible(false);
+                  navigation.navigate(item.screen);
+                }}
+              >
                 <Image source={item.img} style={styles.icon} />
                 <Text style={styles.iconText}>{t(`service.${item.key}`)}</Text>
-              </View>
+              </TouchableOpacity>
             ))}
           </ScrollView>
           <TouchableOpacity onPress={() => setHomeServicesModalVisible(false)} style={styles.closeButton}>
@@ -318,10 +322,15 @@ return (
           <Text style={styles.modalTitle}>{t('section_titles.other_services')}</Text>
           <ScrollView contentContainerStyle={styles.modalContent}>
             {otherServicesItems.map((item, index) => (
-              <View key={index} style={styles.modeliconWrapper}>
+              <TouchableOpacity TouchableOpacity key={index} style={styles.modeliconWrapper}
+                  onPress={() => {
+                  setOtherServicesModelVisible(false);
+                  navigation.navigate(item.screen);
+                }}
+              >
                 <Image source={item.img} style={styles.icon} />
                 <Text style={styles.iconText}>{t(`service.${item.key}`)}</Text>
-              </View>
+              </TouchableOpacity>
             ))}
           </ScrollView>
           <TouchableOpacity onPress={() => setOtherServicesModelVisible(false)} style={styles.closeButton}>

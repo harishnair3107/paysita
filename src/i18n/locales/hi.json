@@ -125,7 +125,7 @@
     "karnataka": "कर्नाटक बैंक लिमिटेड क्रेडिट लाइन"
   },
    "default_bank_receive": "पैसे प्राप्त करने के लिए डिफ़ॉल्ट बैंक",
-  "check_balance": "बैलेंस जांचें",
+  "check_-balance": "बैलेंस जांचें",
   "check": "जांचें",
   "account_details": "खाता विवरण",
   "account_number": "खाता संख्या",
@@ -695,8 +695,9 @@
     "12+": "12+",
     "Undergraduate": "स्नातक",
     "Postgraduate": "स्नातकोत्तर"
-  },
-  "form": {
+  }, "light_mode": "लाइट मोड",
+  "dark_mode": "डार्क मोड",
+  "formpst": {
     "title": "दान और चैरिटी फॉर्म",
     "name": "नाम *",
     "contact": "संपर्क *",
@@ -936,8 +937,8 @@
   "service_type": "सेवा प्रकार",
   "services": {
     "flight": "फ्लाइट",
-    "train": "ट्रेन",
-    "hotel": "होटल",
+  "bus": "बस"
+,    "hotel": "होटल",
     "packages": "पैकेजेस"
   },
   "from_date": "प्रारंभ तिथि",
@@ -1135,6 +1136,16 @@
   "service": {
     "home_services": "घरेलू सेवाएं",
     "real_estate": "रियल एस्टेट",
+    "legal_consulting": "कानूनी परामर्श",
+    "registration_services": "पंजीकरण सेवाएं",
+    "web_app_developer": "वेब/ऐप डेवलपर",
+    "metromony": "विवाह सेवा",
+    "marriage_registration": "विवाह पंजीकरण",
+    "digital_marketing": "डिजिटल मार्केटिंग",
+    "sales_agreement": "बिक्री अनुबंध",
+    "sales_deed": "बिक्री विलेख",
+    "udyam_gst_registration": "उद्यम/जीएसटी पंजीकरण"
+ ,
     "interior_designer": "इंटीरियर डिज़ाइनर",
     "painting": "पेंटिंग",
     "vastu_consultant": "वास्तु सलाहकार",
@@ -1210,8 +1221,26 @@
   },
   "section_titles": {
   "other_services": "अन्य सेवाएँ"
-}
+},
 
-
+  "about_us": "हमारे बारे में",
+  "about_us_para1": "हमारा लक्ष्य डिजिटल भुगतान को इतना आसान, सुरक्षित और सार्वभौमिक रूप से स्वीकार्य बनाना है कि लोगों को नकद या कार्ड ले जाने की आवश्यकता न हो। हमें विश्वास है कि भारत एक नई मोबाइल क्रांति के मुहाने पर है, जो हमारे पैसे प्रबंधन के तरीके को बदल देगी। हम खुद को इस बदलाव को तकनीक और ग्राहक केंद्रितता के माध्यम से सक्षम बनाते हुए देखते हैं।",
+  "updated_on": "अपडेट किया गया:",
+  "all_versions": "सभी संस्करण",
+  "company_info": "IndiaaPay एक ब्रांड है जिसका स्वामित्व {{company}} (CIN - {{cin}}) के पास है। इसे भारत सरकार द्वारा अर्ध-बंद प्रीपेड भुगतान प्रणाली जारी करने और संचालित करने का लाइसेंस प्राप्त है।"
+,
+ "about_app": "इंडियापे के बारे में",
+  "privacy_policy": "गोपनीयता नीति",
+  "terms_conditions": "नियम और शर्तें",
+  "grievance_redressal": "शिकायत निवारण",
+    "form_error_name_required": "नाम आवश्यक है।",
+  "form_error_contact_required": "संपर्क नंबर आवश्यक है।",
+  "form_error_contact_invalid": "कृपया वैध 10-अंकों का संपर्क नंबर दर्ज करें।",
+  "form_error_email_required": "ईमेल आवश्यक है।",
+  "form_error_email_invalid": "कृपया एक वैध ईमेल पता दर्ज करें।",
+  "form_error_gender_required": "कृपया लिंग चुनें।",
+  "form_error_service_required": "कृपया सेवा प्रकार चुनें।",
+  "form_success": "फ़ॉर्म सफलतापूर्वक जमा किया गया!",
+  "form_error_submit": "सबमिशन विफल रहा। कृपया पुनः प्रयास करें।"
 
 }

@@ -22,16 +22,27 @@ import { useTranslation } from "react-i18next";
 const Profile = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const { name, mobileNumber } = route.params;
   const params = route.params || {};
   const { t } = useTranslation();
 
   const [profileImage, setProfileImage] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [name, setName] = useState("John Doe");
-  const [phone, setPhone] = useState("+91 9632587412");
+  const [nameState, setName] = useState(name);
+  const [phone, setPhone] = useState(mobileNumber);
   const [tempName, setTempName] = useState(name);
   const [tempPhone, setTempPhone] = useState(phone);
   const [savedAddresses, setSavedAddresses] = useState([]);
+
+  useEffect(() => {
+    const loadProfileImage = async () => {
+      const storedImage = await AsyncStorage.getItem("profileImage");
+      if (storedImage) {
+        setProfileImage(storedImage);
+      }
+    };
+    loadProfileImage();
+  }, []);
 
   useEffect(() => {
     const loadAddresses = async () => {
@@ -102,7 +113,9 @@ const Profile = () => {
             quality: 1,
           });
           if (!result.canceled) {
-            setProfileImage(result.assets[0].uri);
+            const uri = result.assets[0].uri;
+            setProfileImage(uri);
+            await AsyncStorage.setItem("profileImage", uri);
           }
         },
       },
@@ -115,13 +128,18 @@ const Profile = () => {
             quality: 1,
           });
           if (!result.canceled) {
-            setProfileImage(result.assets[0].uri);
+            const uri = result.assets[0].uri;
+            setProfileImage(uri);
+            await AsyncStorage.setItem("profileImage", uri);
           }
         },
       },
       {
         text: t("remove_profile_picture"),
-        onPress: () => setProfileImage(null),
+        onPress: async () => {
+          setProfileImage(null);
+          await AsyncStorage.removeItem("profileImage");
+        },
         style: "destructive",
       },
       { text: t("cancel"), style: "cancel" },
@@ -139,14 +157,13 @@ const Profile = () => {
             />
           </Pressable>
           <View style={styles.textInfo}>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.phone}>{phone}</Text>
+            <Text style={styles.name}>{nameState}</Text>
+            <Text style={styles.phone}>{mobileNumber}</Text>
           </View>
           <TouchableOpacity
             style={styles.editButton}
             onPress={() => {
-              setTempName(name);
-              setTempPhone(phone);
+              setTempName(nameState);
               setModalVisible(true);
             }}
           >
@@ -155,27 +172,27 @@ const Profile = () => {
         </View>
 
         <View style={styles.card}>
-          <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate("CoinsEarned")}> 
+          <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate("CoinsEarned")}>
             <Text style={styles.listText}>{t("coins_earned")}</Text>
             <Ionicons name="chevron-forward" size={20} color="#1D154A" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate("ManageNotification")}> 
+          <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate("ManageNotification")}>
             <Text style={styles.listText}>{t("manage_notification")}</Text>
             <Ionicons name="chevron-forward" size={20} color="#1D154A" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate("AccountSecurityTips")}> 
+          {/* <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate("AccountSecurityTips")}>
             <Text style={styles.listText}>{t("account_security_tips")}</Text>
             <Ionicons name="chevron-forward" size={20} color="#1D154A" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate("FinancialDetails")}> 
+          <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate("FinancialDetails")}>
             <Text style={styles.listText}>{t("financial_details")}</Text>
             <Ionicons name="chevron-forward" size={20} color="#1D154A" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate("AdditionalDetails")}> 
+          <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate("AdditionalDetails")}>
             <Text style={styles.listText}>{t("additional_details")}</Text>
             <Ionicons name="chevron-forward" size={20} color="#1D154A" />
           </TouchableOpacity>
@@ -195,7 +212,7 @@ const Profile = () => {
             <Text style={styles.addressText}>{t("no_address_added")}</Text>
           )}
 
-          <TouchableOpacity style={styles.addNew} onPress={() => navigation.navigate("Addaddress")}> 
+          <TouchableOpacity style={styles.addNew} onPress={() => navigation.navigate("Addaddress")}>
             <Ionicons name="add" size={18} color="#1D154A" />
             <Text style={styles.addNewText}>{t("add_new_address")}</Text>
           </TouchableOpacity>
@@ -207,7 +224,6 @@ const Profile = () => {
           <View style={styles.modalContent}>
             <Text style={styles.sectionTitle}>{t("edit_details")}</Text>
             <TextInput style={styles.input} value={tempName} onChangeText={setTempName} placeholder={t("enter_name")} />
-            <TextInput style={styles.input} value={tempPhone} onChangeText={setTempPhone} placeholder={t("enter_phone")} keyboardType="phone-pad" />
             <View style={styles.modalButtons}>
               <Button title={t("cancel")} onPress={() => setModalVisible(false)} color="#d9534f" />
               <Button title={t("save")} onPress={handleSave} color="#5cb85c" />
@@ -221,20 +237,8 @@ const Profile = () => {
 
 export default Profile;
 
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F0F2F5" },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    backgroundColor: "#ffffff",
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#E0E6ED",
-    elevation: 3,
-  },
-  backButton: { padding: 8 },
   profileSection: {
     flexDirection: "row",
     alignItems: "center",
@@ -272,11 +276,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     color: "#1F2937",
   },
-  rowBetween: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   listItem: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -304,6 +303,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     marginLeft: 8,
+  },
+  addressText: {
+    fontSize: 15,
+    color: "#374151",
+    marginBottom: 6,
   },
   modalContainer: {
     flex: 1,

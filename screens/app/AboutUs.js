@@ -1,27 +1,39 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  StatusBar,
+  ScrollView,
+} from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useTranslation } from "react-i18next";
+
 const AboutUs = ({ navigation }) => {
+  const { t } = useTranslation();
+
   const cards = [
-    { title: "About IndiayaPay", screen: "AboutAppScreen" },
-    { title: "Privacy Policy", screen: "PrivacyPolicyScreen" },
-    { title: "Terms & Conditions", screen: "TermsScreen" },
-    { title: "Grievance Redressal", screen: "GrievanceScreen" },
+    { title: t("about_app"), screen: "AboutAppScreen", icon: "information" },
+    { title: t("privacy_policy"), screen: "PrivacyPolicyScreen", icon: "shield-lock" },
+    { title: t("terms_conditions"), screen: "TermsScreen", icon: "file-document-outline" },
+    { title: t("grievance_redressal"), screen: "GrievanceScreen", icon: "account-alert" },
   ];
 
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
       <ScrollView>
-
-        
-
         {cards.map((card, index) => (
           <TouchableOpacity
             key={index}
             style={styles.card}
             onPress={() => navigation.navigate(card.screen)}
           >
-            <Text style={styles.cardTitle}>{card.title}</Text>
+            <View style={styles.cardContent}>
+              <Icon name={card.icon} size={24} color="#333" style={styles.icon} />
+              <Text style={styles.cardTitle}>{card.title}</Text>
+            </View>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -37,19 +49,19 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
   },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-    color: "#1D154A",
-  },
   card: {
-    backgroundColor: "#Fff",
+    backgroundColor: "#fff",
     padding: 18,
     borderRadius: 12,
     marginBottom: 15,
     elevation: 2,
+  },
+  cardContent: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  icon: {
+    marginRight: 12,
   },
   cardTitle: {
     fontSize: 18,

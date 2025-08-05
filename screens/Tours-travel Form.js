@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const TourAndTravelsFormScreen = () => {
+const TourAndTravelsForm = () => {
   const { t } = useTranslation();
 
   const [form, setForm] = useState({
@@ -25,12 +25,59 @@ const TourAndTravelsFormScreen = () => {
 
   const handleChange = (field, value) => setForm({ ...form, [field]: value });
 
-  const handleSubmit = () => {
-    if (!form.name || form.contact.length !== 10) {
+  const isEmailValid = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email.trim());
+  };
+
+  const handleSubmit = async () => {
+    if (
+      !form.name.trim() ||
+      !form.contact.trim() ||
+      form.contact.length !== 10 ||
+      !form.Budget.trim() ||
+      !form.email.trim() ||
+      !isEmailValid(form.email) ||
+      form.toDate < form.fromDate
+    ) {
       Alert.alert(t('tandtf.error_title'), t('tandtf.error_message'));
       return;
     }
-    console.log('Form Submitted:', form);
+
+    try {
+      const response = await fetch('http://192.168.29.22:5000/submit-tour-travel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...form,
+          fromDate: form.fromDate.toISOString().split('T')[0],
+          toDate: form.toDate.toISOString().split('T')[0],
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert(t('tandtf.success_title'), data.message);
+
+        // ✅ Reset form after successful submission
+        setForm({
+          name: '',
+          email: '',
+          contact: '',
+          serviceType: 'flight',
+          gender: 'male',
+          fromDate: new Date(),
+          toDate: new Date(),
+          Budget: '',
+        });
+      } else {
+        Alert.alert(t('tandtf.error_title'), data.message);
+      }
+    } catch (error) {
+      console.error('Submit error:', error);
+      Alert.alert(t('tandtf.error_title'), 'Something went wrong');
+    }
   };
 
   const handleReset = () => {
@@ -83,7 +130,7 @@ const TourAndTravelsFormScreen = () => {
 
           <Text style={styles.label}>{t('tandtf.gender')}</Text>
           <View style={styles.radioContainer}>
-            {['male','female','other'].map(opt => (
+            {['male', 'female', 'other'].map(opt => (
               <TouchableOpacity
                 key={opt}
                 onPress={() => handleChange('gender', opt)}
@@ -93,7 +140,7 @@ const TourAndTravelsFormScreen = () => {
                   styles.outerCircle,
                   form.gender === opt && styles.outerCircleSelected
                 ]}>
-                  {form.gender === opt && <View style={styles.innerCircle}/>}
+                  {form.gender === opt && <View style={styles.innerCircle} />}
                 </View>
                 <Text style={{ marginLeft: 6 }}>
                   {t(`tandtf.genders.${opt}`)}
@@ -107,7 +154,7 @@ const TourAndTravelsFormScreen = () => {
             selectedValue={form.serviceType}
             onValueChange={(val) => handleChange('serviceType', val)}
           >
-            {['flight','train','hotel','packages'].map(opt => (
+            {['flight', 'bus', 'hotel', 'packages'].map(opt => (
               <Picker.Item
                 key={opt}
                 label={t(`tandtf.services.${opt}`)}
@@ -127,6 +174,7 @@ const TourAndTravelsFormScreen = () => {
             <DateTimePicker
               value={form.fromDate}
               mode="date"
+              minimumDate={new Date()} // ✅ disable past dates
               onChange={(_, d) => {
                 setShowFromDatePicker(false);
                 if (d) handleChange('fromDate', d);
@@ -145,6 +193,7 @@ const TourAndTravelsFormScreen = () => {
             <DateTimePicker
               value={form.toDate}
               mode="date"
+              minimumDate={form.fromDate} // ✅ ensure toDate ≥ fromDate
               onChange={(_, d) => {
                 setShowToDatePicker(false);
                 if (d) handleChange('toDate', d);
@@ -177,7 +226,6 @@ const TourAndTravelsFormScreen = () => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -284,4 +332,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TourAndTravelsFormScreen;
+export default TourAndTravelsForm;

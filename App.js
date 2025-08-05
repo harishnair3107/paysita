@@ -1,27 +1,25 @@
 import React, { useEffect, useState, useRef } from "react";
-import './src/i18n/i18n';
-import { useTranslation } from 'react-i18next';
-import {I18nextProvider} from 'react-i18next';
-
-import i18n from './src/i18n/i18n';
-// import axios from "axios";
-import { Ionicons } from "@expo/vector-icons"; // or 'react-native-vector-icons/Ionicons'
+import "./src/i18n/i18n";
+import { useTranslation } from "react-i18next";
+import i18n from "./src/i18n/i18n";
+import { Ionicons } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp,} from "react-native-responsive-screen";
+import {widthPercentageToDP as wp, heightPercentageToDP as hp,} from "react-native-responsive-screen";
 import Navbar from "./component/Navbar";
-import Service from "./screens/Service";   
-import SearchScreen from "./screens/SearchScreen"; 
-import MovieSetupScreen from "./screens/MovieSetupScreen";   
+import Service from "./screens/Service";
+import SearchScreen from "./screens/SearchScreen";
+import MovieSetupScreen from "./screens/MovieSetupScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import OTPVerification from "./OTP-Verification"; // OTP Verification
+import OTPVerification from "./OTP-Verification";
 import IndiayaPayLogin from "./IndiayaPayLogin";
 // Import Screens
-import index from "./screens/app/index"; // Import index.js from the app folder
-import TransferMoney from "./screens/TransferMoney"; //
+import index from "./screens/app/index";
+
+import TransferMoney from "./screens/TransferMoney";
 import PaymentScreen from "./screens/PaymentScreen";
 import NewPaymentScreen from "./screens/NewPaymentScreen";
-import dthplan from "./screens/dthplan"; //
+import dthplan from "./screens/dthplan";
 import successdth from "./screens/successdth";
 import CashbackAndRefferal from "./screens/CashbackAndRefferal";
 import DealsRewardsScreen from "./screens/DealsRewardsScreen";
@@ -31,7 +29,6 @@ import VideoCallScreen from "./screens/VideoCallScreen";
 import ChatScreen from "./screens/ChatScreen";
 import Flight1 from "./screens/FlightSearch";
 import Flight2 from "./screens/flight2";
-// import Scan from "./screens/scan";
 import BankUPISelectionScreen from "./screens/BankUPISelectionScreen";
 import UPILinkScreen from "./screens/UPILinkScreen";
 import SelfAccountScreen from "./screens/SelfAccountScreen";
@@ -41,12 +38,12 @@ import MobileRecharge from "./screens/MobileRecharge";
 import SuccessScreen from "./screens/SuccessScreen";
 import MobileDetailsScreen from "./screens/MobileDetailsScreen";
 import PipedGasList from "./screens/PipedGasList";
-import PipedGasDetailsScreen from "./screens/PipedGasDetailsScreen"; // your detail screen
-import OtherServicesFormScreen from "./screens/OtherServicesFormScreen"; // your detail screen
+import PipedGasDetailsScreen from "./screens/PipedGasDetailsScreen";
+import OtherServicesFormScreen from "./screens/OtherServicesFormScreen";
 import LoanFormScreen from "./screens/LoanFormScreen";
 import ViewPlans from "./screens/ViewPlans";
 import LoanDetailsScreen from "./screens/LoanDetailsScreen";
-import TourAndTravelsFormScreen from "./screens/TourAndTravelsFormScreen";
+import TourAndTravelsForm from "./screens/Tours-travel Form";
 import LoanRepayment from "./screens/LoanRepayment";
 import Paybill from "./screens/Paybill";
 import PaySubdivision from "./screens/PaySubdivision";
@@ -57,7 +54,7 @@ import BroadBandDetailsScreen from "./screens/BroadBandDetailsScreen";
 import DthDetailsScreen from "./screens/DthDetailsScreen";
 import CC_repayment from "./screens/CC_repayment";
 import CC_DetailsScreen from "./screens/CC_DetailsScreen";
-import ITRScreen from "./screens/ITRScreen";
+import taxationForm from "./screens/Taxation-form";
 import GSTFormScreen from "./screens/GSTFormScreen";
 import DonationAndCharityFormScreen from "./screens/DonationAndCharityFormScreen";
 import HealthInsuranceFormScreen from "./screens/HealthInsuranceFormScreen";
@@ -103,14 +100,14 @@ import PackageDetails from "./screens/PackageDetails";
 import PaymentqrScreen from "./screens/PaymentqrScreen";
 import MovieBookingScreen from "./screens/MovieBookingScreen";
 import BookingSummaryScreen from "./screens/BookingSummaryScreen";
-import PrivacyPolicyScreen from './screens/app/PrivacyPolicyScreen';
-import TermsScreen from './screens/app/TermsScreen';
-import GrievanceScreen from './screens/app/GrievanceScreen';
-import AboutAppScreen from './screens/app/AboutAppScreen';
+import PrivacyPolicyScreen from "./screens/app/PrivacyPolicyScreen";
+import TermsScreen from "./screens/app/TermsScreen";
+import GrievanceScreen from "./screens/app/GrievanceScreen";
+import AboutAppScreen from "./screens/app/AboutAppScreen";
 import styles from "./styles"; // Import the styles
-import {
-  Feather,
-} from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+
+import { Feather } from "@expo/vector-icons";
 // import { StatusBar } from "expo-status-bar";
 import Drawer from "./screens/app/Drawer"; // Custom Drawer
 import {
@@ -139,11 +136,11 @@ const Stack = createStackNavigator();
 const BankStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: true }}>
     <Stack.Screen
-      name="BankSelection"
+      name="Bank Selection"
       component={BankUPISelectionScreen}
       options={{ title: "Select Bank" }}
     />
-    <Stack.Screen name="CheckBalanceScreen" component={CheckBalanceScreen} />
+    <Stack.Screen name="Check Balance" component={CheckBalanceScreen} />
     <Stack.Screen
       name="UPILinkScreen"
       component={UPILinkScreen}
@@ -170,19 +167,16 @@ const openWhatsApp = () => {
 };
 const MobileStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: true }}>
-    <Stack.Screen name="MobileRecharge" component={MobileRecharge} />
-<Stack.Screen name="MobileDetailsScreen" component={MobileDetailsScreen} />
+    <Stack.Screen name="Mobile Recharge" component={MobileRecharge} />
+    <Stack.Screen name="MobileDetailsScreen" component={MobileDetailsScreen} />
     <Stack.Screen name="ViewPlans" component={ViewPlans} />
     <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
   </Stack.Navigator>
 );
 const GasStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: true }}>
-    <Stack.Screen name="PipedGasList" component={PipedGasList} />
-    <Stack.Screen
-      name="PipedGasDetailsScreen"
-      component={PipedGasDetailsScreen}
-    />
+    <Stack.Screen name="Piped-GasList" component={PipedGasList} />
+    <Stack.Screen name="Piped-Gas" component={PipedGasDetailsScreen} />
   </Stack.Navigator>
 );
 const WifiStack = () => (
@@ -196,7 +190,7 @@ const WifiStack = () => (
 );
 const SelfStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: true }}>
-    <Stack.Screen name="SelfAccountScreen" component={SelfAccountScreen} />
+    <Stack.Screen name="Self Account" component={SelfAccountScreen} />
     <Stack.Screen name="TransferScreen" component={TransferScreen} />
   </Stack.Navigator>
 );
@@ -214,22 +208,19 @@ const ScanStack = () => (
 const HealthInsuranceFormStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: true }}>
     <Stack.Screen
-      name="HealthInsuranceFormScreen"
+      name="Health Insurance Form"
       component={HealthInsuranceFormScreen}
     />
   </Stack.Navigator>
 );
 const InvestmentFormStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: true }}>
-    <Stack.Screen
-      name="InvestmentFormScreen"
-      component={InvestmentFormScreen}
-    />
+    <Stack.Screen name="Investment Form" component={InvestmentFormScreen} />
   </Stack.Navigator>
 );
 const LoanFormStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: true }}>
-    <Stack.Screen name="LoanFormScreen" component={LoanFormScreen} />
+    <Stack.Screen name="Loan Form" component={LoanFormScreen} />
   </Stack.Navigator>
 );
 const TTFormStack = () => (
@@ -240,10 +231,7 @@ const TTFormStack = () => (
 );
 const HotelStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen
-      name="TourAndTravelsFormScreen"
-      component={TourAndTravelsFormScreen}
-    />
+    <Stack.Screen name="Tour-Travels Form" component={TourAndTravelsForm} />
   </Stack.Navigator>
 );
 
@@ -265,7 +253,7 @@ const PackagesStack = () => (
 const GeneralInsuranceFormStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: true }}>
     <Stack.Screen
-      name="GeneralInsuranceFormScreen"
+      name="General Insurance Form"
       component={GeneralInsuranceFormScreen}
     />
   </Stack.Navigator>
@@ -278,7 +266,7 @@ const LoanStack = () => (
 );
 const PayStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: true }}>
-    <Stack.Screen name="Paybill" component={Paybill} />
+    <Stack.Screen name="Electricity bill" component={Paybill} />
     <Stack.Screen name="PaySubdivision" component={PaySubdivision} />
     <Stack.Screen name="PayConsumer" component={PayConsumer} />
   </Stack.Navigator>
@@ -286,7 +274,7 @@ const PayStack = () => (
 
 const DTHStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: true }}>
-    <Stack.Screen name="DTHrecharge" component={DTHrecharge} />
+    <Stack.Screen name="DTH Recharge" component={DTHrecharge} />
     <Stack.Screen name="dthplan" component={dthplan} />
     <Stack.Screen name="DthDetailsScreen" component={DthDetailsScreen} />
     <Stack.Screen name="successdth" component={successdth} />
@@ -295,7 +283,7 @@ const DTHStack = () => (
 //All services form
 const ITRStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: true }}>
-    <Stack.Screen name="ITR form" component={ITRScreen} />
+    <Stack.Screen name="Taxation form" component={taxationForm} />
   </Stack.Navigator>
 );
 const GSTStack = () => (
@@ -305,7 +293,7 @@ const GSTStack = () => (
 );
 const MovieStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: true }}>
-    <Stack.Screen name="MovieBookingScreen" component={MovieBookingScreen} />
+    <Stack.Screen name="Movie Booking Screen" component={MovieBookingScreen} />
     <Stack.Screen name="MovieSetupScreen" component={MovieSetupScreen} />
     <Stack.Screen name="MovieSeat" component={MovieSeatSelectionScreen} />
     <Stack.Screen
@@ -317,8 +305,8 @@ const MovieStack = () => (
 
 const MoneyStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: true }}>
-    <Stack.Screen name="TransferMoney" component={TransferMoney} />
-    <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+    <Stack.Screen name="Transfer-Money" component={TransferMoney} />
+    <Stack.Screen name="Payment-Screen" component={PaymentScreen} />
     <Stack.Screen name="NewPaymentScreen" component={NewPaymentScreen} />
     <Stack.Screen name="ChatScreen" component={ChatScreen} />
     <Stack.Screen name="VoiceCallScreen" component={VoiceCallScreen} />
@@ -372,236 +360,271 @@ const CCStack = () => (
 );
 //  main starting
 const MainScreen = ({ navigation, route }) => {
-  const { name } = route.params;
+  const { name, mobileNumber } = route.params;
   const { t } = useTranslation();
+  // console.log("the mobile number is:",mobileNumber)
 
-const SLIDER_DATA = [
-  {
-    title: "Budget Day is Almost Here",
-    subtitle: "Planning to invest in Open Art by Jan 31? Pay ₹0 brokerage",
-  },
-  {
-    title: "Exclusive Offer for You!",
-    subtitle: "Earn cashback on your first investment.",
-  },
-  {
-    title: "Limited Time Investment Plans",
-    subtitle: "Get expert insights and plan your portfolio wisely.",
-  },
-  {
-    title: "Exciting Offer for You!",
-    subtitle: "Planning to invest in Open Art by Jan 31? Pay ₹0 brokerage",
-  },
-  {
-    title: "leaning Day is Almost Here",
-    subtitle: "Planning to invest in Open Art by Jan 31? Pay ₹0 brokerage",
-  },
-  {
-    title: "Budget Day is Almost Here",
-    subtitle: "Planning to invest in Open Art by Jan 31? Pay ₹0 brokerage",
-  },
-  {
-    title: "Family Insaurance is Almost Here",
-    subtitle: "Planning to invest in Open Art by Jan 31? Pay ₹0 brokerage",
-  },
-  {
-    title: "Investment Offer is Almost Here",
-    subtitle: "Planning to invest in Open Art by Jan 31? Pay ₹0 brokerage",
-  },
-  {
-    title: "Travel Offer is Almost Here",
-    subtitle: "Planning to invest in Open Art by Jan 31? Pay ₹0 brokerage",
-  },
-];
+  const SLIDER_DATA = [
+    {
+      image: require("./assets/b1.png"),
+    },
+    {
+      image: require("./assets/b2.png"),
+    },
+    {
+      image: require("./assets/b3.png"),
+    },
+    {
+      image: require("./assets/b1.png"),
+    },
+    {
+      image: require("./assets/b2.png"),
+    },
+    {
+      image: require("./assets/b2.png"),
+    },
+  ];
 
-const sponsors = [
-  {
-    name: t("ludo"),
-    image: require("./assets/ludo.jpeg"),
-  },
-  {
-    name: t("rummycircle"),
-    image: require("./assets/rummycircle.png"),
-  },
-  {
-    name: t("poker"),
-    image: require("./assets/poker.jpeg"),
-  },
-  {
-    name: t("teenpatti"),
-    image: require("./assets/teenpatti.jpeg"),
-  },
+  const sponsors = [
+    {
+      name: t("ludo"),
+      image: require("./assets/ludo.jpeg"),
+    },
+    {
+      name: t("rummycircle"),
+      image: require("./assets/rummycircle.png"),
+    },
+    {
+      name: t("poker"),
+      image: require("./assets/poker.jpeg"),
+    },
+    {
+      name: t("teenpatti"),
+      image: require("./assets/teenpatti.jpeg"),
+    },
+  ];
 
-];
+  const services = [
+    { key: "mobile_recharge", image: require("./assets/mobile.png") },
+    { key: "electricity_bill", image: require("./assets/bulb.png") },
+    { key: "dth_recharge", image: require("./assets/dth.png") },
+    { key: "credit_card_payment", image: require("./assets/Credit Card.png") },
+    { key: "piped_gas", image: require("./assets/gas.png") },
+    // { key: "wifi_recharge", image: require("./assets/wifi.png") },
+    { key: "loan_payment", image: require("./assets/Rent.png") },
+  ];
 
-const services = [
-  { key: "mobile_recharge", image: require("./assets/mobile.png") },
-  { key: "electricity_bill", image: require("./assets/bulb.png") },
-  { key: "dth_recharge", image: require("./assets/dth.png") },
-  { key: "credit_card_payment", image: require("./assets/Credit Card.png") },
-  { key: "piped_gas", image: require("./assets/gas.png") },
-  // { key: "wifi_recharge", image: require("./assets/wifi.png") },
-  { key: "loan_payment", image: require("./assets/Rent.png") },
-];
+  const investmentTypes = [
+    {
+      name: t("sip"),
+      image: require("./assets/sip.png"),
+      screen: "InvestmentFormScreen",
+    },
+    {
+      name: t("shares"),
+      image: require("./assets/shares.png"),
+      screen: "InvestmentFormScreen",
+    },
+    {
+      name: t("mutual_funds"),
+      image: require("./assets/fd.png"),
+      screen: "InvestmentFormScreen",
+    },
+    {
+      name: t("bonds"),
+      image: require("./assets/Bonds.png"),
+      screen: "InvestmentFormScreen",
+    },
+    {
+      name: t("child_plan"),
+      image: require("./assets/childplan.png"),
+      screen: "InvestmentFormScreen",
+    },
+    {
+      name: t("pension_plan"),
+      image: require("./assets/pensionplan.png"),
+      screen: "InvestmentFormScreen",
+    },
+    {
+      name: t("nsc"),
+      image: require("./assets/nsc.png"),
+      screen: "InvestmentFormScreen",
+    },
+    {
+      name: t("ncd"),
+      image: require("./assets/ncd.png"),
+      screen: "InvestmentFormScreen",
+    },
+    {
+      name: t("nfo"),
+      image: require("./assets/nfd.png"),
+      screen: "InvestmentFormScreen",
+    },
+    {
+      name: t("ppf"),
+      image: require("./assets/ppf.png"),
+      screen: "InvestmentFormScreen",
+    },
+    {
+      name: t("rd"),
+      image: require("./assets/rd.png"),
+      screen: "InvestmentFormScreen",
+    },
+    {
+      name: t("treasuring_bills"),
+      image: require("./assets/bills.png"),
+      screen: "InvestmentFormScreen",
+    },
+  ];
 
+  const insuranceTypes = [
+    {
+      name: t("term"),
+      image: require("./assets/term.png"),
+      screen: "GeneralInsuranceFormScreen",
+    },
+    {
+      name: t("health"),
+      image: require("./assets/health.png"),
+      screen: "HealthInsuranceFormScreen",
+    },
 
-const investmentTypes = [
-  {
-    name: t("sip"),
-    image: require("./assets/sip.png"),
-    screen: "InvestmentFormScreen",
-  },
-  {
-    name: t("shares"),
-    image: require("./assets/shares.png"),
-    screen: "InvestmentFormScreen",
-  },
-  {
-    name: t("mutual_funds"),
-    image: require("./assets/fd.png"),
-    screen: "InvestmentFormScreen",
-  },
-  {
-    name: t("bonds"),
-    image: require("./assets/Bonds.png"),
-    screen: "InvestmentFormScreen",
-  },
-  {
-    name: t("child_plan"),
-    image: require("./assets/childplan.png"),
-    screen: "InvestmentFormScreen",
-  },
-  {
-    name: t("pension_plan"),
-    image: require("./assets/pensionplan.png"),
-    screen: "InvestmentFormScreen",
-  },
-  {
-    name: t("nsc"),
-    image: require("./assets/nsc.png"),
-    screen: "InvestmentFormScreen",
-  },
-  {
-    name: t("ncd"),
-    image: require("./assets/ncd.png"),
-    screen: "InvestmentFormScreen",
-  },
-  {
-    name: t("nfo"),
-    image: require("./assets/nfd.png"),
-    screen: "InvestmentFormScreen",
-  },
-  {
-    name: t("ppf"),
-    image: require("./assets/ppf.png"),
-    screen: "InvestmentFormScreen",
-  },
-  {
-    name: t("rd"),
-    image: require("./assets/rd.png"),
-    screen: "InvestmentFormScreen",
-  },
-  {
-    name: t("treasuring_bills"),
-    image: require("./assets/bills.png"),
-    screen: "InvestmentFormScreen",
-  },
-];
+    {
+      name: t("car"),
+      image: require("./assets/car.png"),
+      screen: "GeneralInsuranceFormScreen",
+    },
+    {
+      name: t("bike"),
+      image: require("./assets/building.png"),
+      screen: "GeneralInsuranceFormScreen",
+    },
+    {
+      name: t("marine"),
+      image: require("./assets/marine.png"),
+      screen: "GeneralInsuranceFormScreen",
+    },
+    {
+      name: t("machinery"),
+      image: require("./assets/machinary.png"),
+      screen: "GeneralInsuranceFormScreen",
+    },
+    {
+      name: t("employee_group"),
+      image: require("./assets/employee.png"),
+      screen: "GeneralInsuranceFormScreen",
+    },
+    {
+      name: t("travel"),
+      image: require("./assets/travel.png"),
+      screen: "GeneralInsuranceFormScreen",
+    },
+    {
+      name: t("homes"),
+      image: require("./assets/home.png"),
+      screen: "GeneralInsuranceFormScreen",
+    },
+  ];
 
-
-
-
-
-const insuranceTypes = [
-  {
-    name: t("term"),
-    image: require("./assets/term.png"),
-    screen: "GeneralInsuranceFormScreen",
-  },
-  {
-    name: t("health"),
-    image: require("./assets/health.png"),
-    screen: "HealthInsuranceFormScreen",
-  },
-  {
-    name: t("homes"),
-    image: require("./assets/home.png"),
-    screen: "GeneralInsuranceFormScreen",
-  },
-  {
-    name: t("car"),
-    image: require("./assets/car.png"),
-    screen: "GeneralInsuranceFormScreen",
-  },
-  {
-    name: t("bike"),
-    image: require("./assets/building.png"),
-    screen: "GeneralInsuranceFormScreen",
-  },
-  {
-    name: t("marine"),
-    image: require("./assets/marine.png"),
-    screen: "GeneralInsuranceFormScreen",
-  },
-  {
-    name: t("machinery"),
-    image: require("./assets/machinary.png"),
-    screen: "GeneralInsuranceFormScreen",
-  },
-  {
-    name: t("employee_group"),
-    image: require("./assets/employee.png"),
-    screen: "GeneralInsuranceFormScreen",
-  },
-  {
-    name: t("travel"),
-    image: require("./assets/travel.png"),
-    screen: "GeneralInsuranceFormScreen",
-  },
-];
-
-
-
-
-const travelOptions = [
-  {
-    nameKey: "travels.flight",
-    image: require("./assets/plane.png"),
-    screen: "flight1",
-  },
-  {
-    nameKey: "travels.hotel",
-    image: require("./assets/hotel.png"),
-    screen: "TourAndTravelsFormScreen",
-  },
-  {
-    nameKey: "travels.packages",
-    image: require("./assets/package.png"),
-    screen: "PackagesStack",
-  },
-  {
-    nameKey: "travels.bus",
-    image: require("./assets/bus.jpeg"),
-    screen: "TourAndTravelsFormScreen",
-  },
-];
-const loanAndFinanceItems = [
-  { nameKey: "loan.personal", img: require("./assets/personal-loan.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.business", img: require("./assets/businessloan.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.home", img: require("./assets/homeloan.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.gold", img: require("./assets/goldloan.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.home_transfer", img: require("./assets/transfer.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.renovation", img: require("./assets/renovation.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.education", img: require("./assets/education.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.property", img: require("./assets/propertyloan.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.shares", img: require("./assets/shareloan.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.sme", img: require("./assets/smi.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.project", img: require("./assets/project.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.vehicle", img: require("./assets/carloan.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.construction", img: require("./assets/const.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.school_hotel", img: require("./assets/school.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.lrd", img: require("./assets/lrd.png"), screen: "LoanFormScreen" },
-];
+  const travelOptions = [
+    {
+      nameKey: "travels.flight",
+      image: require("./assets/plane.png"),
+      screen: "Tour-Travels Form",
+    },
+    {
+      nameKey: "travels.hotel",
+      image: require("./assets/hotel.png"),
+      screen: "Tour-Travels Form",
+    },
+    {
+      nameKey: "travels.packages",
+      image: require("./assets/package.png"),
+      screen: "PackagesStack",
+    },
+    {
+      nameKey: "travels.bus",
+      image: require("./assets/bus.jpeg"),
+      screen: "Tour-Travels Form",
+    },
+  ];
+  const loanAndFinanceItems = [
+    {
+      nameKey: "loan.personal",
+      img: require("./assets/personal-loan.png"),
+      screen: "LoanFormScreen",
+    },
+    {
+      nameKey: "loan.business",
+      img: require("./assets/businessloan.png"),
+      screen: "LoanFormScreen",
+    },
+    {
+      nameKey: "loan.home",
+      img: require("./assets/homeloan.png"),
+      screen: "LoanFormScreen",
+    },
+    {
+      nameKey: "loan.gold",
+      img: require("./assets/goldloan.png"),
+      screen: "LoanFormScreen",
+    },
+    {
+      nameKey: "loan.home_transfer",
+      img: require("./assets/transfer.png"),
+      screen: "LoanFormScreen",
+    },
+    {
+      nameKey: "loan.renovation",
+      img: require("./assets/renovation.png"),
+      screen: "LoanFormScreen",
+    },
+    {
+      nameKey: "loan.education",
+      img: require("./assets/education.png"),
+      screen: "LoanFormScreen",
+    },
+    {
+      nameKey: "loan.property",
+      img: require("./assets/propertyloan.png"),
+      screen: "LoanFormScreen",
+    },
+    {
+      nameKey: "loan.shares",
+      img: require("./assets/shareloan.png"),
+      screen: "LoanFormScreen",
+    },
+    {
+      nameKey: "loan.sme",
+      img: require("./assets/smi.png"),
+      screen: "LoanFormScreen",
+    },
+    {
+      nameKey: "loan.project",
+      img: require("./assets/project.png"),
+      screen: "LoanFormScreen",
+    },
+    {
+      nameKey: "loan.vehicle",
+      img: require("./assets/carloan.png"),
+      screen: "LoanFormScreen",
+    },
+    {
+      nameKey: "loan.construction",
+      img: require("./assets/const.png"),
+      screen: "LoanFormScreen",
+    },
+    {
+      nameKey: "loan.school_hotel",
+      img: require("./assets/school.png"),
+      screen: "LoanFormScreen",
+    },
+    {
+      nameKey: "loan.lrd",
+      img: require("./assets/lrd.png"),
+      screen: "LoanFormScreen",
+    },
+  ];
 
   // ✅ Fix: Accept navigation as a prop
   const [modalVisible, setModalVisible] = useState(false);
@@ -717,12 +740,14 @@ const loanAndFinanceItems = [
           <View style={styles.navbar}>
             <TouchableOpacity
               style={styles.circle}
-              onPress={() => navigation.navigate("Drawer", { name })}
+              onPress={() =>
+                navigation.navigate("Drawer", { name, mobileNumber })
+              }
             >
               <Text style={styles.circleText}>{initials}</Text>
             </TouchableOpacity>
           </View>
-      <Text
+          <Text
             style={{
               fontSize: 20,
               fontWeight: "bold",
@@ -732,9 +757,11 @@ const loanAndFinanceItems = [
             }}
             onPress={() => navigation.navigate("Drawer", { name })}
           >
-          {"           "}{t("home.brand_name")}</Text>
+            {"            "}
+            {t("home.brand_name")}
+          </Text>
           <Feather
-            style={{ marginLeft: 100, marginTop: 15 }}
+            style={{ marginLeft: 130, marginTop: 15 }}
             name="search"
             size={24}
             color="black"
@@ -748,7 +775,7 @@ const loanAndFinanceItems = [
           />
         </View>
         {/* Slider Section */}
-        <View style={styles.sliderContainer}>
+        <View style={{ marginTop: 0 }}>
           <ScrollView
             ref={scrollRef}
             horizontal
@@ -760,17 +787,29 @@ const loanAndFinanceItems = [
             {SLIDER_DATA.map((item, index) => (
               <View
                 key={index}
-                style={[styles.sliderItem, { width: width - 11 }]}
+                style={{
+                  width: width - 10,
+                  marginHorizontal: 5,
+                  borderRadius: 10,
+                  overflow: "hidden",
+                }}
               >
-                <Text style={styles.sliderTitle}>{item.title}</Text>
-                <Text style={styles.sliderSubtitle}>{item.subtitle}</Text>
+                <Image
+                  source={item.image}
+                  resizeMode="cover"
+                  style={{
+                    width: "100%",
+                    height: 160,
+                    borderRadius: 10,
+                  }}
+                />
               </View>
             ))}
           </ScrollView>
         </View>
         {/* Transfer Money Section */}
         <View style={styles.transferSection}>
-<Text style={styles.transferTitle}>{t("home.transfer_money")}</Text>
+          <Text style={styles.transferTitle}>{t("home.transfer_money")}</Text>
           <View style={styles.transferButtons}>
             <TouchableOpacity
               style={styles.serviceItems}
@@ -780,7 +819,7 @@ const loanAndFinanceItems = [
                 source={require("./assets/account.png")}
                 style={styles.serviceImages}
               />
-<Text style={styles.serviceTexts}>{t("home.to_mobile")}</Text>
+              <Text style={styles.serviceTexts}>{t("home.to_mobile")}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -791,7 +830,7 @@ const loanAndFinanceItems = [
                 source={require("./assets/bank.png")}
                 style={styles.serviceImages}
               />
-<Text style={styles.serviceTexts}>{t("home.to_bank")}</Text>
+              <Text style={styles.serviceTexts}>{t("home.to_bank")}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -802,7 +841,7 @@ const loanAndFinanceItems = [
                 source={require("./assets/self.png")}
                 style={styles.serviceImages}
               />
-<Text style={styles.serviceText}>{t("home.to_self")}</Text>
+              <Text style={styles.serviceText}>{t("home.to_self")}</Text>
             </TouchableOpacity>
             {/* 
     <TouchableOpacity style={styles.serviceItem} onPress={() => navigation.navigate("CheckStack")}>
@@ -817,8 +856,8 @@ const loanAndFinanceItems = [
               style={styles.upiText}
               onPress={() => navigation.navigate("QRcode")}
             >
-        {t("home.upi_id")}: 123456789@xyz</Text>
-
+              UPI ID: 123456789@xyz
+            </Text>
 
             <TouchableOpacity
               style={styles.headerContainer}
@@ -832,45 +871,75 @@ const loanAndFinanceItems = [
               >
                 <Ionicons name="gift-outline" size={20} color="#fFF" />
               </Animated.View>
-<Text style={styles.headerTitle}>{t("home.deals_rewards")}</Text>
+              <Text style={styles.headerTitle}>{t("home.deals_rewards")}</Text>
             </TouchableOpacity>
           </View>
         </View>
         <ScrollView style={styles.container}>
-          {/* Job & Hire Section */}
-          <View style={styles.buttonContainer}>
-            {/* I Want a Job */}
-            <TouchableOpacity style={styles.jobButton} onPress={openWhatsApp}>
-              <Image
-                source={require("./assets/job.png")}
-                style={styles.jobImage}
-              />
-<Text style={styles.jobText}>{t("home.want_job")}</Text>
-            </TouchableOpacity>
+          <View style={styles.buttonRow}>
             {/* I Want to Hire */}
-            <TouchableOpacity
-              style={styles.hireButton}
-              onPress={() => navigation.navigate("WantToHire")}
+            <LinearGradient
+              colors={["#ffffff", "#f7f7f7"]}
+              start={{ x: 0, y: 1 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.hireGradients}
             >
+              <TouchableOpacity
+                style={styles.hireButtonStyled}
+                onPress={() => navigation.navigate("WantToHire")}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.hireTextStyled}>
+                  I Want to <Text style={styles.hireTextHighlight}>Hire</Text>
+                </Text>
+                {/* <Text style={styles.hireTextStyled}>I Want{'\n'}to Hire</Text> */}
+              </TouchableOpacity>
+            </LinearGradient>
+
+            {/* GIF in the middle */}
+            <View style={styles.gifContainer}>
               <Image
-                source={require("./assets/hire.jpeg")}
-                style={styles.hireImage}
+                source={require("./assets/hiring.png")}
+                style={styles.gifStyle}
+                resizeMode="stretch"
               />
-<Text style={styles.hireText}>{t("home.want_hire")}</Text>
-            </TouchableOpacity>
+            </View>
+
+            {/* I Want a Job */}
+            <LinearGradient
+              colors={["#ffffff", "#f7f7f7"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.hireGradient}
+            >
+              <TouchableOpacity
+                style={styles.hireButtonStyled}
+                onPress={openWhatsApp}
+                activeOpacity={0.8}
+              >
+                <Text>
+                <Text style={styles.hireTextStyled}>
+                  I Want a <Text style={styles.hireTextHighlight}>Job</Text>
+                </Text>{" "}
+                </Text>
+              </TouchableOpacity>
+            </LinearGradient>
           </View>
         </ScrollView>
+
         {/* ✅ Recharge & Pay Bills Section */}
         <ScrollView style={styles.container}>
           <View style={styles.card}>
             {/* Header with "View all" button */}
             <View style={styles.header}>
-<Text style={styles.headerText}>{t("home.recharge_pay_bills")}</Text>
+              <Text style={styles.headerText}>
+                {t("home.recharge_pay_bills")}
+              </Text>
               <TouchableOpacity
                 onPress={() => setModalVisible(true)}
                 style={styles.viewAllButton}
               >
-<Text style={styles.viewAllText}>{t("view_all")}</Text>
+                <Text style={styles.viewAllText}>{t("view_all")}</Text>
               </TouchableOpacity>
             </View>
 
@@ -884,7 +953,9 @@ const loanAndFinanceItems = [
                   source={require("./assets/mobile.png")}
                   style={styles.serviceImage}
                 />
-<Text style={styles.serviceText}>{t("service.mobile_recharge")}</Text>
+                <Text style={styles.serviceText}>
+                  {t("service.mobile_recharge")}
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -895,7 +966,9 @@ const loanAndFinanceItems = [
                   source={require("./assets/bulb.png")}
                   style={styles.serviceImage}
                 />
-<Text style={styles.serviceText}>{t("service.electricity_bill")}</Text>
+                <Text style={styles.serviceText}>
+                  {t("service.electricity_bill")}
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -906,7 +979,9 @@ const loanAndFinanceItems = [
                   source={require("./assets/dth.png")}
                   style={styles.serviceImage}
                 />
-<Text style={styles.serviceText}>{t("service.dth_recharge")}</Text>
+                <Text style={styles.serviceText}>
+                  {t("service.dth_recharge")}
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -917,7 +992,9 @@ const loanAndFinanceItems = [
                   source={require("./assets/Credit Card.png")}
                   style={styles.serviceImage}
                 />
-<Text style={styles.serviceText}>{t("service.credit_card_payment")}</Text>
+                <Text style={styles.serviceText}>
+                  {t("service.credit_card_payment")}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -954,7 +1031,8 @@ const loanAndFinanceItems = [
                         textAlign: "center",
                       }}
                     >
-              {t("home.recharge_pay_bills")}</Text>
+                      {t("home.recharge_pay_bills")}
+                    </Text>
 
                     <ScrollView>
                       <View
@@ -962,32 +1040,47 @@ const loanAndFinanceItems = [
                           flexDirection: "row",
                           flexWrap: "wrap",
                           justifyContent: "space-around",
+                          alignItems: "center",
                         }}
                       >
-                       {services.map((item, index) => (
-  <TouchableOpacity
-    key={index}
-    style={{ alignItems: "center", width: 100, marginBottom: 15 }}
-    onPress={() => {
-      const stackName = serviceNavigationMap[item.key];
-      if (stackName) {
-        setModalVisible(false);
-        navigation.navigate(stackName);
-      } else {
-        alert("No screen found for " + item.key);
-      }
-    }}
-  >
-    <Image
-      source={item.image}
-      style={{ width: 30, height: 30, resizeMode: "contain" }}
-    />
-    <Text style={{ fontSize: 12, textAlign: "center", marginTop: 2, fontWeight: "bold" }}>
-      {t(`service.${item.key}`)}
-    </Text>
-  </TouchableOpacity>
-))}
-
+                        {services.map((item, index) => (
+                          <TouchableOpacity
+                            key={index}
+                            style={{
+                              alignItems: "center",
+                              width: 100,
+                              marginBottom: 15,
+                            }}
+                            onPress={() => {
+                              const stackName = serviceNavigationMap[item.key];
+                              if (stackName) {
+                                setModalVisible(false);
+                                navigation.navigate(stackName);
+                              } else {
+                                alert("No screen found for " + item.key);
+                              }
+                            }}
+                          >
+                            <Image
+                              source={item.image}
+                              style={{
+                                width: 30,
+                                height: 30,
+                                resizeMode: "contain",
+                              }}
+                            />
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                textAlign: "center",
+                                marginTop: 2,
+                                fontWeight: "bold",
+                              }}
+                            >
+                              {t(`service.${item.key}`)}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
                       </View>
                     </ScrollView>
                     <TouchableOpacity
@@ -1021,10 +1114,12 @@ const loanAndFinanceItems = [
               width: wp("61%"),
               marginLeft: 5,
               borderColor: "#ffa500",
-              borderWidth: 1,
+              borderWidth: 2,
             }}
           >
-    <Text style={{ fontSize: 18, fontWeight: "bold" }}>{t("service.insurance")}</Text>
+            <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+              {t("service.insurance")}
+            </Text>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <View
@@ -1035,9 +1130,9 @@ const loanAndFinanceItems = [
                 }}
               >
                 {/* Just Term, Health */}
-                <Text style={{ fontSize: 12, marginRight: 0, color: "f0f0f0" }}>
+                <Text style={{ fontSize: 10, marginRight: 0, color: "f0f0f0" }}>
                   {insuranceTypes
-                    .slice(0, 4)
+                    .slice(0, 5)
                     .map((item) => item.name)
                     .join(", ")}
                 </Text>
@@ -1048,13 +1143,13 @@ const loanAndFinanceItems = [
                     flexDirection: "row",
                     alignItems: "center",
                     backgroundColor: "#1d154a",
-                    marginleft: -10,
-                    paddingHorizontal: 3,
-                    paddingVertical: 3,
+                    marginLeft: 5,
+                    paddingHorizontal: 2,
+                    paddingVertical: 2,
                     borderRadius: 12,
                   }}
                 >
-                  <Ionicons name="chevron-forward" size={12} color="#fff" />
+                  <Ionicons name="chevron-forward" size={10} color="#fff" />
                 </TouchableOpacity>
               </View>
             </ScrollView>
@@ -1064,7 +1159,10 @@ const loanAndFinanceItems = [
           <TouchableOpacity
             style={{
               padding: 15,
-              backgroundColor: "#1d154a",
+              backgroundColor: "#F5FBFF",
+              borderColor: "#ffa500",
+              borderRadius: 10,
+              borderWidth: 2,
               borderRadius: 10,
               width: wp("35%"),
               height: hp("10%"),
@@ -1073,8 +1171,8 @@ const loanAndFinanceItems = [
             }}
             onPress={() => navigation.navigate("MovieBookingScreen")}
           >
-            <Text style={{ fontSize: 15, fontWeight: "bold", color: "#fff" }}>
-                  {t("movie_tickets")}
+            <Text style={{ fontSize: 15, fontWeight: "bold", color: "#000" }}>
+              {t("movie_tickets")}
             </Text>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -1086,9 +1184,9 @@ const loanAndFinanceItems = [
               >
                 {/* Just Sample Movie Titles */}
                 <Text
-                  style={{ fontSize: 12, textAlign: "center", color: "#fff" }}
+                  style={{ fontSize: 10, textAlign: "center", color: "#000" }}
                 >
-                      {t("movie_sample_titles")}
+                  {t("movie_sample_titles")}
                 </Text>
 
                 {/* View More Button */}
@@ -1097,13 +1195,13 @@ const loanAndFinanceItems = [
                     flexDirection: "row",
                     alignItems: "center",
                     backgroundColor: "#1d154a",
-                    marginleft: -10,
-                    paddingHorizontal: 3,
-                    paddingVertical: 3,
+                    marginLeft: 5,
+                    paddingHorizontal: 2,
+                    paddingVertical: 2,
                     borderRadius: 12,
                   }}
                 >
-                  <Ionicons name="chevron-forward" size={12} color="#fff" />
+                  <Ionicons name="chevron-forward" size={10} color="#fff" />
                 </TouchableOpacity>
               </View>
             </ScrollView>
@@ -1111,9 +1209,13 @@ const loanAndFinanceItems = [
           <TouchableOpacity
             style={{
               padding: 15,
-              backgroundColor: "#1d154a",
+              backgroundColor: "#F5FBFF",
+              borderColor: "#ffa500",
               borderRadius: 10,
+              borderWidth: 2,
+
               marginBottom: -2,
+              color: "#000",
               width: wp("36%"),
               height: hp("10%"),
               position: "absolute", // Absolute positioning for the diagonal effect
@@ -1122,8 +1224,8 @@ const loanAndFinanceItems = [
             }}
             onPress={() => navigation.navigate("MovieBookingScreen")}
           >
-            <Text style={{ fontSize: 16, fontWeight: "bold", color: "#fff" }}>
-                {t("event_tickets")}
+            <Text style={{ fontSize: 16, fontWeight: "bold", color: "#000" }}>
+              {t("event_tickets")}
             </Text>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -1135,11 +1237,24 @@ const loanAndFinanceItems = [
                 }}
               >
                 {/* Just Sample Event Titles */}
-                <Text style={{ fontSize: 12, marginRight: 0, color: "#fff" }}>
-                        {t("event_sample_titles")}
+                <Text style={{ fontSize: 10, marginRight: 0, color: "#000" }}>
+                  {t("event_sample_titles")}
                 </Text>
 
                 {/* View More Button */}
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    backgroundColor: "#1d154a",
+                    marginLeft: 5,
+                    paddingHorizontal: 2,
+                    paddingVertical: 2,
+                    borderRadius: 12,
+                  }}
+                >
+                  <Ionicons name="chevron-forward" size={10} color="#fff" />
+                </TouchableOpacity>
               </View>
             </ScrollView>
           </TouchableOpacity>
@@ -1177,7 +1292,7 @@ const loanAndFinanceItems = [
                         textAlign: "center",
                       }}
                     >
-                     {t("insurance_title")}
+                      {t("insurance_title")}
                     </Text>
                     <ScrollView>
                       <View
@@ -1251,7 +1366,7 @@ const loanAndFinanceItems = [
                 padding: 15,
                 backgroundColor: "#F5FBFF",
                 borderColor: "#ffa500",
-                borderWidth: 1,
+                borderWidth: 2,
                 borderRadius: 10,
                 width: wp("60%"),
                 height: hp("10.3%"),
@@ -1270,9 +1385,9 @@ const loanAndFinanceItems = [
                 }}
               >
                 {/* Show only FD, SIP */}
-                <Text style={{ fontSize: 12 }}>
+                <Text style={{ fontSize: 10 }}>
                   {investmentTypes
-                    .slice(0, 3)
+                    .slice(0, 4)
                     .map((item) => item.name)
                     .join(", ")}
                 </Text>
@@ -1285,13 +1400,13 @@ const loanAndFinanceItems = [
                     flexDirection: "row",
                     alignItems: "center",
                     backgroundColor: "#1d154a",
-                    marginleft: -10,
-                    paddingHorizontal: 3,
-                    paddingVertical: 3,
+                    marginRight: 30,
+                    paddingHorizontal: 2,
+                    paddingVertical: 2,
                     borderRadius: 12,
                   }}
                 >
-                  <Ionicons name="chevron-forward" size={12} color="#fff" />
+                  <Ionicons name="chevron-forward" size={10} color="#fff" />
                 </TouchableOpacity>
               </View>
             </TouchableOpacity>
@@ -1331,7 +1446,7 @@ const loanAndFinanceItems = [
                           textAlign: "center",
                         }}
                       >
-                          {t("investment_title")}
+                        {t("investment_title")}
                       </Text>
 
                       <ScrollView>
@@ -1400,7 +1515,7 @@ const loanAndFinanceItems = [
             </Modal>
           </View>
         </View>
-    
+
         <View
           style={{
             backgroundColor: "#fff",
@@ -1417,7 +1532,7 @@ const loanAndFinanceItems = [
             }}
           >
             <Text style={{ fontSize: 16, fontWeight: "bold", color: "#333" }}>
-                 {t("tours_travels")}
+              {t("tours_travels")}
             </Text>
             <TouchableOpacity
               onPress={() => setTravelModalVisible(true)}
@@ -1429,7 +1544,7 @@ const loanAndFinanceItems = [
               }}
             >
               <Text style={{ fontSize: 10, color: "#fff", fontWeight: "bold" }}>
-                   {t("view_all")}
+                {t("view_all")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -1462,12 +1577,12 @@ const loanAndFinanceItems = [
                     marginTop: 2,
                   }}
                 >
-                   {t(item.nameKey)}
+                  {t(item.nameKey)}
                 </Text>
               </TouchableOpacity>
             ))}
           </View>
-      
+
           <View style={styles.containerss}>
             <FlatList
               ref={flatListRef}
@@ -1481,7 +1596,7 @@ const loanAndFinanceItems = [
               )}
             />
           </View>
-          
+
           {/* Modal for full list */}
           <Modal
             visible={travelModalVisible}
@@ -1517,7 +1632,7 @@ const loanAndFinanceItems = [
                         textAlign: "center",
                       }}
                     >
-                       {t("travel_title")}
+                      {t("travel_title")}
                     </Text>
 
                     <ScrollView>
@@ -1557,7 +1672,7 @@ const loanAndFinanceItems = [
                                 fontWeight: "bold",
                               }}
                             >
-                                {t(item.nameKey)}
+                              {t(item.nameKey)}
                             </Text>
                           </TouchableOpacity>
                         ))}
@@ -1575,182 +1690,6 @@ const loanAndFinanceItems = [
                       }}
                     >
                       <Text style={{ color: "#fff", fontWeight: "bold" }}>
-                       {t("close")}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </TouchableWithoutFeedback>
-              </View>
-            </TouchableWithoutFeedback>
-          </Modal>
-        </View>
-      
-        {/* Loan & Finance Section */}
-     
-          <View
-            style={{
-              backgroundColor: "#fff",
-              padding: 13,
-              borderRadius: 10,
-              marginTop: 6,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ fontSize: 16, fontWeight: "bold", color: "#333" }}>
-                {t('Loan & Finance')}
-              </Text>
-              <TouchableOpacity
-                onPress={() => setLoanAndFinanceModalVisible(true)}
-                style={{
-                  backgroundColor: "#b2762d",
-                  paddingVertical: 4,
-                  paddingHorizontal: 12,
-                  borderRadius: 12,
-                }}
-              >
-                <Text
-                  style={{ color: "#fff", fontWeight: "bold", fontSize: 10 }}
-                >
-                 {(" View All")}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginTop: 2,
-              }}
-            >
-              {loanAndFinanceItems.slice(0, 4).map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={{ alignItems: "center", width: 80 }}
-                  onPress={() => {
-                    navigation.navigate(item.screen);
-                  }}
-                >
-                  <Image
-                    source={item.img}
-                    style={{
-                      width: 28,
-                      height: 30,
-                      resizeMode: "contain",
-                      marginBottom: 5,
-                    }}
-                  />
-                  <Text
-                    style={{
-                      fontSize: 11,
-                      fontWeight: "bold",
-                      textAlign: "center",
-                    }}
-                  >
-                    {t(item.nameKey)}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          {/* Loan & Finance Modal */}
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={loanAndFinanceModalVisible}
-            onRequestClose={() => setLoanAndFinanceModalVisible(false)}
-          >
-            <TouchableWithoutFeedback
-              onPress={() => setLoanAndFinanceModalVisible(false)}
-            >
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                }}
-              >
-                <TouchableWithoutFeedback onPress={() => {}}>
-                  <View
-                    style={{
-                      width: "80%",
-                      backgroundColor: "#fff",
-                      padding: 20,
-                      borderRadius: 10,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        fontWeight: "bold",
-                        marginBottom: 10,
-                        textAlign: "center",
-                      }}
-                    >
-                       {t("loan_title")}
-                  
-                    </Text>
-
-                    <ScrollView
-                      contentContainerStyle={{
-                        flexDirection: "row",
-                        flexWrap: "wrap",
-                        justifyContent: "space-around",
-                      }}
-                    >
-                      {loanAndFinanceItems.map((item, index) => (
-                        <TouchableOpacity
-                          key={index}
-                          onPress={() => {
-                            setLoanAndFinanceModalVisible(false);
-                            navigation.navigate(item.screen);
-                          }}
-                          style={{
-                            alignItems: "center",
-                            width: 80,
-                            marginBottom: 10,
-                          }}
-                        >
-                          <Image
-                            source={item.img}
-                            style={{
-                              width: 30,
-                              height: 30,
-                              resizeMode: "contain",
-                              marginBottom: 5,
-                            }}
-                          />
-                          <Text
-                            style={{
-                              fontSize: 12,
-                              fontWeight: "bold",
-                              textAlign: "center",
-                            }}
-                          >
-                         {t(item.nameKey)}
-                          </Text>
-                        </TouchableOpacity>
-                      ))}
-                    </ScrollView>
-
-                    <TouchableOpacity
-                      onPress={() => setLoanAndFinanceModalVisible(false)}
-                      style={{
-                        marginTop: 10,
-                        backgroundColor: "#b2762d",
-                        padding: 8,
-                        borderRadius: 5,
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text style={{ color: "#fff", fontWeight: "bold" }}>
                         {t("close")}
                       </Text>
                     </TouchableOpacity>
@@ -1759,7 +1698,187 @@ const loanAndFinanceItems = [
               </View>
             </TouchableWithoutFeedback>
           </Modal>
-      
+        </View>
+
+        {/* Loan & Finance Section */}
+
+        <View
+          style={{
+            backgroundColor: "#fff",
+            padding: 9,
+            borderRadius: 10,
+            marginTop: 6,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "#333",
+                marginBottom: 7,
+              }}
+            >
+              {t("Loan & Finance")}
+            </Text>
+            <TouchableOpacity
+              onPress={() => setLoanAndFinanceModalVisible(true)}
+              style={{
+                backgroundColor: "#b2762d",
+                paddingVertical: 4,
+                paddingHorizontal: 12,
+                borderRadius: 12,
+              }}
+            >
+              <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 10 }}>
+                {" View All"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 2,
+            }}
+          >
+            {loanAndFinanceItems.slice(0, 4).map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={{ alignItems: "center", width: 80 }}
+                onPress={() => {
+                  navigation.navigate(item.screen);
+                }}
+              >
+                <Image
+                  source={item.img}
+                  style={{
+                    width: 28,
+                    height: 30,
+                    resizeMode: "contain",
+                    marginBottom: 5,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontSize: 11,
+                    fontWeight: "bold",
+                    textAlign: "center",
+                  }}
+                >
+                  {t(item.nameKey)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* Loan & Finance Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={loanAndFinanceModalVisible}
+          onRequestClose={() => setLoanAndFinanceModalVisible(false)}
+        >
+          <TouchableWithoutFeedback
+            onPress={() => setLoanAndFinanceModalVisible(false)}
+          >
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              }}
+            >
+              <TouchableWithoutFeedback onPress={() => {}}>
+                <View
+                  style={{
+                    width: "80%",
+                    backgroundColor: "#fff",
+                    padding: 20,
+                    borderRadius: 10,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "bold",
+                      marginBottom: 10,
+                      textAlign: "center",
+                    }}
+                  >
+                    {t("loan_title")}
+                  </Text>
+
+                  <ScrollView
+                    contentContainerStyle={{
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                      justifyContent: "space-around",
+                    }}
+                  >
+                    {loanAndFinanceItems.map((item, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() => {
+                          setLoanAndFinanceModalVisible(false);
+                          navigation.navigate(item.screen);
+                        }}
+                        style={{
+                          alignItems: "center",
+                          width: 80,
+                          marginBottom: 10,
+                        }}
+                      >
+                        <Image
+                          source={item.img}
+                          style={{
+                            width: 30,
+                            height: 30,
+                            resizeMode: "contain",
+                            marginBottom: 5,
+                          }}
+                        />
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: "bold",
+                            textAlign: "center",
+                          }}
+                        >
+                          {t(item.nameKey)}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+
+                  <TouchableOpacity
+                    onPress={() => setLoanAndFinanceModalVisible(false)}
+                    style={{
+                      marginTop: 10,
+                      backgroundColor: "#b2762d",
+                      padding: 8,
+                      borderRadius: 5,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                      {t("close")}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+
         <View
           style={{
             marginVertical: 10,
@@ -1776,7 +1895,7 @@ const loanAndFinanceItems = [
               marginTop: 20,
             }}
           >
-          {t("sponsors")}
+            {t("sponsors")}
           </Text>
 
           <View
@@ -1791,7 +1910,7 @@ const loanAndFinanceItems = [
               <TouchableOpacity
                 key={index}
                 style={{
-                  width: "22%", // ~4 items per row with spacing
+                  width: "20%", // ~4 items per row with spacing
                   alignItems: "center",
                   marginBottom: 15,
                 }}
@@ -1799,8 +1918,8 @@ const loanAndFinanceItems = [
                 <Image
                   source={item.image}
                   style={{
-                    width: 50,
-                    height: 50,
+                    width: 45,
+                    height: 45,
                     resizeMode: "contain",
                     borderRadius: 30,
                   }}
@@ -1817,7 +1936,6 @@ const loanAndFinanceItems = [
       </ScrollView>
       <Navbar />
     </View>
-    
   );
 };
 
@@ -1858,23 +1976,22 @@ const IMAGE_SLIDER_DATA = [
   require("./assets/add.png"),
   require("./assets/add5.png"),
 ];
-  import * as LocalAuthentication from "expo-local-authentication";
-import NetInfo from '@react-native-community/netinfo';
+import * as LocalAuthentication from "expo-local-authentication";
+import NetInfo from "@react-native-community/netinfo";
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
 
-    const [isLoggedIn, setIsLoggedIn] = useState(null);
-
- const [initialRoute, setInitialRoute] = useState(null);
- const [isAuthenticated, setIsAuthenticated] = useState(null); // changed to null for loading state
+  const [initialRoute, setInitialRoute] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(null); // changed to null for loading state
   const [isCheckingAuth, setIsCheckingAuth] = useState(true); // for loading state
- useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       if (!state.isConnected) {
         Alert.alert(
-          'No Internet Connection',
-          'Please check your internet connection.',
-          [{ text: 'OK' }]
+          "No Internet Connection",
+          "Please check your internet connection.",
+          [{ text: "OK" }]
         );
       }
     });
@@ -1888,7 +2005,10 @@ export default function App() {
       const enrolled = await LocalAuthentication.isEnrolledAsync();
 
       if (!compatible || !enrolled) {
-        Alert.alert("Error", "Biometric authentication not available or not enrolled.");
+        Alert.alert(
+          "Error",
+          "Biometric authentication not available or not enrolled."
+        );
         setIsAuthenticated(false); // Set to false if biometric authentication isn't available
         setIsCheckingAuth(false); // Stop loading if not available
         return;
@@ -1921,20 +2041,19 @@ export default function App() {
     authenticate(); // Call authenticate when the app starts
   }, []); // This effect only runs once after the first render
 
-
-useEffect(() => {
-  const checkUser = async () => {
-    const user = await AsyncStorage.getItem('user');
-    setInitialRoute(user ? 'MainScreen' : 'LoginScreen');
-  };
-  checkUser();
-}, []);
-
+  useEffect(() => {
+    const checkUser = async () => {
+      const user = await AsyncStorage.getItem("user");
+      setInitialRoute(user ? "MainScreen" : "LoginScreen");
+    };
+    checkUser();
+  }, []);
 
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={isLoggedIn ? "MainScreen" : "IndiayaPayLogin"}>
+        initialRouteName={isLoggedIn ? "MainScreen" : "IndiayaPayLogin"}
+      >
         <Stack.Screen
           name="MainScreen"
           component={MainScreen}
@@ -1945,62 +2064,136 @@ useEffect(() => {
           component={IndiayaPayLogin}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="Service" component={Service}  options={{ headerShown: false }} />
-        <Stack.Screen name="MobileStack" component={MobileStack}  options={{ headerShown: false }} />
-        <Stack.Screen name="LoanStack" component={LoanStack} options={{ headerShown: false }}  />
-        <Stack.Screen name="GasStack" component={GasStack} options={{ headerShown: false }}  />
-        <Stack.Screen name="PayStack" component={PayStack}  options={{ headerShown: false }} />
-        <Stack.Screen name="DTHStack" component={DTHStack} options={{ headerShown: false }}  />
-        <Stack.Screen name="WifiStack" component={WifiStack} options={{ headerShown: false }}  />
-        <Stack.Screen name="CCStack" component={CCStack}  options={{ headerShown: false }} />
-        <Stack.Screen name="ITRScreen" component={ITRStack}  options={{ headerShown: false }} />
-        <Stack.Screen name="GSTFormScreen" component={GSTStack}  options={{ headerShown: false }} />
-        <Stack.Screen name="LoanFormScreen" component={LoanFormStack}  options={{ headerShown: false }} />
-        <Stack.Screen name="TourAndTravelsFormScreen" component={HotelStack} />
-        <Stack.Screen name="flight1" component={TTFormStack} options={{ headerShown: false }}  />
-        <Stack.Screen name="flight2" component={TTFormStack} options={{ headerShown: false }}  />
+        <Stack.Screen
+          name="Service"
+          component={Service}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="MobileStack"
+          component={MobileStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="LoanStack"
+          component={LoanStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="GasStack"
+          component={GasStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="PayStack"
+          component={PayStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="DTHStack"
+          component={DTHStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="WifiStack"
+          component={WifiStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CCStack"
+          component={CCStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ITRScreen"
+          component={ITRStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="GSTFormScreen"
+          component={GSTStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="LoanFormScreen"
+          component={LoanFormStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="Tour-Travels Form" component={HotelStack} />
+        <Stack.Screen
+          name="flight1"
+          component={TTFormStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="flight2"
+          component={TTFormStack}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="RealEstateFormScreen"
-          component={RealEstateFormStack}  options={{ headerShown: false }} 
+          component={RealEstateFormStack}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="EducationalFormScreen"
-          component={EducationalFormStack} options={{ headerShown: false }} 
+          component={EducationalFormStack}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="DonationAndCharityFormScreen"
-          component={DonationFormStack} options={{ headerShown: false }} 
+          component={DonationFormStack}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="OtherServicesFormScreen"
-          component={OtherFormStack} options={{ headerShown: false }} 
+          component={OtherFormStack}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="HomeServiceFormScreen"
-          component={HomeServiceFormStack} options={{ headerShown: false }} 
+          component={HomeServiceFormStack}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="GeneralInsuranceFormScreen"
-          component={GeneralInsuranceFormStack} options={{ headerShown: false }} 
+          component={GeneralInsuranceFormStack}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="HealthInsuranceFormScreen"
-          component={HealthInsuranceFormStack} options={{ headerShown: false }} 
+          component={HealthInsuranceFormStack}
+          options={{ headerShown: false }}
         />
-        <Stack.Screen name="MoneyStack" component={MoneyStack} options={{ headerShown: false }}  />
-        <Stack.Screen name="TransferMoney" component={MoneyStack} options={{ headerShown: false }}  />
+        <Stack.Screen
+          name="MoneyStack"
+          component={MoneyStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="TransferMoney"
+          component={MoneyStack}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="BankSelection"
           component={BankStack}
           // options={{ title: "Select Bank" }}
-             options={{ headerShown: false }} 
+          options={{ headerShown: false }}
         />
-        <Stack.Screen name="BankStack" component={BankStack}  options={{ headerShown: false }} />
-        <Stack.Screen name="SelfAccountScreen" component={SelfStack}  options={{ headerShown: false }}  />
+        <Stack.Screen
+          name="BankStack"
+          component={BankStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SelfAccountScreen"
+          component={SelfStack}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="CheckBalanceScreen"
           component={CheckBalanceScreen}
-            
         />
         <Stack.Screen
           name="BankUPISelectionScreen"
@@ -2008,14 +2201,20 @@ useEffect(() => {
         />
         <Stack.Screen
           name="InvestmentFormScreen"
-          component={InvestmentFormStack}  options={{ headerShown: false }}
+          component={InvestmentFormStack}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="CashbackAndRefferal"
-          component={CashbackAndRefferal} options={{ headerShown: false }}
+          component={CashbackAndRefferal}
+          options={{ headerShown: false }}
         />
         <Stack.Screen name="ChangeLanguage" component={ChangeLanguage} />
-        <Stack.Screen name="scan" component={ScanStack}  options={{ headerShown: false }} />
+        <Stack.Screen
+          name="scan"
+          component={ScanStack}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="history" component={History} />
         <Stack.Screen name="upimangement" component={Upimangement} />
         <Stack.Screen name="index" component={index} />
@@ -2024,7 +2223,11 @@ useEffect(() => {
           component={Drawer}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="SelfStack" component={SelfStack}   options={{ headerShown: false }} />
+        <Stack.Screen
+          name="SelfStack"
+          component={SelfStack}
+          options={{ headerShown: false }}
+        />
         {/* <Stack.Screen name="CheckStack" component={CheckStack} /> */}
         <Stack.Screen name="OTP-Verification" component={OTPVerification} />
         <Stack.Screen name="transaction" component={transaction} />
@@ -2058,20 +2261,35 @@ useEffect(() => {
         <Stack.Screen name="addrupaycc" component={addrupaycc} />
         <Stack.Screen name="AboutUs" component={AboutUs} />
         <Stack.Screen name="changeupipins" component={changeupipins} />
-        <Stack.Screen name="WantToHire" component={WantToHire}   options={{ headerShown: false }} />
+        <Stack.Screen
+          name="WantToHire"
+          component={WantToHire}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="cashbackhistory" component={cashbackhistory} />
-        <Stack.Screen name="PackagesStack" component={PackagesStack}  options={{ headerShown: false }}  />
-        <Stack.Screen name="MovieBookingScreen" component={MovieStack}  options={{ headerShown: false }}  />
-<Stack.Screen name="AboutUsScreen" component={AboutUs} />
-<Stack.Screen name="PrivacyPolicyScreen" component={PrivacyPolicyScreen} />
-<Stack.Screen name="TermsScreen" component={TermsScreen} />
-<Stack.Screen name="GrievanceScreen" component={GrievanceScreen} />
-<Stack.Screen name="AboutAppScreen" component={AboutAppScreen} />
+        <Stack.Screen
+          name="PackagesStack"
+          component={PackagesStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="MovieBookingScreen"
+          component={MovieStack}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="AboutUsScreen" component={AboutUs} />
+        <Stack.Screen
+          name="PrivacyPolicyScreen"
+          component={PrivacyPolicyScreen}
+        />
+        <Stack.Screen name="TermsScreen" component={TermsScreen} />
+        <Stack.Screen name="GrievanceScreen" component={GrievanceScreen} />
+        <Stack.Screen name="AboutAppScreen" component={AboutAppScreen} />
 
         <Stack.Screen
           name="Search"
           component={SearchScreen}
-        options={{ headerShown: false }} 
+          options={{ headerShown: false }}
         />
         <Stack.Screen name="DealsRewards" component={DealsRewardsScreen} />
       </Stack.Navigator>

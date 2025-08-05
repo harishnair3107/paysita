@@ -11,8 +11,10 @@ import * as MediaLibrary from "expo-media-library";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useTranslation } from 'react-i18next';
+
 export default function Drawer({ closeDrawer, route }) {
-  const { name } = route.params;
+  const { name,mobileNumber } = route.params;
+  // console.log(mobileNumber)
   const navigation = useNavigation();
 const { t, i18n } = useTranslation();
   const qrImage = require("../../assets/drawer/JohnDoe.png");
@@ -63,21 +65,20 @@ const { t, i18n } = useTranslation();
   const copyToClipboard = (text) => {
     Clipboard.setStringAsync(text);
     if (Platform.OS === 'android') {
-      ToastAndroid.show(t('upi_copied'), ToastAndroid.SHORT);
+      ToastAndroid.show(t('upi_copied_to_clipboard'), ToastAndroid.SHORT);
     }
   };
 
   const shareQR = async () => {
-    try {
-      await Share.share({
-        title: t('share_qr_title'),
-        message: t('share_qr_message'),
-        url: 'https://example.com/qr-code',
-      });
-    } catch (error) {
-      console.error('Error sharing QR:', error);
-    }
-  };
+  try {
+    await Share.share({
+      title: 'Share My QR Code',
+      message: 'Scan this QR to pay me: https://example.com/qr-code',
+    });
+  } catch (error) {
+    console.error('Error sharing QR:', error);
+  }
+};
 
   const initials = getInitials(name);
 
@@ -87,6 +88,7 @@ const { t, i18n } = useTranslation();
       title: t("profile_settings"),
       // description: t("profile_setting_desc"),
       screen: "profile",
+      params: { name,mobileNumber },
     },
     {
       icon: require("../../assets/drawer/bhim.png"),
@@ -104,14 +106,16 @@ const { t, i18n } = useTranslation();
       title: t("security"),
       screen: "Security",
     },
+    
   ];
+      console.log(name)
 
   return (
     <Pressable style={styles.drawer} onPress={(e) => e.stopPropagation()}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <TouchableOpacity style={styles.topSection} onPress={() => navigation.goBack()}>
-          <Pressable style={{ marginLeft: 20 }}>
-            <Ionicons name="arrow-back" size={25} color="#444" />
+          <Pressable style={{ marginLeft: -3 }}>
+            <Ionicons name="arrow-back" size={28} color="#444"  onPress={() => navigation.goBack()}/>
           </Pressable>
           <View style={styles.profileCircle}>
             <Text style={styles.profileText}>{initials}</Text>
@@ -153,7 +157,7 @@ const { t, i18n } = useTranslation();
           </View>
 
           <View style={styles.qrSection}>
-            <Image source={qrImage} style={{ width: 150, height: 150 }} />
+            <Image source={qrImage} style={{ width: 150, height: 170 }} />
             <View style={styles.iconContainer}>
               <Pressable style={styles.iconWrapper} onPress={shareQR}>
                 <Ionicons name="share-outline" style={styles.icon} color="#1D154A" />
@@ -173,7 +177,10 @@ const { t, i18n } = useTranslation();
             <Pressable
               key={index}
               style={styles.settingsOption}
-              onPress={() => navigation.navigate(option.screen)}
+onPress={() => {
+  // console.log("🧭 Navigating to:", option.screen, "with params:", option.params);
+  navigation.navigate(option.screen, option.params);
+}}
             >
               <Image source={option.icon} style={styles.optionIcon} />
               <View style={styles.optionTextContainer}>
@@ -225,6 +232,8 @@ const styles = StyleSheet.create({
     height: wp('14%'),
     borderRadius: wp('7%'),
     backgroundColor: '#1976D2',
+    marginLeft:60,
+    marginTop:10,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -233,6 +242,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: wp('4.5%'),
     fontWeight: 'bold',
+    textAlign:"center",
   },
 
   name: {
@@ -276,14 +286,14 @@ const styles = StyleSheet.create({
 
   qrImage: {
     width: wp('25%'),
-    height: wp('25%'),
+    height: wp('26%'),
     borderRadius: wp('3%'),
     borderWidth: 0.5,
     borderColor: '#ccc',
   },
 
   iconContainer: {
-    marginTop: hp('1.5%'),
+    marginTop: hp('1.7%'),
     flexDirection: 'row',
     backgroundColor: '#f9f9f9',
     borderRadius: wp('3%'),
@@ -360,6 +370,9 @@ const styles = StyleSheet.create({
     fontSize: wp('4%'),
     fontWeight: '600',
     color: '#222',
+    // textAlign:"center"
+    marginTop:6,
+    marginBottom:-16,
   },
 
   optionDescription: {

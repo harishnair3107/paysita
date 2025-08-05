@@ -37,7 +37,6 @@ const CashbackHistory = () => {
     <View style={styles.container}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
 
-      <Text style={styles.sectionTitle}>{t('cashback_history')}</Text>
 
       <FlatList data={transactions} keyExtractor={(item) => item.id} renderItem={renderItem} />
     </View>
@@ -47,46 +46,48 @@ const CashbackHistory = () => {
 export default CashbackHistory;
 
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
+    backgroundColor: "#f5f7fa",
     padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginLeft: 16,
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#1d1d1d",
+    marginBottom: 16,
+    textAlign: "center",
   },
   transactionItem: {
-    backgroundColor: '#fff',
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: "#ffffff",
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 3,
   },
   description: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "600",
+    color: "#333333",
+    marginBottom: 6,
   },
-  amount: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'green',
+  rowContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   date: {
     fontSize: 14,
-    color: 'gray',
-    marginTop: 5,
+    color: "#888",
+  },
+  amount: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#28a745", // Green
   },
 });

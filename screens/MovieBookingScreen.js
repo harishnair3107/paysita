@@ -266,10 +266,11 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: wp('90%'),
-    height: hp('80%'),
+    height: hp('84%'),
     backgroundColor: '#fff',
     borderRadius: 16,
     paddingBottom: 10,
+    marginTop:40,
     overflow: 'hidden',
   },
   modalScrollContent: {
@@ -281,7 +282,8 @@ const styles = StyleSheet.create({
     height: 300,
     resizeMode: 'cover',
     borderRadius: 10,
-    marginBottom: 15,
+    marginBottom: 25,
+    marginTop:40,
   },
   modalTitle: {
     fontSize: 24,

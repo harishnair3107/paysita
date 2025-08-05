@@ -6,6 +6,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
+import axios from 'axios';
 
 const HomeServiceFormScreen = () => {
   const { t } = useTranslation();
@@ -23,9 +24,8 @@ const HomeServiceFormScreen = () => {
   const [value, setValue] = useState(200);
   const animatedValue = new Animated.Value(value);
 
-  const [showPicker, setShowPicker] = useState(false);
-
   const handleChange = (key, val) => setForm({ ...form, [key]: val });
+
   const toggleSelection = (field, val) => {
     const arr = form[field].includes(val)
       ? form[field].filter(i => i !== val)
@@ -45,9 +45,20 @@ const HomeServiceFormScreen = () => {
     },
   });
 
-  const handleDateChange = (_, sel) => {
-    setShowPicker(false);
-    if (sel) handleChange('date', sel);
+  const showDatePicker = () => {
+    DateTimePickerAndroid.open({
+      value: form.date,
+      onChange: handleDateChange,
+      mode: 'date',
+      is24Hour: true,
+      display: 'default',
+    });
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    if (event.type === 'set' && selectedDate) {
+      handleChange('date', selectedDate);
+    }
   };
 
   const handleReset = () => {
@@ -62,21 +73,26 @@ const HomeServiceFormScreen = () => {
     animatedValue.setValue(200);
   };
 
-  const validateAndSubmit = () => {
-    if (!form.name.trim())
-      return Alert.alert(t('home_service_form.validation_error'), t('home_service_form.enter_name'));
-    if (!/^\d{10}$/.test(form.contact))
-      return Alert.alert(t('home_service_form.validation_error'), t('home_service_form.enter_valid_contact'));
-    if (!form.email.trim())
-      return Alert.alert(t('home_service_form.validation_error'), t('home_service_form.enter_email'));
-    if (form.serviceType.length === 0)
-      return Alert.alert(t('home_service_form.validation_error'), t('home_service_form.select_service'));
+const validateAndSubmit = async () => {
+  if (!form.name.trim())
+    return Alert.alert(t('home_service_form.validation_error'), t('home_service_form.enter_name'));
+  if (!/^\d{10}$/.test(form.contact))
+    return Alert.alert(t('home_service_form.validation_error'), t('home_service_form.enter_valid_contact'));
+  if (!form.email.trim())
+    return Alert.alert(t('home_service_form.validation_error'), t('home_service_form.enter_email'));
+  if (form.serviceType.length === 0)
+    return Alert.alert(t('home_service_form.validation_error'), t('home_service_form.select_service'));
 
-    console.log('Form Submitted:', form);
-    Alert.alert(t('home_service_form.success'), t('home_service_form.success_message'), [
-      { text: t('home_service_form.ok'), onPress: handleReset },
-    ]);
-  };
+  try {
+    const res = await axios.post('http://192.168.29.22:5000/api/home-service', form); // ← यहाँ अपने IP का इस्तेमाल करें
+    console.log(res.data);
+    Alert.alert('✅ Success', 'Form submitted successfully!', [{ text: 'OK', onPress: handleReset }]);
+  } catch (err) {
+    console.error('❌ Submission Error:', err.message);
+    Alert.alert('Error', 'Something went wrong while submitting form.');
+  }
+};
+
 
   const interpolateColor = val => {
     const g = Math.round(165 + (120 - 165) * (val / MAX_VALUE));
@@ -129,53 +145,52 @@ const HomeServiceFormScreen = () => {
             onChangeText={txt => handleChange('pinCode', txt)}
           />
 
-         <Text style={styles.label}>{t('home_service_form.property_type')}</Text>
-<View style={styles.pickerContainer}>
-  <Picker
-    selectedValue={form.propertyType}
-    onValueChange={val => handleChange('propertyType', val)}
-  >
-    <Picker.Item label={t('home_service_form.select_property')} value="" />
-    {[
-      'apartment_flat',
-      'bungalow',
-      'villa',
-      'independent_house',
-      'shop',
-      'office',
-      'commercial',
-      'building',
-      'others'
-    ].map(pt => (
-      <Picker.Item key={pt} label={t(`home_service_form.propertyTypes.${pt}`)} value={pt} />
-    ))}
-  </Picker>
-</View>
+          <Text style={styles.label}>{t('home_service_form.property_type')}</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={form.propertyType}
+              onValueChange={val => handleChange('propertyType', val)}
+            >
+              <Picker.Item label={t('home_service_form.select_property')} value="" />
+              {[
+                'apartment_flat',
+                'bungalow',
+                'villa',
+                'independent_house',
+                'shop',
+                'office',
+                'commercial',
+                'building',
+                'others'
+              ].map(pt => (
+                <Picker.Item key={pt} label={t(`home_service_form.propertyTypes.${pt}`)} value={pt} />
+              ))}
+            </Picker>
+          </View>
 
-<Text style={styles.label}>{t('home_service_form.service_type')}</Text>
-<View style={styles.categoryContainer}>
-  {[
-    'interior_designer',
-    'painting',
-    'vaastu_consultant',
-    'house_cleaning',
-    'pest_control',
-    'civil_work',
-    'wiring_rewiring',
-    'water_proofing'
-  ].map(item => (
-    <TouchableOpacity
-      key={item}
-      style={[styles.categoryButton, form.serviceType.includes(item) && styles.selectedCategory]}
-      onPress={() => toggleSelection('serviceType', item)}
-    >
-      <Text style={[styles.categoryText, form.serviceType.includes(item) && styles.selectedCategoryText]}>
-        {t(`home_service_form.services.${item}`)}
-      </Text>
-    </TouchableOpacity>
-  ))}
-</View>
-
+          <Text style={styles.label}>{t('home_service_form.service_type')}</Text>
+          <View style={styles.categoryContainer}>
+            {[
+              'interior_designer',
+              'painting',
+              'vaastu_consultant',
+              'house_cleaning',
+              'pest_control',
+              'civil_work',
+              'wiring_rewiring',
+              'water_proofing'
+            ].map(item => (
+              <TouchableOpacity
+                key={item}
+                style={[styles.categoryButton, form.serviceType.includes(item) && styles.selectedCategory]}
+                onPress={() => toggleSelection('serviceType', item)}
+              >
+                <Text style={[styles.categoryText, form.serviceType.includes(item) && styles.selectedCategoryText]}>
+                  {t(`home_service_form.services.${item}`)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
           <Text style={styles.label}>{t('home_service_form.service_area')}</Text>
           <View style={styles.Slidercontainer}>
@@ -192,17 +207,9 @@ const HomeServiceFormScreen = () => {
           </View>
 
           <Text style={styles.label}>{t('home_service_form.date')}</Text>
-          <TouchableOpacity style={styles.input} onPress={() => setShowPicker(true)}>
+          <TouchableOpacity style={styles.input} onPress={showDatePicker}>
             <Text>{form.date.toDateString()}</Text>
           </TouchableOpacity>
-          {showPicker && (
-            <DateTimePickerAndroid
-              value={form.date}
-              mode="date"
-              display="default"
-              onChange={handleDateChange}
-            />
-          )}
 
           <TextInput
             style={styles.textArea}

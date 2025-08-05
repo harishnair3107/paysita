@@ -15,18 +15,58 @@ const DonationAndCharityFormScreen = () => {
         DonationType: '',
         Message: '',
     });
+    const isFormValid = () => {
+  return (
+    form.name.trim() &&
+    form.contact.trim() &&
+    form.email.trim() &&
+    form.DonationAmount.trim() &&
+    form.paymentMethod &&
+    form.DonationType
+  );
+};
+
 
     const handleChange = (field, value) => {
         setForm({ ...form, [field]: value });
     };
+const handleSubmit = async () => {
+  if (!isFormValid()) {
+    Alert.alert('Error', 'Please fill in all required fields.');
+    return;
+  }
 
-    const handleSubmit = () => {
-        if (!form.name || !form.contact) {
-            Alert.alert(t('form.error_title'), t('form.error_required_fields'));
-            return;
-        }
-        console.log('Form Submitted:', form);
-    };
+  try {
+    const res = await fetch('http://192.168.29.22:5000/api/submit-donation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(form),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      Alert.alert('Success', 'Thank you for your donation!');
+    } else {
+      Alert.alert('Error', data.message);
+    }
+  } catch (error) {
+    console.error('Submission failed:', error);
+    Alert.alert('Error', 'Something went wrong!');
+  }
+   setForm({
+            name: '',
+            contact: '',
+            email: '',
+            DonationAmount: '',
+            paymentMethod: 'upi',
+            DonationType: '',
+            Message: '',
+        });
+};
+
 
     const handleReset = () => {
         setForm({
@@ -44,11 +84,11 @@ const DonationAndCharityFormScreen = () => {
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.formWrapper}>
                 <View style={styles.formContainer}>
-                    <Text style={styles.title}>{t('form.title')}</Text>
+                    <Text style={styles.title}>{t('formpst.title')}</Text>
 
                     <TextInput
                         style={styles.input}
-                        placeholder={t('form.name')}
+                        placeholder={t('formpst.name')}
                         value={form.name}
                         onChangeText={(text) => handleChange('name', text)}
                     />
@@ -56,7 +96,7 @@ const DonationAndCharityFormScreen = () => {
                     <View style={styles.row}>
                         <TextInput
                             style={[styles.input, styles.halfWidth]}
-                            placeholder={t('form.contact')}
+                            placeholder={t('formpst.contact')}
                             keyboardType="phone-pad"
                             value={form.contact}
                             onChangeText={(text) => {
@@ -68,52 +108,52 @@ const DonationAndCharityFormScreen = () => {
                         />
                         <TextInput
                             style={[styles.input, styles.halfWidth]}
-                            placeholder={t('form.email')}
+                            placeholder={t('formpst.email')}
                             keyboardType="email-address"
                             value={form.email}
                             onChangeText={(text) => handleChange('email', text)}
                         />
                     </View>
 
-                    <Text style={styles.label}>{t('form.amount')}</Text>
+                    <Text style={styles.label}>{t('formpst.amount')}</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder={t('form.amount_placeholder')}
+                        placeholder={t('formpst.amount_placeholder')}
                         keyboardType="numeric"
                         value={form.DonationAmount}
                         onChangeText={(text) => handleChange('DonationAmount', text)}
                     />
 
-                    <Text style={styles.label}>{t('form.payment_method')}</Text>
+                    <Text style={styles.label}>{t('formpst.payment_method')}</Text>
                     <Picker
                         selectedValue={form.paymentMethod}
                         onValueChange={(itemValue) => handleChange('paymentMethod', itemValue)}
                     >
-                        <Picker.Item label={t('form.methods.upi')} value="upi" />
-                        <Picker.Item label={t('form.methods.credit_card')} value="credit_card" />
-                        <Picker.Item label={t('form.methods.debit_card')} value="debit_card" />
-                        <Picker.Item label={t('form.methods.paypal')} value="paypal" />
-                        <Picker.Item label={t('form.methods.net_banking')} value="net_banking" />
+                        <Picker.Item label={t('formpst.methods.upi')} value="upi" />
+                        <Picker.Item label={t('formpst.methods.credit_card')} value="credit_card" />
+                        <Picker.Item label={t('formpst.methods.debit_card')} value="debit_card" />
+                        <Picker.Item label={t('formpst.methods.paypal')} value="paypal" />
+                        <Picker.Item label={t('formpst.methods.net_banking')} value="net_banking" />
                     </Picker>
 
-                    <Text style={styles.label}>{t('form.donation_type')}</Text>
+                    <Text style={styles.label}>{t('formpst.donation_type')}</Text>
                     <Picker
                         selectedValue={form.DonationType}
                         onValueChange={(itemValue) => handleChange('DonationType', itemValue)}
                     >
-                        <Picker.Item label={t('form.types.religious')} value="religious" />
-                        <Picker.Item label={t('form.types.child_welfare')} value="child_welfare" />
-                        <Picker.Item label={t('form.types.education')} value="education" />
-                        <Picker.Item label={t('form.types.healthcare')} value="healthcare" />
-                        <Picker.Item label={t('form.types.animal_welfare')} value="animal_welfare" />
-                        <Picker.Item label={t('form.types.disaster_relief')} value="disaster_relief" />
-                        <Picker.Item label={t('form.types.environment')} value="environment" />
-                        <Picker.Item label={t('form.types.other')} value="other" />
+                        <Picker.Item label={t('formpst.types.religious')} value="religious" />
+                        <Picker.Item label={t('formpst.types.child_welfare')} value="child_welfare" />
+                        <Picker.Item label={t('formpst.types.education')} value="education" />
+                        <Picker.Item label={t('formpst.types.healthcare')} value="healthcare" />
+                        <Picker.Item label={t('formpst.types.animal_welfare')} value="animal_welfare" />
+                        <Picker.Item label={t('formpst.types.disaster_relief')} value="disaster_relief" />
+                        <Picker.Item label={t('formpst.types.environment')} value="environment" />
+                        <Picker.Item label={t('formpst.types.other')} value="other" />
                     </Picker>
 
                     <TextInput
                         style={styles.textArea}
-                        placeholder={t('form.message')}
+                        placeholder={t('formpst.message')}
                         multiline
                         numberOfLines={4}
                         value={form.Message}
@@ -121,11 +161,16 @@ const DonationAndCharityFormScreen = () => {
                     />
 
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                            <Text style={styles.buttonText}>{t('form.submit')}</Text>
-                        </TouchableOpacity>
+                    <TouchableOpacity
+  style={[styles.button, !isFormValid() && { backgroundColor: '#ccc' }]}
+  onPress={handleSubmit}
+  disabled={!isFormValid()}
+>
+  <Text style={styles.buttonText}>{t('formpst.submit')}</Text>
+</TouchableOpacity>
+
                         <TouchableOpacity style={[styles.button, styles.resetButton]} onPress={handleReset}>
-                            <Text style={styles.buttonText}>{t('form.reset')}</Text>
+                            <Text style={styles.buttonText}>{t('formpst.reset')}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

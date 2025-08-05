@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Modal, TextInput} from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Modal, TextInput, Alert} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -120,6 +120,25 @@ export default function TravelPackages() {
         adults: '',
         children: '',
     });
+const handleSubmit = async () => {
+  try {
+    const response = await fetch('http://192.168.29.22:5000/custom-packages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(form),
+    });
+
+    const data = await response.json();
+    console.log('Package saved:', data);
+Alert.alert("Success", "Form Submitted Successfully");
+    setModalVisible(false); // Close modal after successful submit
+
+  } catch (error) {
+    console.error('Error submitting package:', error);
+  }
+};
 
     const states = ['Maharashtra', 'Goa', 'Rajasthan', 'Kerala', 'Himachal', 'Uttarakhand'];
     const [selectedState, setSelectedState] = useState(states[0]); // Default to first state
@@ -167,7 +186,7 @@ export default function TravelPackages() {
                               <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
                                   <Text style={styles.cancelText}>Cancel</Text>
                               </TouchableOpacity>
-                              <TouchableOpacity style={styles.submitButton} onPress={() => console.log('Submit:', form)}>
+                              <TouchableOpacity style={styles.submitButton}onPress={handleSubmit}>
                                   <Text style={styles.submitText}>Submit</Text>
                               </TouchableOpacity>
                           </View>
@@ -258,7 +277,7 @@ const styles = StyleSheet.create({
     customPackageButton: {
       flexDirection: "row",
       paddingVertical: 1,
-      paddingHorizontal: 29,
+      paddingHorizontal: 9,
       backgroundColor: "#1d154a",
       borderRadius: 5,
       alignSelf: "flex-end",  

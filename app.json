@@ -1,7 +1,36 @@
 {
-  "plugins": [
-    "expo-router",
-    "expo-audio",
-    "expo-video"
-  ]
+  "expo": {
+    "name": "IndiaaPay",
+    "slug": "myreactnativeapp", 
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "indiaapay",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-audio",
+      "expo-video"
+    ],
+    "android": {
+      "package": "com.indiyaapay.myreactnativeapp",
+      "versionCode": 1,
+      "permissions": []
+    },
+     "expo": {
+    "jsEngine": "jsc"
+  },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "57d76bc1-8387-430a-9fbf-292ee91682e1"
+      }
+    },
+    "owner": "indiyaapay"
+  }
 }

@@ -55,16 +55,14 @@ const UPIManagement = ({ navigation }) => {
           </View>
 
           {/* My QR */}
-          <View style={styles.sectionRow}>
+          <TouchableOpacity style={styles.sectionRow} onPress={() => navigation.navigate('QRcode')}>
             <Image source={require('../../assets/drawer/qrimage.png')} style={styles.icon} />
             <View>
               <Text style={styles.sectionTitle}>{t('my_qr')}</Text>
               <Text style={styles.upiId}>{t('share_qr')}</Text>
             </View>
-            <Pressable onPress={() => navigation.navigate('QRcode')}>
-              <Text style={styles.linkText}>{t('view')}</Text>
-            </Pressable>
-          </View>
+           
+          </TouchableOpacity>
 
           {/* Change UPI PIN */}
           <TouchableOpacity onPress={() => navigation.navigate('changeupipin')}>

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Animated, PanResponder } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 
 const RealEstateFormScreen = () => {
   const { t } = useTranslation();
@@ -35,10 +36,22 @@ const RealEstateFormScreen = () => {
   });
 
   const isFormValid = form.name.trim() && form.contact.trim() && form.email.trim();
-  const handleSubmit = () => {
-    if (!isFormValid) return alert(t('fillAllFields', { defaultValue: 'Please fill all required fields' }));
-    console.log('Form Submitted:', form);
-  };
+ 
+const handleSubmit = async () => {
+  if (!isFormValid) {
+    return alert(t('fillAllFields', { defaultValue: 'Please fill all required fields' }));
+  }
+
+  try {
+    const res = await axios.post('http://192.168.29.22:5000/api/real-estate', form); // 🔁 अपने LAN IP से बदलें
+    console.log('✅ Submitted:', res.data);
+    alert('Form submitted successfully!');
+    handleReset();
+  } catch (error) {
+    console.error('❌ Submission Error:', error);
+    alert('Something went wrong while submitting the form.');
+  }
+};
 
   // Slider code
   const MAX_VALUE = 10000000;

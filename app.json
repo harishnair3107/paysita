@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "IndiaaPay",
-    "slug": "myreactnativeapp", 
+    "slug": "myreactnativeapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "indiaapay",
@@ -15,16 +15,18 @@
     "plugins": [
       "expo-router",
       "expo-audio",
-      "expo-video"
+      "expo-video",
+      "@react-native-community/datetimepicker",
+      "expo-localization"
     ],
     "android": {
-      "package": "com.indiyaapay.myreactnativeapp",
+      "package": "com.PAYSITA.myreactnativeapp",
       "versionCode": 1,
       "permissions": []
     },
-     "expo": {
-    "jsEngine": "jsc"
-  },
+    "expo": {
+      "jsEngine": "jsc"
+    },
     "extra": {
       "router": {},
       "eas": {

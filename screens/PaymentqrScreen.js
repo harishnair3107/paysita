@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
 
-export default function PaymentScreen({ route, navigation }) {
+export default function PaymentqrScreen({ route, navigation }) {
   const { scannedData } = route.params; // You pass this from Scan screen
   const [amount, setAmount] = React.useState('');
 

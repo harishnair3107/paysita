@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from "react";
 import { ScrollView, View, Text, StyleSheet, Pressable, ToastAndroid, Platform, Share, Alert, TouchableOpacity } from 'react-native';
 import Feather from '@expo/vector-icons/Feather';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -11,37 +11,45 @@ import * as MediaLibrary from "expo-media-library";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
+import { CommonActions } from '@react-navigation/native';
+import { UserContext } from "../../context/userContext";
+import { ThemeContext } from "../../theme/Theme";
 
 export default function Drawer({ closeDrawer, route }) {
-  const { name,mobileNumber } = route.params;
-  // console.log(mobileNumber)
+  const { user, setUser } = useContext(UserContext);
+   const { colors } = useContext(ThemeContext);
+
+   const mobileNumber = user?.mobileNumber;
+   const name = user?.name;
+   const countryCode = user?.countryCode;
   const navigation = useNavigation();
 const { t, i18n } = useTranslation();
   const qrImage = require("../../assets/drawer/JohnDoe.png");
-
+  const styles=createStyles(colors);
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem('user');
-      navigation.replace('IndiayaPayLogin');
-      Alert.alert(t('logout_success'), t('logout_message'));
+      await AsyncStorage.removeItem("user");
+      setUser(null);
     } catch (error) {
       console.error('Logout error', error);
       Alert.alert(t('error'), t('logout_error'));
     }
   };
 
-  const getInitials = (name = '') => {
-    if (!name.trim()) return '';
-    const words = name.trim().split(' ');
-    if (words.length === 1 && words[0]) {
-      return words[0][0]?.toUpperCase();
-    }
-    return (words[0][0] + (words[1]?.[0] || '')).toUpperCase();
-  };
+  const getInitials = (mobileNumber) => {
+  if (typeof mobileNumber !== "string" || mobileNumber.length < 2) {
+    return "U";
+  }
 
-  const formatName = (name) => {
-    return name.length > 20 ? name.match(/.{1,20}/g).join('\n') : name;
-  };
+  // last 2 digits as initials (fintech-safe)
+  return mobileNumber.slice(-2);
+};
+
+
+
+
+
 
   const handleDownload = async () => {
     try {
@@ -80,7 +88,7 @@ const { t, i18n } = useTranslation();
   }
 };
 
-  const initials = getInitials(name);
+  const initials = getInitials(mobileNumber);
 
   const settingsOptions = [
     {
@@ -88,7 +96,7 @@ const { t, i18n } = useTranslation();
       title: t("profile_settings"),
       // description: t("profile_setting_desc"),
       screen: "profile",
-      params: { name,mobileNumber },
+      params: { mobileNumber },
     },
     {
       icon: require("../../assets/drawer/bhim.png"),
@@ -108,23 +116,24 @@ const { t, i18n } = useTranslation();
     },
     
   ];
-      console.log(name)
+      // console.log(mobileNumber)
 
   return (
     <Pressable style={styles.drawer} onPress={(e) => e.stopPropagation()}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <TouchableOpacity style={styles.topSection} onPress={() => navigation.goBack()}>
           <Pressable style={{ marginLeft: -3 }}>
-            <Ionicons name="arrow-back" size={28} color="#444"  onPress={() => navigation.goBack()}/>
+            <Ionicons name="arrow-back" size={28} color="#555"  onPress={() => navigation.navigate("MainScreen")}/>
           </Pressable>
           <View style={styles.profileCircle}>
             <Text style={styles.profileText}>{initials}</Text>
           </View>
        <View>
-<Text style={styles.name}>{formatName(name)}</Text>
+<Text style={styles.name}>{user?.name || ""}</Text>
 <Pressable onPress={() => copyToClipboard(t("john@upid"))}>
     <View style={{ flexDirection: 'row', gap: 5 }}>
       <Image source={require('../../assets/drawer/bhim.png')} style={{ width: 20, height: 20 }} />
+     
   <Text style={styles.upiId}>{t("john@upid")}</Text>
       <Feather name="copy" size={16} color="#0000FF" />
     </View>
@@ -135,7 +144,10 @@ const { t, i18n } = useTranslation();
 
         <View style={styles.QRcontainer}>
           <View style={styles.buttonContainer}>
-            <Pressable style={styles.helpSupportButton} onPress={() => navigation.navigate("HelpAndSupport")}> 
+            <Pressable style={styles.helpSupportButton} onPress={() =>{
+            //navigation.navigate("HelpAndSupport")
+            Alert.alert("Sucess","Coming Soon......");
+            }}> 
               <View style={styles.helpSupportIconContainer}>
                 <Image source={require('../../assets/drawer/helpAndSupport.gif')} style={{ width: 30, height: 30 }} />
               </View>
@@ -145,7 +157,10 @@ const { t, i18n } = useTranslation();
               </View>
             </Pressable>
 
-            <Pressable style={styles.helpSupportButton} onPress={() => navigation.navigate("ChangeLanguage")}>
+            <Pressable style={styles.helpSupportButton} onPress={() => {
+              //navigation.navigate("ChangeLanguage")
+               Alert.alert("Sucess","Coming Soon......"); 
+              }}>
               <View style={styles.helpSupportIconContainer}>
                 <Image source={require('../../assets/drawer/translate.gif')} style={{ width: 30, height: 30 }} />
               </View>
@@ -179,7 +194,8 @@ const { t, i18n } = useTranslation();
               style={styles.settingsOption}
 onPress={() => {
   // console.log("🧭 Navigating to:", option.screen, "with params:", option.params);
-  navigation.navigate(option.screen, option.params);
+  //navigation.navigate(option.screen, option.params);
+      Alert.alert("Sucess","Coming Soon......");
 }}
             >
               <Image source={option.icon} style={styles.optionIcon} />
@@ -192,7 +208,9 @@ onPress={() => {
           ))}
         </View>
         <View style={styles.additionalSectionContainer}>
-          <Pressable style={styles.aboutButton} onPress={() => navigation.navigate("AboutUs")}> 
+          <Pressable style={styles.aboutButton} onPress={() =>{
+            //navigation.navigate("AboutUs")
+            Alert.alert("Sucess","Coming Soon......");}}> 
             <Text style={styles.aboutButtonText}>{t('about')}</Text>
           </Pressable>
           <Pressable style={styles.logoutButton} onPress={handleLogout}>
@@ -205,11 +223,11 @@ onPress={() => {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles =(colors)=> StyleSheet.create({
 
   drawer: {
     flex: 1,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: colors.background,
     paddingTop: hp('4%'),
   },
 
@@ -224,7 +242,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp('3.5%'),
     paddingBottom: hp('1.5%'),
     borderBottomWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: colors.primary,
   },
 
   profileCircle: {
@@ -239,7 +257,7 @@ const styles = StyleSheet.create({
   },
 
   profileText: {
-    color: 'white',
+    color: colors.text,
     fontSize: wp('4.5%'),
     fontWeight: 'bold',
     textAlign:"center",
@@ -248,14 +266,14 @@ const styles = StyleSheet.create({
   name: {
     fontSize: wp('4%'),
     fontWeight: '600',
-    color: '#222',
+    color: colors.text,
     marginBottom: hp('0.3%'),
     marginLeft: wp('3%'),
   },
 
   upiId: {
     fontSize: wp('3.2%'),
-    color: '#555',
+    color: colors.upi,
   },
 
   QRcontainer: {
@@ -267,9 +285,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
+    borderWidth:2,
+    borderColor:colors.primary,
     elevation: 4,
   },
 
@@ -386,7 +403,7 @@ const styles = StyleSheet.create({
   },
 
   aboutButton: {
-    backgroundColor: '#1A237E',
+    backgroundColor: colors.primary,
     paddingVertical: hp('1.5%'),
     borderRadius: wp('6%'),
     marginBottom: hp('1.8%'),

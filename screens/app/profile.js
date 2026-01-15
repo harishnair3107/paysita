@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -18,21 +18,29 @@ import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-
+import {UserContext} from '../../context/userContext'
+import axios from 'axios';
 const Profile = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { name, mobileNumber } = route.params;
-  const params = route.params || {};
-  const { t } = useTranslation();
+ const { user, setUser } = useContext(UserContext);
 
+const mobileNumber = user?.mobileNumber;
+const name = user?.name;
+const countryCode = user?.countryCode;
+
+  const params = route.params || '';
+  const { t } = useTranslation();
   const [profileImage, setProfileImage] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [nameState, setName] = useState(name);
-  const [phone, setPhone] = useState(mobileNumber);
-  const [tempName, setTempName] = useState(name);
-  const [tempPhone, setTempPhone] = useState(phone);
+  const [tempName, setTempName] = useState(name || "");
   const [savedAddresses, setSavedAddresses] = useState([]);
+  useEffect(() => {
+  if (modalVisible) {
+    setTempName(user?.name || "");
+  }
+}, [modalVisible]);
+
 
   useEffect(() => {
     const loadProfileImage = async () => {
@@ -87,11 +95,38 @@ const Profile = () => {
     addAddress();
   }, [params]);
 
-  const handleSave = () => {
-    setName(tempName);
-    setPhone(tempPhone);
-    setModalVisible(false);
-  };
+  const handleSave = async () => {
+  try {
+    console.log("UPDATING USER:", user);
+
+    const response = await axios.put(
+      "http://192.168.29.22:5000/api/auth/updateName",
+      {
+        userId: user.id,   // 🔥 REQUIRED
+        name: tempName,
+      }
+    );
+
+    if (response.status === 200) {
+      const updatedUser = {
+        ...user,
+        name: tempName,
+      };
+
+      setUser(updatedUser);
+      await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+      setModalVisible(false);
+    }
+  } catch (err) {
+    console.log("AXIOS ERROR:", err.response?.data || err.message);
+    Alert.alert(
+      "Error",
+      err.response?.data?.message || "Please try again later"
+    );
+  }
+};
+
+
 
   const pickImage = async () => {
     const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
@@ -145,6 +180,7 @@ const Profile = () => {
       { text: t("cancel"), style: "cancel" },
     ]);
   };
+ if (!user) return null; // or loader
 
   return (
     <View style={styles.container}>
@@ -157,16 +193,18 @@ const Profile = () => {
             />
           </Pressable>
           <View style={styles.textInfo}>
-            <Text style={styles.name}>{nameState}</Text>
-            <Text style={styles.phone}>{mobileNumber}</Text>
+            <Text style={styles.name}>{user?.name || ""}</Text>
+            <Text style={styles.phone}>{user?.mobileNumber|| ""}</Text>
+
           </View>
           <TouchableOpacity
             style={styles.editButton}
             onPress={() => {
-              setTempName(nameState);
+
               setModalVisible(true);
             }}
           >
+            
             <Ionicons name="pencil" size={20} color="#1D154A" />
           </TouchableOpacity>
         </View>

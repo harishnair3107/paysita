@@ -7,6 +7,7 @@ import {
   Dimensions,
   Animated,
   Pressable,
+  Alert,
 } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useNavigation } from "@react-navigation/native";
@@ -55,7 +56,8 @@ export default function Scan() {
     setTimeout(() => {
       setScanned(false);
     }, 3000);
-    navigation.navigate("PaymentqrScreen", { scannedData: data });
+    //navigation.navigate("PaymentqrScreen", { scannedData: data });
+        Alert.alert("Sucess","Coming Soon......");
   };
 
   if (!permission) {

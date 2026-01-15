@@ -70,6 +70,7 @@ const TransactionDetails = () => {
           <Text style={styles.dateText}>{new Date(transaction.date || Date.now()).toDateString()}</Text>
         </View>
       </View>
+      
 
       {/* Transaction Card */}
       <View style={styles.card} ref={viewRef} collapsable={false}>

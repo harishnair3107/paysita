@@ -1,15 +1,18 @@
 import { StyleSheet, Text, View, Pressable, StatusBar } from "react-native";
-import React from "react";
+import React,{useContext} from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next"; // i18n hook
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ThemeContext } from "../../theme/Theme";
 
 const History = () => {
   const navigation = useNavigation();
   const { t } = useTranslation(); // use translation
-
+  const {colors}=useContext(ThemeContext);
+  const styles=createStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
 
       <Pressable style={styles.option} onPress={() => navigation.navigate("transaction")}>
@@ -35,16 +38,16 @@ const History = () => {
         </View>
         <Ionicons name="chevron-forward" size={24} color="#333" />
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 };
 
 export default History;
 
-const styles = StyleSheet.create({
+const createStyles =(colors)=> StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F7FA",
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: "row",
@@ -73,7 +76,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginVertical: 8,
     borderRadius: 12,
-    backgroundColor: "#fff",
+    backgroundColor: colors.option,
     elevation: 3,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },

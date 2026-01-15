@@ -1,219 +1,450 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Animated, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState, useRef } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Animated,
+  ActivityIndicator,
+  Image,
+  Alert
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const IndiayaPayLogin = () => {
-   const [mobileNumber, setMobileNumber] = useState('');
-  const [name, setName] = useState('');
-  const isValid = mobileNumber.length === 10;
+
+import { useNavigation } from "@react-navigation/native";
+
+
+export default function IndiayaPayLogin() {
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [countryCode, setCountryCode] = useState("+91"); // ✅ ADDED
+  const [showCountryPicker, setShowCountryPicker] = useState(false); // ✅ ADDED
+
+  const [showSplash, setShowSplash] = useState(true);
   const navigation = useNavigation();
-  const [scale] = useState(new Animated.Value(1));
 
-  const handleProceed = async () => {
-    if (isValid && name) {
-      try {
-        const response = await axios.post('http://192.168.29.22:5000/api/auth/createUser', {
-          mobile: mobileNumber,
-          name,
-        });
+  const splashScale = useRef(new Animated.Value(1)).current;
+  const splashOpacity = useRef(new Animated.Value(1)).current;
 
-        if (response.status === 201) {
-          // Save user data in AsyncStorage after successful creation
-          await AsyncStorage.setItem('user', JSON.stringify({ name, mobile: mobileNumber }));
-          Alert.alert('Success', response.data.message);
-          navigation.navigate('OTP-Verification', { mobileNumber, name });
-        } else {
-          Alert.alert('Error', response.data.message);
-        }
-      } catch (error) {
-        Alert.alert('Error', 'There was an error creating the user.');
-        console.error(error);
-      }
-    } else {
-      Alert.alert('Invalid Input', 'Please enter a valid mobile number and name.');
-    }
-  };
+  const opacity = useRef(new Animated.Value(0)).current;
+  const scale = useRef(new Animated.Value(0.95)).current;
 
-  // Check if user is already logged in when the app starts
+
+  // ✅ ADDED
+  const countryCodes = [
+    { code: "+91", label: "🇮🇳 India" },
+    { code: "+1", label: "🇺🇸 USA" },
+    { code: "+44", label: "🇬🇧 UK" },
+    { code: "+61", label: "🇦🇺 Australia" },
+    { code: "+971", label: "🇦🇪 UAE" },
+    { code: "+65", label: "🇸🇬 Singapore" },
+  ];
+
+  
+
   useEffect(() => {
-    const checkUserLogin = async () => {
-      const user = await AsyncStorage.getItem('user');
-      if (user) {
-        const parsedUser = JSON.parse(user);
-        // If user data exists, navigate to OTP verification or home screen
-navigation.replace('MainScreen', { 
-  name: parsedUser.name, 
-  mobile: parsedUser.mobileNumber 
-});
-      }
-    };  
+    const pulse = Animated.loop(
+      Animated.sequence([
+        Animated.spring(splashScale, {
+          toValue: 1.1,
+          friction: 3,
+          useNativeDriver: true,
+        }),
+        Animated.spring(splashScale, {
+          toValue: 1,
+          friction: 3,
+          useNativeDriver: true,
+        }),
+      ])
+    );
 
-    checkUserLogin();
+    pulse.start();
+
+    const timer = setTimeout(() => {
+      pulse.stop();
+      Animated.timing(splashOpacity, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }).start(() => {
+        setShowSplash(false);
+      });
+    }, 2000);
+
+    return () => {
+      pulse.stop();
+      clearTimeout(timer);
+    };
   }, []);
 
-  const onPressIn = () => {
-    Animated.spring(scale, {
-      toValue: 0.95,
-      friction: 3,
-      useNativeDriver: true,
-    }).start();
+  useEffect(() => {
+    if (showSplash) return;
+
+    const checkUserLogin = async () => {
+      try {
+        const user = await AsyncStorage.getItem("user");
+        if (user) {
+          const parsedUser = JSON.parse(user);
+
+          if (parsedUser.token) {
+            navigation.replace("MainScreen", {
+              mobileNumber: parsedUser.mobileNumber,
+            });
+            authenticate();
+          }
+        }
+      } catch (e) {}
+    };
+
+    checkUserLogin();
+
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scale, {
+        toValue: 1,
+        friction: 5,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [showSplash]);
+
+  const isValid = mobileNumber.length === 10;
+
+  const handleContinue = async () => {
+    if (!isValid) return;
+    
+    navigation.navigate("OTP-Verification", {
+                countryCode:countryCode,
+                mobileNumber: mobileNumber, // ✅ UPDATED
+              });
+   
   };
 
-  const onPressOut = () => {
-    Animated.spring(scale, {
-      toValue: 1,
-      friction: 3,
-      useNativeDriver: true,
-    }).start();
-  };
+  if (showSplash) {
+    return (
+      <View style={styles.splashContainer}>
+        <Animated.View
+          style={{
+            opacity: splashOpacity,
+            transform: [{ scale: splashScale }],
+            alignItems: "center",
+          }}
+        >
+          <View style={styles.splashLogo}>
+            <Image
+            source={require("./assets/PaySita.png")} // adjust path if needed
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          </View>
+          <Text style={styles.splashText}>PaySita</Text>
+        </Animated.View>
+      </View>
+    );
+  }
 
   return (
-    <ImageBackground source={require('./assets/bg-yellow.jpeg')} style={styles.background}>
-      <View style={styles.card}>
-        <View style={styles.avatarWrapper}>
-          <View style={styles.avatarCircle}>
-            {/* <Icon name="user" size={40} color="#fff" /> */}
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Animated.View
+          style={[styles.content, { opacity, transform: [{ scale }] }]}
+        >
+          <View style={styles.header}> 
+            <View style={styles.leftHeader}> 
+              <View style={styles.logoRow}>
+                <Text style={styles.payText}>Pay</Text>
+                <Text style={styles.sitaText}>Sita</Text>
+              </View>
+               {/* <Image
+            source={require("./assets/PaySita.png")} // adjust path if needed
+            style={styles.logo}
+            resizeMode="contain"
+          /> */}
+
+                {/* <Text style={styles.logoText}>PaySita</Text>  */}
+                </View> 
+                <View style={styles.rightHeader}> 
+                  <TouchableOpacity>
+                     <Text style={styles.headerAction}>English</Text> 
+                  </TouchableOpacity> 
+                  <TouchableOpacity onPress={() => Alert.alert("Sucess","Coming soon ...")} > 
+                    <Text style={styles.headerAction}>Skip</Text> 
+                  </TouchableOpacity> 
+                  </View> 
+                  </View>
+
+          <View style={styles.inputContainer}>
+            {/* ✅ COUNTRY CODE + INPUT */}
+            <View style={styles.phoneRow}>
+              <TouchableOpacity
+                style={styles.countryCodeBox}
+                onPress={() => setShowCountryPicker(!showCountryPicker)}
+              >
+                <Text style={styles.countryCodeText}>{countryCode}</Text>
+                <Ionicons name="chevron-down" size={14} color="#64748B" />
+              </TouchableOpacity>
+
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                placeholder="Mobile Number"
+                placeholderTextColor="#9CA3AF"
+                value={mobileNumber}
+                onChangeText={setMobileNumber}
+                keyboardType="phone-pad"
+                maxLength={10}
+              />
+            </View>
+
+            {showCountryPicker && (
+              <View style={styles.countryPicker}>
+                {countryCodes.map((item) => (
+                  <TouchableOpacity
+                    key={item.code}
+                    style={styles.countryItem}
+                    onPress={() => {
+                      setCountryCode(item.code);
+                      setShowCountryPicker(false);
+                    }}
+                  >
+                    <Text style={styles.countryItemText}>
+                      {item.label} ({item.code})
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+
+            <Text style={styles.helpLinkText}>Need help?</Text>
           </View>
-        </View>
 
-        <Text style={styles.title}>Create Account</Text>
-        <Text style={styles.subtitle}>Sign up to use IndiayaPay</Text>
+          <Text style={styles.subtitle}>
+            Enter your mobile number to log in or create an account
+          </Text>
 
-        <View style={styles.inputContainer}>
-          <TextInput placeholder="Enter your name" value={name} onChangeText={setName} style={styles.input} />
-        </View>
+          <View style={styles.bottomSection}>
+    
+            <View style={styles.securityNotice}>
+              <Ionicons name="lock-closed" size={16} color="#6B7280" />
+              <Text style={styles.securityText}>
+                Your data is encrypted and secure. We'll never share your information.
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={styles.continueButton}
+              onPress={handleContinue}
+              disabled={!isValid}
+            >
+              <Text style={styles.continueButtonText}>Continue</Text>
+            </TouchableOpacity>
 
-        <View style={styles.inputContainer}>
-          {/* <Icon name="phone" size={20} color="#FF6F00" style={styles.icon} /> */}
-          <TextInput
-            style={styles.input}
-            placeholder="Mobile Number"
-            keyboardType="numeric"
-            maxLength={10}
-            value={mobileNumber}
-            onChangeText={setMobileNumber}
-            placeholderTextColor="#999"
-          />
-        </View>
-
-        <Animated.View style={{ transform: [{ scale }] }}>
-          <TouchableOpacity
-            style={[styles.loginButton, !isValid && styles.disabledButton]}
-            onPress={handleProceed}
-            disabled={!isValid}
-            onPressIn={onPressIn}
-            onPressOut={onPressOut}
-          >
-            <Text style={styles.loginText}>Create Account</Text>
-          </TouchableOpacity>
+            <Text style={styles.copyright}>
+              © 2024 PaySita. All rights reserved.
+            </Text>
+          </View>
         </Animated.View>
-
-        {/* <Text style={styles.orText}>Or sign up with</Text>
-        <View style={styles.socialRow}>
-          <Icon name="google" size={24} color="#DB4437" style={styles.socialIcon} />
-          <Icon name="facebook" size={24} color="#4267B2" style={styles.socialIcon} />
-          <Icon name="apple" size={24} color="#000" style={styles.socialIcon} />
-        </View> */}
-      </View>
-    </ImageBackground>
+      </ScrollView>
+    </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  background: {
+  container: {
     flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#FFFFFF",
   },
-  card: {
-    width: '100%',
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingHorizontal: 30,
-    paddingTop: 50,
-    paddingBottom: 30,
-    alignItems: 'center',
+  scrollContent: {
+    flexGrow: 1,
   },
-  avatarWrapper: {
-    position: 'absolute',
-    top: -40,
-    alignItems: 'center',
+  content: {
+    flex: 1,
+    padding: 16,
   },
-  avatarCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#1d154a',
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#000',
-    marginTop: 50,
-  },
+
+  header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 32, }, 
+  leftHeader: { flexDirection: "row", alignItems: "center", }, 
+  rightHeader: { flexDirection: "row", alignItems: "center", gap: 20, }, 
+  headerAction: { fontSize: 14, fontWeight: "600", color: "#2563EB", }, 
+  logoContainer: { backgroundColor: "#fff", borderRadius: 10, padding: 8, marginRight: 8, }, 
+  logoText: { fontSize: 20, fontWeight: "700", color: "#0F172A", },
+
   subtitle: {
     fontSize: 14,
-    color: '#666',
-    marginBottom: 20,
+    color: "#64748B",
+    marginTop: -12,
   },
+
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#ddd',
+    marginBottom: 24,
   },
-  icon: {
-    marginRight: 10,
-  },
+
   input: {
-    flex: 1,
+    borderWidth: 1,
+    borderColor: "#CBD5E1",
+    borderRadius: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     fontSize: 16,
-    color: '#333',
+    backgroundColor: "#F8FAFC",
   },
-  loginButton: {
-    backgroundColor: '#fcbf49',
-    width: '150',
-    paddingVertical: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 10,
-    elevation: 2,
+
+  phoneRow: {
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "center",
   },
-  disabledButton: {
-    backgroundColor: '#ccc',
+
+  countryCodeBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    borderWidth: 1,
+    borderColor: "#CBD5E1",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    backgroundColor: "#F8FAFC",
   },
-  loginText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+
+  countryCodeText: {
+    fontSize: 14,
+    fontWeight: "600",
   },
-  orText: {
-    marginVertical: 15,
-    color: '#888',
+
+  countryPicker: {
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderRadius: 10,
+    backgroundColor: "#FFFFFF",
+  },
+
+  countryItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F1F5F9",
+  },
+  logo: {
+  width: 80,
+  height: 80,
+},
+ logoLogin: {
+  width: 40,
+  height: 40,
+},
+
+
+  countryItemText: {
     fontSize: 14,
   },
-  socialRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '50%',
-    marginBottom: 20,
-  },
-  socialIcon: {
-    marginHorizontal: 10,
-  },
-});
 
-export default IndiayaPayLogin;
+  continueButton: {
+    backgroundColor: "#2563EB",
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+
+  continueButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+
+  bottomSection: {
+    marginTop: "auto",
+    paddingTop: 20,
+  },
+
+  helpLinkText: {
+    color: "#2563EB",
+    marginTop: 12,
+    fontWeight: "600",
+  },
+  logoRow: {
+  flexDirection: "row",
+  alignItems: "center",
+},
+
+payText: {
+  fontSize: 30,
+  fontWeight: "900",
+  color: "#0B3CDE", 
+  letterSpacing: -1,
+  textShadowColor: "rgba(0,0,0,0.15)",
+  textShadowOffset: { width: 0, height: 4 },
+  textShadowRadius: 6,
+
+},
+
+sitaText: {
+  fontSize: 30,
+  fontWeight: "900",
+  color: "#F97316", 
+  letterSpacing: -1,
+  marginLeft: -4, 
+  textShadowColor: "rgba(0,0,0,0.15)",
+  textShadowOffset: { width: 0, height: 4 },
+  textShadowRadius: 6,
+
+},
+
+
+  copyright: {
+    fontSize: 12,
+    textAlign: "center",
+    color: "#94A3B8",
+  },
+
+  splashContainer: {
+    flex: 1,
+    backgroundColor: "#2563EB",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  splashLogo: {
+    backgroundColor: "#1E40AF",
+    padding: 28,
+    borderRadius: 70,
+    marginBottom: 12,
+  },
+
+  splashText: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#fff",
+  },
+  securityNotice: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F1F5F9",
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 16,
+  },
+  securityText: {
+    fontSize: 12,
+    color: "#475569",
+    marginLeft: 8,
+    flex: 1,
+  },
+  brandText: {
+  fontSize: 42,
+  fontWeight: "800",
+  color: "#FFFFFF",
+  letterSpacing: 1,
+},
+
+brandAccent: {
+  color: "#FDBA74", 
+},
+
+
+});

@@ -1,24 +1,25 @@
-
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import {
   View, Text, StyleSheet, Image, TextInput, TouchableOpacity,
-  Alert, FlatList, Modal, ActivityIndicator, Dimensions, Platform,ScrollView
+  Alert, FlatList, Modal, ActivityIndicator, Dimensions, Platform, ScrollView, StatusBar
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Contacts from 'expo-contacts';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
+import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { ThemeContext } from '../theme/Theme';
 
 const { width } = Dimensions.get('window');
 
 const ads = [
   {
-    
     image: require('../assets/ad2.png')
   }
-  
 ];
+
 const MobileRecharge = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [contacts, setContacts] = useState([]);
@@ -26,10 +27,14 @@ const MobileRecharge = () => {
   const [Prepaidoperator, setPrepaidoperator] = useState([]);
   const [selectedOperatorId, setSelectedOperatorId] = useState(null);
   const [loading, setLoading] = useState(false);
-const [token1, setToken1] = useState(null);
-const [token2, setToken2] = useState(null);
-const [token3, setToken3] = useState(null);
-const navigation = useNavigation();
+  const [token1, setToken1] = useState(null);
+  const [token2, setToken2] = useState(null);
+  const [token3, setToken3] = useState(null);
+  
+  const navigation = useNavigation();
+  const { t } = useTranslation();
+  const { colors } = useContext(ThemeContext);
+
   // 🔐 Get Token from backend
   useEffect(() => {
     const fetchToken = async () => {
@@ -37,8 +42,8 @@ const navigation = useNavigation();
         const response = await fetch('http://192.168.29.22:5000/api/token');
         const data = await response.json();
         setToken1(data.token1);
-         setToken2(data.token2);
-          setToken3(data.token3);
+        setToken2(data.token2);
+        setToken3(data.token3);
       } catch (err) {
         console.error('❌ Token Error:', err);
       }
@@ -69,7 +74,7 @@ const navigation = useNavigation();
       }
     };
     fetchOperators();
-  }, );
+  }, [token3]);
 
   // 📇 Open Contacts
   const openContacts = async () => {
@@ -88,77 +93,102 @@ const navigation = useNavigation();
   };
 
   // 📌 Select Contact
-  const selectContact = (contact) => {
-    setPhoneNumber(contact.phoneNumbers?.[0]?.number || '');
-    setModalVisible(false);
-  };
+ const handleViewPlans = async () => {
 
-  const handleViewPlans = async () => {
+  if (!token1 || !token2) {
+    Alert.alert("Please wait", "Authentication is still loading");
+    return;
+  }
+
+  if (!phoneNumber || phoneNumber.replace(/\D/g, '').length !== 10) {
+    Alert.alert("Invalid number", "Enter a valid 10 digit mobile number");
+    return;
+  }
+
+  if (!selectedOperatorId) {
+    Alert.alert("Select operator");
+    return;
+  }
+
+  const selectedOp = Prepaidoperator.find(
+    op => String(op.id) === String(selectedOperatorId)
+  );
+
+  if (!selectedOp) {
+    Alert.alert("Operator not found");
+    return;
+  }
+
   try {
     setLoading(true);
 
-    // ✅ Step 1: HLR Check (using token1)
+    console.log("token1:", token1);
+    console.log("token2:", token2);
+    console.log("selectedOp:", selectedOp);
+
+    // 1️⃣ HLR check
     const hlrResponse = await axios.post(
       'https://api.paysprint.in/api/v1/service/recharge/hlrapi/hlrcheck',
       {
-        number: phoneNumber,
+        number: phoneNumber.replace(/\D/g, ''),
         type: 'mobile',
       },
       {
         headers: {
-          accept: 'application/json',
-          Token: token1, // 👉 use token1 here
-          'Content-Type': 'application/json',
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Token": token1,
         },
       }
     );
-// console.log(token1)
-    const hlrData = hlrResponse.data?.info || {};
-    console.log('HLR Info:', hlrData);
 
-    const circle = hlrData.circle || '';
-    const operatorName = hlrData.operator || '';
+    const hlrInfo = hlrResponse?.data?.info;
 
-    if (!circle || !operatorName) {
-      Alert.alert('Error', 'Circle or Operator info missing from HLR response.');
+    if (!hlrInfo?.circle) {
+      Alert.alert("Failed", "Unable to detect circle");
       setLoading(false);
       return;
     }
 
-    // ✅ Step 2: Fetch Plans (using token2)
+    // 2️⃣ Browse plans
     const plansResponse = await axios.post(
       'https://api.paysprint.in/api/v1/service/recharge/hlrapi/browseplan',
       {
-        circle: circle,
-        op: operatorName,
+        circle: hlrInfo.circle,
+        op: selectedOp.name,   // use selected operator, not HLR operator
       },
       {
         headers: {
-          accept: 'application/json',
-          Token: token2, // 👉 use token2 here
-          'Content-Type': 'application/json',
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Token": token2,
         },
       }
     );
 
-    const plans = plansResponse.data;
-    // console.log('📦 Plans:', plans);
-
     navigation.navigate('ViewPlans', {
-      operatorName: Prepaidoperator.find(op => op.id === selectedOperatorId)?.name,
-      phoneNumber,
+      operatorName: selectedOp.name,
+      phoneNumber: phoneNumber.replace(/\D/g, ''),
       selectedOperatorId,
-      plans: plans, // or plans.info if needed
+      plans: plansResponse.data,
     });
 
   } catch (err) {
-    console.error('❌ Error fetching plans:', err.response?.data || err.message);
-    Alert.alert('Error', 'Something went wrong while checking HLR or fetching plans.');
+
+    console.log(
+      "Paysprint error:",
+      err?.response?.data || err.message
+    );
+
+    Alert.alert(
+      "Authentication failed",
+      err?.response?.data?.message || "Unable to fetch plans"
+    );
+
   } finally {
     setLoading(false);
   }
 };
-
 
   const scrollViewRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -166,92 +196,135 @@ const navigation = useNavigation();
   useEffect(() => {
     const timer = setInterval(() => {
       const nextIndex = (currentIndex + 1) % ads.length;
-      scrollViewRef.current.scrollTo({ x: nextIndex * width, animated: true });
+      scrollViewRef.current?.scrollTo({ x: nextIndex * width, animated: true });
       setCurrentIndex(nextIndex);
     }, 6000);
 
     return () => clearInterval(timer);
   }, [currentIndex]);
 
-
-  
   return (
-    
-    <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.containers}>
-      <ScrollView
-        ref={scrollViewRef}
-        horizontal
-        pagingEnabled
-        scrollEnabled={false}
-        showsHorizontalScrollIndicator={false}
-      >
-        {ads.map((ad, index) => (
-          <View key={index} style={styles.adContainers}>
-            <Image source={ad.image} style={styles.image} resizeMode="cover" />
-            <Text style={styles.title}>{ad.title}</Text>
-          </View>
-        ))}
-      </ScrollView>
-    </View>
-      <View style={styles.screen}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={["top", "left", "right"]}>
+      <StatusBar
+              backgroundColor={colors.background}
+              barStyle="dark-content"
+              translucent={false}
+            />
+      
+            {/* Header */}
+            <View style={[styles.header, { backgroundColor: colors.background }]}>
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}
+              >
+                <Ionicons name="arrow-back" size={24} color={colors.text} />
+              </TouchableOpacity>
+              <Text style={[styles.headerTitle, { color: colors.text }]}>Mobile Recharge</Text>
+              <View style={{ width: 40 }} />
+            </View>
 
-        {/* 🔢 Phone Input */}
-        <View style={styles.searchContainer}>
-          <Image source={require('../assets/mobile/search.png')} style={{ width: 25, height: 25 }} />
-          <TextInput
-            style={styles.searchtextStyle}
-            placeholder="Enter Mobile Number"
-            keyboardType="phone-pad"
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-          />
-          <TouchableOpacity onPress={openContacts}>
-            <Image source={require('../assets/mobile/contact.png')} style={{ width: 25, height: 25 }} />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Ad Banner */}
+        <View style={styles.containers}>
+          <ScrollView
+            ref={scrollViewRef}
+            horizontal
+            pagingEnabled
+            scrollEnabled={false}
+            showsHorizontalScrollIndicator={false}
+          >
+            {ads.map((ad, index) => (
+              <View key={index} style={styles.adContainers}>
+                <Image source={ad.image} style={styles.image} resizeMode="cover" />
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+
+        <View style={styles.screen}>
+          {/* 🔢 Phone Input */}
+          <View style={[styles.searchContainer, { backgroundColor: colors.option }]}>
+            <Ionicons name="search" size={22} color="#666" />
+            <TextInput
+              style={[styles.searchtextStyle, { color: colors.text }]}
+              placeholder="Enter Mobile Number"
+              placeholderTextColor="#999"
+              keyboardType="phone-pad"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+            />
+            <TouchableOpacity onPress={openContacts}>
+              <Ionicons name="person-outline" size={22} color="#666" />
+            </TouchableOpacity>
+          </View>
+
+          {/* 🏢 Operator Picker */}
+          <View style={[styles.pickerWrapper, { backgroundColor: colors.option, borderColor: colors.border || '#E0E0E0' }]}>
+            <Picker
+              selectedValue={selectedOperatorId}
+              onValueChange={(value) => setSelectedOperatorId(value)}
+              style={{ color: colors.text }}
+              dropdownIconColor={colors.text}
+            >
+              <Picker.Item label="Select Operator" value={null} />
+              {Prepaidoperator.map((op, index) => (
+                <Picker.Item key={index} label={op.name} value={op.id} />
+              ))}
+            </Picker>
+          </View>
+
+          {/* 🚀 Proceed Button */}
+          <TouchableOpacity
+            style={[styles.proceedButtons, loading && styles.proceedButtonDisabled]}
+            onPress={handleViewPlans}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <Text style={styles.proceedButtonText}>View Plans</Text>
+            )}
           </TouchableOpacity>
         </View>
-
-        {/* 🏢 Operator Picker */}
-        {/* <Text style={styles.label}>Select Operator:</Text> */}
-        <View style={styles.pickerWrapper}>
-          <Picker
-            selectedValue={selectedOperatorId}
-            onValueChange={(value) => setSelectedOperatorId(value)}
-          >
-            <Picker.Item label="Select Operator" value={null} />
-            {Prepaidoperator.map((op, index) => (
-              <Picker.Item key={index} label={op.name} value={op.id} />
-            ))}
-          </Picker>
-        </View>
-
-        {/* 🚀 Proceed */}
-        <TouchableOpacity
-          style={styles.proceedButtons}
-          onPress={handleViewPlans}
-          disabled={loading}
-        >
-          <Text style={{ color: '#fff' }}>{loading ? 'Processing...' : 'View Plans'} </Text>
-          
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
 
       {/* 📇 Contact Modal */}
-      <Modal visible={modalVisible} animationType="slide">
-        <View style={styles.modalContainer}>
-          <FlatList
-            data={contacts}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => selectContact(item)} style={styles.contactItem}>
-                <Text>{item.name}</Text>
-                <Text>{item.phoneNumbers?.[0]?.number}</Text>
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContainer, { backgroundColor: colors.background }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>Select Contact</Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Ionicons name="close-circle" size={28} color="#666" />
               </TouchableOpacity>
-            )}
-          />
-          <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
-            <Text style={{ color: 'white' }}>Close</Text>
-          </TouchableOpacity>
+            </View>
+
+            <FlatList
+              data={contacts}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => selectContact(item)}
+                  style={[styles.contactItem, { backgroundColor: colors.option }]}
+                >
+                  <View style={styles.contactAvatar}>
+                    <Ionicons name="person" size={20} color="#666" />
+                  </View>
+                  <View style={styles.contactInfo}>
+                    <Text style={[styles.contactName, { color: colors.text }]}>{item.name}</Text>
+                    <Text style={styles.contactNumber}>{item.phoneNumbers?.[0]?.number}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={styles.closeButton}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
     </SafeAreaView>
@@ -259,184 +332,170 @@ const navigation = useNavigation();
 };
 
 export default MobileRecharge;
+
 const styles = StyleSheet.create({
-  screen: {
+  container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
-    padding: width * 0.05,
-    marginTop: Platform.OS === 'ios' ? 30 : 20,
   },
-  searchContainer: {
+  header: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
     alignItems: 'center',
-    elevation: 2,
-    marginBottom: 20,
-  },
-  searchtextStyle: {
-    flex: 1,
-    fontSize: 16,
-    color: '#333',
-    marginLeft: 10,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 10,
-  },
-  pickerWrapper: {
-    backgroundColor: '#FFFBE6',
-    borderRadius: 8,
-    borderWidth: 1.5,
-    borderColor: '#FFC107',
-    marginBottom: 30,
-  },
-  proceedButtons: {
-    backgroundColor: '#1d154a',
-    padding: width * 0.04,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: '#FFF',
-    padding: width * 0.05,
-  },
-  contactItem: {
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderColor: '#EAEAEA',
-  },
-  closeButton: {
-    backgroundColor: '#FF3B30',
-    padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-   contactText: {
-    fontSize: 20,
-    color: '#333',
-    padding: 12,
-    textAlign: 'center',
-    fontWeight: '600',
-  },
-  card: {
-    backgroundColor: '#F9F9F9',
-    padding: 18,
-    borderRadius: 12,
-    marginTop: 20,
-    elevation: 5,
+    elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-  },
-  totalText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#E0E0E0',
-    marginVertical: 12,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 6,
-  },
-  label: {
-    fontSize: 16,
-    color: '#777',
-  },
-  value: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  planContainer: {
-    marginTop: 25,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
-    marginBottom: 12,
-    color: '#333',
-  },
-  text: {
-    fontSize: 16,
-    color: '#444',
-  },
-  textSmall: {
-    fontSize: 14,
-    color: '#666',
-  },
-  offerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 20,
-    padding: 15,
-    backgroundColor: '#FFF',
-    borderRadius: 8,
     shadowOffset: { width: 0, height: 2 },
-    shadowColor: '#000',
     shadowOpacity: 0.05,
-    shadowRadius: 5,
+    shadowRadius: 3,
   },
-  offerText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  viewAll: {
-    fontSize: 16,
-    color: '#007AFF',
-    fontWeight: '500',
-  },
-  payButton: {
-    backgroundColor: '#FF9800',
-    paddingVertical: 16,
-    paddingHorizontal: 30,
-    borderRadius: 30,
-    alignItems: 'center',
-    marginTop: 25,
-    elevation: 6,
-    shadowOffset: { width: 0, height: 5 },
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-  },
-  payButtonText: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#fff',
-  },  
-  card: {
-    width: width,
-    height: 100,
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
   },
- containers: {
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+  containers: {
     width,
-    height: 200,
+    height: 180,
+    marginBottom: 20,
   },
   adContainers: {
     width,
-    height: 160,
-    position: 'relative',
+    height: 180,
   },
   image: {
     width,
     height: 180,
   },
- 
+  screen: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    marginBottom: 20,
+  },
+  searchtextStyle: {
+    flex: 1,
+    fontSize: 15,
+    marginLeft: 12,
+  },
+  pickerWrapper: {
+    borderRadius: 12,
+    borderWidth: 1.5,
+    marginBottom: 24,
+    overflow: 'hidden',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+  },
+  proceedButtons: {
+    backgroundColor: '#4F46E5',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    elevation: 3,
+    shadowColor: '#4F46E5',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  proceedButtonDisabled: {
+    backgroundColor: '#9CA3AF',
+  },
+  proceedButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContainer: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 20,
+    maxHeight: '80%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+  },
+  contactItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    marginHorizontal: 16,
+    marginVertical: 6,
+    borderRadius: 12,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+  },
+  contactAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#F3F4F6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  contactInfo: {
+    flex: 1,
+  },
+  contactName: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  contactNumber: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  closeButton: {
+    backgroundColor: '#EF4444',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    margin: 20,
+    marginTop: 12,
+  },
+  closeButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
+  },
 });

@@ -8,7 +8,8 @@ import {
   Image,
   TouchableWithoutFeedback,
   StyleSheet,
-  Alert
+  Alert,
+  Linking,
 } from "react-native";
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "../../theme/Theme";
@@ -16,19 +17,19 @@ import { ThemeContext } from "../../theme/Theme";
 /* ---------- DATA ---------- */
 
 const loanAndFinanceItems = [
-  { nameKey: "loan.personal", img: require("../../assets2/get-money.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.business", img: require("../../assets2/businessLoan.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.home", img: require("../../assets2/home.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.gold", img: require("../../assets2/goldLoan.png"), screen: "LoanFormScreen" },
+  { nameKey: "loan.personal", img: require("../../assets2/get-money.png"), url:"https://indiyapay.com/loan/users/frontend/bank_details/bank_personal.php" },
+  { nameKey: "loan.business", img: require("../../assets2/businessLoan.png"), url: "https://indiyapay.com/loan/users/frontend/bank_details/bank_BusinessLoan.php" },
+  { nameKey: "loan.home", img: require("../../assets2/home.png"),url:"https://indiyapay.com/loan/users/frontend/bank_details/bank_home.php" },
+  { nameKey: "loan.gold", img: require("../../assets2/goldLoan.png"), url: "https://indiyapay.com/loan/users/frontend/bank_details/bank_gold.php" },
   { nameKey: "loan.home_transfer", img: require("../../assets2/transfer.png"), screen: "LoanFormScreen" },
   { nameKey: "loan.renovation", img: require("../../assets2/construction.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.education", img: require("../../assets2/education.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.property", img: require("../../assets2/propertyLoan.png"), screen: "LoanFormScreen" },
+  { nameKey: "loan.education", img: require("../../assets2/education.png"), url: "https://indiyapay.com/loan/users/frontend/bank_details/bank_education.php" },
+  { nameKey: "loan.property", img: require("../../assets2/propertyLoan.png"), url: "https://indiyapay.com/loan/users/frontend/bank_details/bank_loanAgainstProperty.php" },
   { nameKey: "loan.shares", img: require("../../assets2/stockLoan.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.sme", img: require("../../assets2/wallet.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.project", img: require("../../assets2/project.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.vehicle", img: require("../../assets2/car.png"), screen: "LoanFormScreen" },
-  { nameKey: "loan.construction", img: require("../../assets2/construction.png"), screen: "LoanFormScreen" },
+  { nameKey: "loan.sme", img: require("../../assets2/wallet.png"), url: "https://indiyapay.com/loan/users/frontend/bank_details/bank_loanAgainstPropertyMSME.php" },
+  { nameKey: "loan.project", img: require("../../assets2/project.png"), url: "https://indiyapay.com/loan/users/frontend/bank_details/bank_loanProjectFinance.php" },
+  { nameKey: "loan.vehicle", img: require("../../assets2/car.png"), url: "https://indiyapay.com/loan/users/frontend/bank_details/bank_vehicle.php" },
+  { nameKey: "loan.construction", img: require("../../assets2/construction.png"), url: "https://indiyapay.com/loan/users/frontend/bank_details/bank_loanConstructionFinance.php" },
   { nameKey: "loan.school_hotel", img: require("../../assets2/school.png"), screen: "LoanFormScreen" },
   { nameKey: "loan.lrd", img: require("../../assets2/settings.png"), screen: "LoanFormScreen" },
 ];
@@ -63,8 +64,8 @@ export default function LoanFinanceSection({ navigation }) {
             <TouchableOpacity
               key={index}
               style={styles.item}
-              onPress={() => //navigation.navigate(item.screen)
-               Alert.alert("Coming Soon")  
+              onPress={() => Linking.openURL(item.url)
+               //Alert.alert("Coming Soon")  
               }
             >
               <Image source={item.img} style={styles.icon} />
@@ -89,8 +90,8 @@ export default function LoanFinanceSection({ navigation }) {
                       style={styles.modalItem}
                       onPress={() => {
                         setModalVisible(false);
-                        //navigation.navigate(item.screen);
-                         Alert.alert("Coming Soon");
+                        Linking.openURL(item.url);
+                         //Alert.alert("Coming Soon");
                       }}
                     >
                       <Image source={item.img} style={styles.modalIcon} />

@@ -67,8 +67,8 @@ export default function TransferSection() {
           <TouchableOpacity
             key={index}
             style={styles.serviceItems}
-            onPress={() => //navigation.navigate(item.screen)
-                 {Alert.alert("Coming Soon");}  
+            onPress={() => navigation.navigate(item.screen)
+                   
             }
           >
             <View style={styles.imageWrapper}>
@@ -89,8 +89,8 @@ export default function TransferSection() {
       <View style={styles.upiContainer}>
         <Text
           style={styles.upiText}
-          onPress={() => //navigation.navigate("QRcode")
-             {Alert.alert("Coming Soon")}  
+          onPress={() => navigation.navigate("QRcode")
+             //{Alert.alert("Coming Soon")}  
           }
         >
           UPI ID: 123456789@xyz
@@ -98,8 +98,8 @@ export default function TransferSection() {
 
         <TouchableOpacity
           style={styles.headerContainer}
-          onPress={() => //navigation.navigate("DealsRewards")
-             {Alert.alert("Coming Soon");}  
+          onPress={() => navigation.navigate("DealsRewards")
+             //{Alert.alert("Coming Soon");}  
           }
         >
           <Animated.View

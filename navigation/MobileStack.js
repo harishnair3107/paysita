@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 
 export default function MobileStack() {
     return (
-  <Stack.Navigator screenOptions={{ headerShown: true }}>
+  <Stack.Navigator screenOptions={{ headerShown: false}}>
   
    <Stack.Screen name="Mobile Recharge" component={MobileRecharge} />
     <Stack.Screen name="MobileDetailsScreen" component={MobileDetailsScreen} />

@@ -44,6 +44,7 @@ import DonationAndCharityFormScreen from "../screens/DonationAndCharityFormScree
 import OtherServicesFormScreen from "../screens/OtherServicesFormScreen";
 import GSTFormScreen from "../screens/GSTFormScreen";
 import ITRFormScreen from "../screens/Taxation-form";
+import PaymentScreen from "../screens/PaymentScreen";
 /* ======================
    DRAWER & PROFILE
 ======================= */
@@ -53,7 +54,7 @@ import Upimangement from "../screens/app/upimangement";
 import transaction from "../screens/app/transaction";
 import referalhistory from "../screens/app/referalhistory";
 import profile from "../screens/app/profile";
-
+import PaymentqrScreen from "../screens/PaymentqrScreen"
 /* =======================
    SECURITY & SETTINGS
 ======================= */
@@ -64,6 +65,7 @@ import SetupPasscode from "../screens/app/SetupPasscode";
 import SetNewPasscode from "../screens/app/SetNewPasscode";
 import ManageNotification from "../screens/app/ManageNotification";
 import AccountSecurityTips from "../screens/app/AccountSecurityTips";
+import cashbackhistory from "../screens/app/cashbackhistory";
 
 /* =======================
    USER INFO
@@ -85,7 +87,7 @@ import currentBank from "../screens/app/currentBank";
 import addbankaccount from "../screens/app/addbankaccount";
 import addcreditline from "../screens/app/addcreditline";
 import addrupaycc from "../screens/app/addrupaycc";
-
+import Permissions from "../screens/app/Permisions";
 /* =======================
    INFO PAGES
 ======================= */
@@ -206,6 +208,11 @@ export default function MainStack() {
       <Stack.Screen name="DonationAndCharityFormScreen" component={DonationAndCharityFormScreen}/>
       <Stack.Screen name="GSTFormScreen" component={GSTFormScreen}/>
       <Stack.Screen name="OtherServicesFormScreen" component={OtherServicesFormScreen}/>
+
+      <Stack.Screen name="Permissions" component={Permissions}/>
+      <Stack.Screen name="PaymentqrScreen" component={PaymentqrScreen}/>
+      <Stack.Screen name="PaymentScreen" component={PaymentScreen}/>
+
     </Stack.Navigator>
   );
 }

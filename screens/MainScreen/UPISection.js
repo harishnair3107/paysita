@@ -24,8 +24,8 @@ export default function UPISection({openWhatsApp,navigation}) {
         <TouchableOpacity
           style={styles.ctaBox}
           activeOpacity={0.85}
-          onPress={() => //navigation.navigate("WantToHire")
-             {Alert.alert("Coming Soon")}
+          onPress={() => navigation.navigate("WantToHire")
+             //{Alert.alert("Coming Soon")}
           }
         >
           <Text style={styles.ctaTitle}>I want to</Text>
@@ -48,8 +48,8 @@ export default function UPISection({openWhatsApp,navigation}) {
         <TouchableOpacity
           style={[styles.ctaBox, styles.ctaRight]}
           activeOpacity={0.85}
-          onPress={() => //openWhatsApp()
-           {Alert.alert("Coming Soon")}  
+          onPress={() => openWhatsApp()
+           //{Alert.alert("Coming Soon")}  
           }
         >
           <Text style={styles.ctaTitle}>I want a</Text>

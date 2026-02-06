@@ -1,24 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   StyleSheet,
   Text,
   View,
   Pressable,
   TouchableOpacity,
-  SafeAreaView,
   FlatList,
   TextInput,
   ScrollView,
+  StatusBar,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ThemeContext } from "../theme/Theme";
 
 const CashbackAndReferral = () => {
   const [activeTab, setActiveTab] = useState("Cashback");
   const navigation = useNavigation();
   const { t } = useTranslation();
+  const { colors } = useContext(ThemeContext);
 
   const [referralData, setReferralData] = useState({
     name: "",
@@ -32,36 +35,35 @@ const CashbackAndReferral = () => {
     setReferralData({ ...referralData, [field]: value });
   };
 
-const handleSubmit = async () => {
-  try {
-    const response = await fetch('http://192.168.29.22:5000/api/referral', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(referralData),
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      alert(t("cashback_referral.referral_submitted"));
-      setReferralData({
-        name: "",
-        email: "",
-        contact: "",
-        category: "",
-        message: "",
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch('http://192.168.29.22:5000/api/referral', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(referralData),
       });
-    } else {
-      alert("Error: " + result.message);
-    }
-  } catch (error) {
-    console.error("Submission error:", error);
-    alert("Something went wrong.");
-  }
-};
 
+      const result = await response.json();
+
+      if (response.ok) {
+        alert(t("cashback_referral.referral_submitted"));
+        setReferralData({
+          name: "",
+          email: "",
+          contact: "",
+          category: "",
+          message: "",
+        });
+      } else {
+        alert("Error: " + result.message);
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+      alert("Something went wrong.");
+    }
+  };
 
   const cashbackOffers = {
     [t("cashback_referral.recharge")]: [
@@ -75,11 +77,11 @@ const handleSubmit = async () => {
   };
 
   const renderCashbackCard = ({ item }) => (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: colors.option }]}>
       <View style={styles.cardHeader}>
-        <Text style={styles.actionText}>{item.action}</Text>
+        <Text style={[styles.actionText, { color: colors.text }]}>{item.action}</Text>
       </View>
-      <Text style={styles.descriptionText}>
+      <Text style={[styles.descriptionText, { color: colors.text }]}>
         {t("cashback_referral.earn")} <Text style={styles.boldText}>₹{item.cashback}</Text> {t("cashback_referral.on_action", { action: item.action.toLowerCase() })}
       </Text>
       <View style={styles.cardFooter}>
@@ -91,27 +93,35 @@ const handleSubmit = async () => {
   );
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
-      <Pressable  style={{ backgroundColor: "#f8f9fa", alignItems: "left", marginTop: 20 }} onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={24} color="black" />
-           <Text style={{ fontSize: 22, fontWeight: "bold", color: "#333",textAlign: "center",marginBottom:40 ,marginTop:-29}}>
-          {t("cashback_referral.title")}
-        </Text>
-      </Pressable>
-{/* 
-      <View style={{ backgroundColor: "#f8f9fa", alignItems: "center", padding: 20 }}>
-       
-        <Text style={{ fontSize: 24, fontWeight: "bold", color: "#333" }}>
-          {t("cashback_referral.title")}
-        </Text>
-      </View> */}
+    <SafeAreaView style={[styles.safeContainer, { backgroundColor: colors.background }]} edges={["top", "left", "right"]}>
+      <StatusBar
+        backgroundColor={colors.background}
+        barStyle="dark-content"
+        translucent={false}
+      />
 
-      <View style={styles.tabContainer}>
+      {/* Header */}
+      <View style={[styles.header, { backgroundColor: colors.background }]}>
+        <Pressable
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          android_ripple={{ color: "rgba(0, 0, 0, 0.1)", borderless: true }}
+        >
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
+        </Pressable>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>
+          {t("cashback_referral.title")}
+        </Text>
+        <View style={{ width: 40 }} />
+      </View>
+
+      {/* Tab Container */}
+      <View style={[styles.tabContainer, { backgroundColor: colors.background }]}>
         <TouchableOpacity
           style={[styles.tab, activeTab === "Cashback" && styles.activeTab]}
           onPress={() => setActiveTab("Cashback")}
         >
-          <Text style={[styles.tabText, activeTab === "Cashback" && styles.activeTabText]}>
+          <Text style={[styles.tabText, { color: colors.text }, activeTab === "Cashback" && styles.activeTabText]}>
             {t("cashback_referral.cashback")}
           </Text>
         </TouchableOpacity>
@@ -119,12 +129,13 @@ const handleSubmit = async () => {
           style={[styles.tab, activeTab === "Referral" && styles.activeTab]}
           onPress={() => setActiveTab("Referral")}
         >
-          <Text style={[styles.tabText, activeTab === "Referral" && styles.activeTabText]}>
+          <Text style={[styles.tabText, { color: colors.text }, activeTab === "Referral" && styles.activeTabText]}>
             {t("cashback_referral.referral")}
           </Text>
         </TouchableOpacity>
       </View>
 
+      {/* Content */}
       <View style={styles.content}>
         {activeTab === "Cashback" ? (
           <FlatList
@@ -134,7 +145,7 @@ const handleSubmit = async () => {
               const [category, offers] = item;
               return (
                 <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>{category}</Text>
+                  <Text style={[styles.sectionTitle, { color: colors.text }]}>{category}</Text>
                   <FlatList
                     data={offers}
                     keyExtractor={(item) => item.id}
@@ -150,61 +161,70 @@ const handleSubmit = async () => {
             contentContainerStyle={styles.listContainer}
           />
         ) : (
-          <View style={styles.formContainer}>
-            <Text style={styles.sectionTitle}>{t("cashback_referral.refer_and_earn")}</Text>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={[styles.formContainer, { backgroundColor: colors.option }]}>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                {t("cashback_referral.refer_and_earn")}
+              </Text>
 
-            <TextInput
-              style={styles.input}
-              placeholder={t("cashback_referral.full_name")}
-              value={referralData.name}
-              onChangeText={(text) => handleInputChange("name", text)}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder={t("cashback_referral.email")}
-              keyboardType="email-address"
-              value={referralData.email}
-              onChangeText={(text) => handleInputChange("email", text)}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder={t("cashback_referral.contact_number")}
-              keyboardType="phone-pad"
-              value={referralData.contact}
-              onChangeText={(text) => handleInputChange("contact", text)}
-            />
+              <TextInput
+                style={[styles.input, { borderColor: colors.border || "#ccc", color: colors.text, backgroundColor: colors.background }]}
+                placeholder={t("cashback_referral.full_name")}
+                placeholderTextColor="#999"
+                value={referralData.name}
+                onChangeText={(text) => handleInputChange("name", text)}
+              />
+              <TextInput
+                style={[styles.input, { borderColor: colors.border || "#ccc", color: colors.text, backgroundColor: colors.background }]}
+                placeholder={t("cashback_referral.email")}
+                placeholderTextColor="#999"
+                keyboardType="email-address"
+                value={referralData.email}
+                onChangeText={(text) => handleInputChange("email", text)}
+              />
+              <TextInput
+                style={[styles.input, { borderColor: colors.border || "#ccc", color: colors.text, backgroundColor: colors.background }]}
+                placeholder={t("cashback_referral.contact_number")}
+                placeholderTextColor="#999"
+                keyboardType="phone-pad"
+                value={referralData.contact}
+                onChangeText={(text) => handleInputChange("contact", text)}
+              />
 
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={referralData.category}
-                onValueChange={(itemValue) => handleInputChange("category", itemValue)}
-                style={styles.picker}
-              >
-                <Picker.Item label={t("cashback_referral.select_service")} value="" />
-                <Picker.Item label={t("cashback_referral.loan")} value="Loans" />
-                <Picker.Item label={t("cashback_referral.taxation")} value="Taxation" />
-                <Picker.Item label={t("cashback_referral.real_estate")} value="Real Estate" />
-                <Picker.Item label={t("cashback_referral.home_services")} value="Home Services" />
-                <Picker.Item label={t("cashback_referral.tour_travel")} value="Tour and Travel" />
-                <Picker.Item label={t("cashback_referral.education")} value="Educational Services" />
-                <Picker.Item label={t("cashback_referral.donation")} value="Donation and Charity" />
-                <Picker.Item label={t("cashback_referral.others")} value="Other Services" />
-              </Picker>
+              <View style={[styles.pickerContainer, { borderColor: colors.border || "#ccc", backgroundColor: colors.background }]}>
+                <Picker
+                  selectedValue={referralData.category}
+                  onValueChange={(itemValue) => handleInputChange("category", itemValue)}
+                  style={[styles.picker, { color: colors.text }]}
+                  dropdownIconColor={colors.text}
+                >
+                  <Picker.Item label={t("cashback_referral.select_service")} value="" />
+                  <Picker.Item label={t("cashback_referral.loan")} value="Loans" />
+                  <Picker.Item label={t("cashback_referral.taxation")} value="Taxation" />
+                  <Picker.Item label={t("cashback_referral.real_estate")} value="Real Estate" />
+                  <Picker.Item label={t("cashback_referral.home_services")} value="Home Services" />
+                  <Picker.Item label={t("cashback_referral.tour_travel")} value="Tour and Travel" />
+                  <Picker.Item label={t("cashback_referral.education")} value="Educational Services" />
+                  <Picker.Item label={t("cashback_referral.donation")} value="Donation and Charity" />
+                  <Picker.Item label={t("cashback_referral.others")} value="Other Services" />
+                </Picker>
+              </View>
+
+              <TextInput
+                style={[styles.input, styles.textArea, { borderColor: colors.border || "#ccc", color: colors.text, backgroundColor: colors.background }]}
+                placeholder={t("cashback_referral.message")}
+                placeholderTextColor="#999"
+                value={referralData.message}
+                onChangeText={(text) => handleInputChange("message", text)}
+                multiline={true}
+                numberOfLines={4}
+              />
+
+              <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                <Text style={styles.submitText}>{t("cashback_referral.submit_referral")}</Text>
+              </TouchableOpacity>
             </View>
-
-            <TextInput
-              style={[styles.input, styles.textArea]}
-              placeholder={t("cashback_referral.message")}
-              value={referralData.message}
-              onChangeText={(text) => handleInputChange("message", text)}
-              multiline={true}
-              numberOfLines={4}
-            />
-
-            <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-              <Text style={styles.submitText}>{t("cashback_referral.submit_referral")}</Text>
-            </TouchableOpacity>
-          </View>
+          </ScrollView>
         )}
       </View>
     </SafeAreaView>
@@ -214,119 +234,161 @@ const handleSubmit = async () => {
 export default CashbackAndReferral;
 
 const styles = StyleSheet.create({
-  safeContainer: { flex: 1, backgroundColor: "#f8f9fa", padding: 30,margintop:20 },
+  safeContainer: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+  },
   tabContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    backgroundColor: "#f8f9fa",
     borderBottomWidth: 2,
-  
     borderBottomColor: "#ddd",
-  },
-  tab: { flex: 1, alignItems: "center" },
-  activeTab: {
-    borderBottomWidth: 3,
-    borderBottomColor: "#FFA500"
-  },
-  tabText: { fontSize: 20, fontWeight: "500", color: "#555" },
-  activeTabText: { color: "#583d09ff", fontWeight: "bold" },
-  listContainer: { paddingVertical: 10 },
-  section: { marginBottom: 10 },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#1D154A",
-    marginLeft: 0,
-    marginBottom: 5,
-  },
-  row: { justifyContent: "space-around" },
-  card: {
-    backgroundColor: "#F5F5F5",
-    borderRadius: 15,
-    padding: 15,
-    marginVertical: 5,
-    marginRight: 5,
-    width: "49.3%",
-    height: 250,
-    justifyContent: "space-around",
-    elevation: 4,
-    shadowColor: "#aaa",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    borderWidth: 1,
-  },
-  cardHeader: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
-  actionText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#0e0d0dff",
-    textAlign: "justify",
-  },
-  descriptionText: {
-    fontSize: 16,
-    color: "#444",
-    textAlign: "justify",
-    marginTop:-25,
-  },
-  boldText: { fontWeight: "bold", color: "#000" },
-  cardFooter: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
     marginTop: 10,
   },
+  tab: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 12,
+  },
+  activeTab: {
+    borderBottomWidth: 3,
+    borderBottomColor: "#FFA500",
+  },
+  tabText: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  activeTabText: {
+    color: "#FFA500",
+    fontWeight: "700",
+  },
+  content: {
+    flex: 1,
+  },
+  listContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+  },
+  section: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    marginBottom: 12,
+  },
+  row: {
+    justifyContent: "space-between",
+  },
+  card: {
+    borderRadius: 16,
+    padding: 16,
+    marginVertical: 8,
+    width: "48%",
+    minHeight: 200,
+    justifyContent: "space-between",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+  },
+  cardHeader: {
+    marginBottom: 12,
+  },
+  actionText: {
+    fontSize: 15,
+    fontWeight: "700",
+    lineHeight: 20,
+  },
+  descriptionText: {
+    fontSize: 14,
+    lineHeight: 20,
+    flex: 1,
+  },
+  boldText: {
+    fontWeight: "700",
+    color: "#FFA500",
+    fontSize: 16,
+  },
+  cardFooter: {
+    marginTop: 12,
+  },
   claimButton: {
-    backgroundColor: "black",
-    paddingVertical: 6,
+    backgroundColor: "#1E1E1E",
+    paddingVertical: 10,
     borderRadius: 8,
     alignItems: "center",
-    width: "100%",
   },
   claimButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-    fontSize: 16,
+    color: "#FFFFFF",
+    fontWeight: "600",
+    fontSize: 14,
   },
   formContainer: {
     padding: 20,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    margin: 15,
-    marginTop:70,
-    elevation: 5,
+    borderRadius: 16,
+    margin: 16,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-    fontSize: 16,
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+    fontSize: 15,
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    marginBottom: 10,
+    borderRadius: 8,
+    marginBottom: 16,
+    overflow: "hidden",
   },
   picker: {
     height: 50,
     width: "100%",
   },
   textArea: {
-    height: 80,
+    height: 100,
     textAlignVertical: "top",
   },
   submitButton: {
-    backgroundColor: "#007bff",
+    backgroundColor: "#4F46E5",
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 10,
     alignItems: "center",
+    marginTop: 8,
   },
   submitText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
   },
 });

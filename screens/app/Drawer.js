@@ -145,8 +145,8 @@ const { t, i18n } = useTranslation();
         <View style={styles.QRcontainer}>
           <View style={styles.buttonContainer}>
             <Pressable style={styles.helpSupportButton} onPress={() =>{
-            //navigation.navigate("HelpAndSupport")
-            Alert.alert("Sucess","Coming Soon......");
+            navigation.navigate("HelpAndSupport")
+            //Alert.alert("Sucess","Coming Soon......");
             }}> 
               <View style={styles.helpSupportIconContainer}>
                 <Image source={require('../../assets/drawer/helpAndSupport.gif')} style={{ width: 30, height: 30 }} />
@@ -158,8 +158,8 @@ const { t, i18n } = useTranslation();
             </Pressable>
 
             <Pressable style={styles.helpSupportButton} onPress={() => {
-              //navigation.navigate("ChangeLanguage")
-               Alert.alert("Sucess","Coming Soon......"); 
+              navigation.navigate("ChangeLanguage")
+               //Alert.alert("Sucess","Coming Soon......"); 
               }}>
               <View style={styles.helpSupportIconContainer}>
                 <Image source={require('../../assets/drawer/translate.gif')} style={{ width: 30, height: 30 }} />
@@ -194,8 +194,8 @@ const { t, i18n } = useTranslation();
               style={styles.settingsOption}
 onPress={() => {
   // console.log("🧭 Navigating to:", option.screen, "with params:", option.params);
-  //navigation.navigate(option.screen, option.params);
-      Alert.alert("Sucess","Coming Soon......");
+  navigation.navigate(option.screen);
+      //Alert.alert("Sucess","Coming Soon......");
 }}
             >
               <Image source={option.icon} style={styles.optionIcon} />
@@ -209,8 +209,11 @@ onPress={() => {
         </View>
         <View style={styles.additionalSectionContainer}>
           <Pressable style={styles.aboutButton} onPress={() =>{
-            //navigation.navigate("AboutUs")
-            Alert.alert("Sucess","Coming Soon......");}}> 
+            navigation.navigate("AboutUs")
+            //Alert.alert("Sucess","Coming Soon......");
+            }
+            }
+            > 
             <Text style={styles.aboutButtonText}>{t('about')}</Text>
           </Pressable>
           <Pressable style={styles.logoutButton} onPress={handleLogout}>

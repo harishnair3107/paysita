@@ -1,27 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
   Image,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   TouchableOpacity,
   Modal,
+  StatusBar,
+  Pressable,
+  Linking,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import { MaterialCommunityIcons } from "react-native-vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-// import Ionicons from 'react-native-vector-icons/Ionicons'
+import { ThemeContext } from "../theme/Theme";
+
 const AllServicesScreen = () => {
   const navigation = useNavigation();
-  const [homeServicesModalVisible, setHomeServicesModalVisible] =
-    useState(false);
-  const [taxationModalVisible, setTaxationModalVisible] = useState(false);
-  const [otherServicesModelVisible, setOtherServicesModelVisible] =
-    useState(false);
-  const [realEstateModalVisible, setRealEstateModalVisible] = useState(false);
   const { t } = useTranslation();
+  const { colors } = useContext(ThemeContext);
+
+  const [homeServicesModalVisible, setHomeServicesModalVisible] = useState(false);
+  const [taxationModalVisible, setTaxationModalVisible] = useState(false);
+  const [otherServicesModelVisible, setOtherServicesModelVisible] = useState(false);
+  const [realEstateModalVisible, setRealEstateModalVisible] = useState(false);
+
   //home service
   const homeServicesItems = [
     {
@@ -71,80 +76,91 @@ const AllServicesScreen = () => {
       key: "flat",
       img: require("../assets/flat.png"),
       screen: "RealEstateFormScreen",
+      url:{
+        buy:"https://shelterbig.com/search",
+        sell:"https://shelterbig.com/profile",
+        rent:"https://shelterbig.com/search",
+      }
     },
     {
-      key: "bungalow",
+      key: "Villa",
       img: require("../assets/bungalow.png"),
       screen: "RealEstateFormScreen",
+      url:{
+        buy:"https://shelterbig.com/search",
+        sell:"https://shelterbig.com/profile",
+        rent:"https://shelterbig.com/search",
+      }
     },
     {
-      key: "shop",
+      key: "PG",
       img: require("../assets/shops.png"),
       screen: "RealEstateFormScreen",
+      url:{
+        buy:"https://shelterbig.com/search",
+        sell:"https://shelterbig.com/profile",
+        rent:"https://shelterbig.com/search",
+      }
     },
     {
-      key: "factory",
+      key: "Commercial",
       img: require("../assets/factory.png"),
       screen: "RealEstateFormScreen",
+      url:{
+        buy:"https://shelterbig.com/search",
+        sell:"https://shelterbig.com/profile",
+        rent:"https://shelterbig.com/search",
+      }
     },
     {
-      key: "agriculture_land",
+      key: "plot_land",
       img: require("../assets/agriculture_land.png"),
       screen: "RealEstateFormScreen",
+      url:{
+        buy:"https://shelterbig.com/search",
+        sell:"https://shelterbig.com/profile",
+        rent:"https://shelterbig.com/search",
+      }
     },
-    {
-      key: "rzone_land",
-      img: require("../assets/rzone_land.png"),
-      screen: "RealEstateFormScreen",
-    },
-    {
-      key: "na_plot",
-      img: require("../assets/na_plot.png"),
-      screen: "RealEstateFormScreen",
-    },
-    {
-      key: "school_hotel",
-      img: require("../assets/school_hotel.png"),
-      screen: "RealEstateFormScreen",
-    },
+    
   ];
 
   const taxationItems = [
     {
       key: "itr_filing",
       img: require("../assets/ITR.png"),
-      screen: "ITRScreen",
+      url:"https://mtax.in/"
     },
     {
       key: "company_formation",
       img: require("../assets/company_formation.png"),
-      screen: "ITRScreen",
+      url:"https://mtax.in/"
     },
     { key: "gst", img: require("../assets/gst.png"), screen: "GSTFormScreen" },
     {
       key: "company_audit",
       img: require("../assets/company_audit.png"),
-      screen: "ITRScreen",
+      url:"https://mtax.in/"
     },
     {
       key: "society_audit",
       img: require("../assets/society_Audit.png"),
-      screen: "ITRScreen",
+     url:"https://mtax.in/"
     },
     {
       key: "business_financial_advisory",
       img: require("../assets/business_financial.png"),
-      screen: "ITRScreen",
+      url:"https://mtax.in/"
     },
     {
       key: "corporate_legal_compliance",
       img: require("../assets/corporate_legal.png"),
-      screen: "ITRScreen",
+      url:"https://mtax.in/"
     },
     {
       key: "banking_investment_services",
       img: require("../assets/banking_investment.png"),
-      screen: "ITRScreen",
+      url:"https://mtax.in/"
     },
   ];
 
@@ -266,44 +282,37 @@ const AllServicesScreen = () => {
   ];
 
   return (
-    <SafeAreaView style={styles.screen}>
+    <SafeAreaView style={[styles.screen, { backgroundColor: colors.background }]} edges={["top", "left", "right"]}>
+      <StatusBar
+        backgroundColor={colors.background}
+        barStyle="dark-content"
+        translucent={false}
+      />
+
       {/* Header */}
-      <View style={{ flex: 1, padding: 30 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: "#1d154a",
-            height: 100,
-            width: "120%",
-            position: "absolute",
-            top: -40,
-            left: 0,
-            right: 0,
-            paddingHorizontal: 15,
-          }}
+      <View style={[styles.header, { backgroundColor: colors.background }]}>
+        <Pressable
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          android_ripple={{ color: "rgba(0, 0, 0, 0.1)", borderless: true }}
         >
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={{
-              marginRight: 40,
-              marginTop: 30 
-            }}
-            hitSlop={{ top: 30, right: 40 }}
-          >
-            <MaterialCommunityIcons
-              name="arrow-left"
-              size={30}
-              color="#ffa500"
-            />
-          </TouchableOpacity>
-        </View>
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
+        </Pressable>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>
+          All Services
+        </Text>
+        <View style={{ width: 40 }} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContainer}
+      >
         {/* Explore Free Zone Section */}
-        <View style={styles.container}>
-          <Text style={styles.title}>{t("service.explore_free_zone")}</Text>
+        <View style={[styles.container, { backgroundColor: colors.option }]}>
+          <Text style={[styles.title, { color: colors.text }]}>
+            {t("service.explore_free_zone")}
+          </Text>
 
           <View style={styles.iconRow}>
             {[
@@ -326,7 +335,9 @@ const AllServicesScreen = () => {
             ].map((item, index) => (
               <View key={index} style={styles.iconWrapper}>
                 <Image source={item.img} style={styles.icon} />
-                <Text style={styles.iconText}>{item.name}</Text>
+                <Text style={[styles.iconText, { color: colors.text }]}>
+                  {item.name}
+                </Text>
               </View>
             ))}
           </View>
@@ -353,9 +364,11 @@ const AllServicesScreen = () => {
         </View>
 
         {/* Home Services Section */}
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.title}>{t("service.home_services")}</Text>
+        <View style={[styles.container, { backgroundColor: colors.option }]}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.title, { color: colors.text }]}>
+              {t("service.home_services")}
+            </Text>
             <TouchableOpacity
               onPress={() => setHomeServicesModalVisible(true)}
               style={styles.moreButton}
@@ -371,16 +384,20 @@ const AllServicesScreen = () => {
                 onPress={() => navigation.navigate(item.screen)}
               >
                 <Image source={item.img} style={styles.icon} />
-                <Text style={styles.iconText}>{t(`service.${item.key}`)}</Text>
+                <Text style={[styles.iconText, { color: colors.text }]}>
+                  {t(`service.${item.key}`)}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
         </View>
 
         {/* Real Estate Section */}
-        <View style={styles.container}>
-          <View style={styles.headerContainer}>
-            <Text style={styles.title}>{t("service.real_estate")}</Text>
+        <View style={[styles.container, { backgroundColor: colors.option }]}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.title, { color: colors.text }]}>
+              {t("service.real_estate")}
+            </Text>
             <TouchableOpacity
               onPress={() => setRealEstateModalVisible(true)}
               style={styles.moreButton}
@@ -388,24 +405,28 @@ const AllServicesScreen = () => {
               <Text style={styles.moreButtonText}>{t("buttons.view_all")}</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.itemsRow}>
+          <View style={styles.iconRow}>
             {realEstateItems.slice(0, 4).map((item, index) => (
               <TouchableOpacity
                 key={index}
-                style={styles.itemContainer}
-                onPress={() => navigation.navigate(item.screen)}
+                style={styles.iconWrapper}
+                onPress={() =>navigation.navigate(item.screen, {urls: item.url,type: item.key,})}
               >
-                <Image source={item.img} style={styles.itemImage} />
-                <Text style={styles.itemText}>{t(`service.${item.key}`)}</Text>
+                <Image source={item.img} style={styles.icon} />
+                <Text style={[styles.iconText, { color: colors.text }]}>
+                  {t(`service.${item.key}`)}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
         </View>
 
         {/* Taxation Section */}
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.title}>{t("service.taxation")}</Text>
+        <View style={[styles.container, { backgroundColor: colors.option }]}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.title, { color: colors.text }]}>
+              {t("service.taxation")}
+            </Text>
             <TouchableOpacity
               onPress={() => setTaxationModalVisible(true)}
               style={styles.moreButton}
@@ -418,19 +439,21 @@ const AllServicesScreen = () => {
               <TouchableOpacity
                 key={index}
                 style={styles.iconWrapper}
-                onPress={() => navigation.navigate(item.screen)}
+                onPress={() => Linking.openURL(item.url)}
               >
                 <Image source={item.img} style={styles.icon} />
-                <Text style={styles.iconText}>{t(`taxation.${item.key}`)}</Text>
+                <Text style={[styles.iconText, { color: colors.text }]}>
+                  {t(`taxation.${item.key}`)}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
         </View>
 
         {/* Educational Services */}
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.title}>
+        <View style={[styles.container, { backgroundColor: colors.option }]}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.title, { color: colors.text }]}>
               {t("service.educational_services")}
             </Text>
           </View>
@@ -442,16 +465,18 @@ const AllServicesScreen = () => {
                 onPress={() => navigation.navigate(item.screen)}
               >
                 <Image source={item.img} style={styles.icon} />
-                <Text style={styles.iconText}>{item.name}</Text>
+                <Text style={[styles.iconText, { color: colors.text }]}>
+                  {item.name}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
         </View>
 
         {/* Other Services */}
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.modalTitle}>
+        <View style={[styles.container, { backgroundColor: colors.option }]}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.title, { color: colors.text }]}>
               {t("section_titles.other_services")}
             </Text>
             <TouchableOpacity
@@ -469,15 +494,18 @@ const AllServicesScreen = () => {
                 onPress={() => navigation.navigate(item.screen)}
               >
                 <Image source={item.img} style={styles.icon} />
-                <Text style={styles.iconText}>{t(`servic.${item.key}`)}</Text>
+                <Text style={[styles.iconText, { color: colors.text }]}>
+                  {t(`servic.${item.key}`)}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
         </View>
+
         {/* Donation & Charity */}
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.title}>
+        <View style={[styles.container, { backgroundColor: colors.option }]}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.title, { color: colors.text }]}>
               {t("service.donation_and_charity")}
             </Text>
           </View>
@@ -489,7 +517,9 @@ const AllServicesScreen = () => {
                 onPress={() => navigation.navigate(item.screen)}
               >
                 <Image source={item.img} style={styles.icon} />
-                <Text style={styles.iconText}>{item.name}</Text>
+                <Text style={[styles.iconText, { color: colors.text }]}>
+                  {item.name}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -501,33 +531,25 @@ const AllServicesScreen = () => {
         animationType="slide"
         transparent={true}
         visible={realEstateModalVisible}
+        onRequestClose={() => setRealEstateModalVisible(false)}
       >
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>{t("service.real_estate")}</Text>
-            <ScrollView
-              contentContainerStyle={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                justifyContent: "center",
-              }}
-            >
+          <View style={[styles.modalContainer, { backgroundColor: colors.option }]}>
+            <Text style={[styles.modalTitle, { color: colors.text }]}>
+              {t("service.real_estate")}
+            </Text>
+            <ScrollView contentContainerStyle={styles.modalContent}>
               {realEstateItems.map((item, index) => (
                 <TouchableOpacity
                   key={index}
-                  style={{ alignItems: "center", width: 100, marginBottom: 15 }}
+                  style={styles.modeliconWrapper}
                   onPress={() => {
                     setRealEstateModalVisible(false);
                     navigation.navigate(item.screen);
                   }}
                 >
-                  <Image
-                    source={item.img}
-                    style={{ width: 30, height: 30, resizeMode: "contain" }}
-                  />
-                  <Text
-                    style={{ fontSize: 12, fontWeight: "bold", marginTop: 5 }}
-                  >
+                  <Image source={item.img} style={styles.icon} />
+                  <Text style={[styles.iconText, { color: colors.text }]}>
                     {t(`service.${item.key}`)}
                   </Text>
                 </TouchableOpacity>
@@ -551,8 +573,10 @@ const AllServicesScreen = () => {
         onRequestClose={() => setHomeServicesModalVisible(false)}
       >
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>{t("service.home_services")}</Text>
+          <View style={[styles.modalContainer, { backgroundColor: colors.option }]}>
+            <Text style={[styles.modalTitle, { color: colors.text }]}>
+              {t("service.home_services")}
+            </Text>
             <ScrollView contentContainerStyle={styles.modalContent}>
               {homeServicesItems.map((item, index) => (
                 <TouchableOpacity
@@ -564,7 +588,7 @@ const AllServicesScreen = () => {
                   }}
                 >
                   <Image source={item.img} style={styles.icon} />
-                  <Text style={styles.iconText}>
+                  <Text style={[styles.iconText, { color: colors.text }]}>
                     {t(`service.${item.key}`)}
                   </Text>
                 </TouchableOpacity>
@@ -588,8 +612,10 @@ const AllServicesScreen = () => {
         onRequestClose={() => setTaxationModalVisible(false)}
       >
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>{t("service.taxation")}</Text>
+          <View style={[styles.modalContainer, { backgroundColor: colors.option }]}>
+            <Text style={[styles.modalTitle, { color: colors.text }]}>
+              {t("service.taxation")}
+            </Text>
             <ScrollView contentContainerStyle={styles.modalContent}>
               {taxationItems.map((item, index) => (
                 <TouchableOpacity
@@ -601,7 +627,7 @@ const AllServicesScreen = () => {
                   }}
                 >
                   <Image source={item.img} style={styles.icon} />
-                  <Text style={styles.iconText}>
+                  <Text style={[styles.iconText, { color: colors.text }]}>
                     {t(`taxation.${item.key}`)}
                   </Text>
                 </TouchableOpacity>
@@ -625,14 +651,13 @@ const AllServicesScreen = () => {
         onRequestClose={() => setOtherServicesModelVisible(false)}
       >
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>
+          <View style={[styles.modalContainer, { backgroundColor: colors.option }]}>
+            <Text style={[styles.modalTitle, { color: colors.text }]}>
               {t("section_titles.other_services")}
             </Text>
             <ScrollView contentContainerStyle={styles.modalContent}>
               {otherServicesItems.map((item, index) => (
                 <TouchableOpacity
-                  TouchableOpacity
                   key={index}
                   style={styles.modeliconWrapper}
                   onPress={() => {
@@ -641,7 +666,7 @@ const AllServicesScreen = () => {
                   }}
                 >
                   <Image source={item.img} style={styles.icon} />
-                  <Text style={styles.iconText}>
+                  <Text style={[styles.iconText, { color: colors.text }]}>
                     {t(`service.${item.key}`)}
                   </Text>
                 </TouchableOpacity>
@@ -663,215 +688,157 @@ const AllServicesScreen = () => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "#f0f0f0",
-    paddingTop: 10,
-  },
-  scrollContainer: {
-    alignItems: "center",
-    paddingBottom: 3,
-  },
-  container: {
-    backgroundColor: "#FFFFFF",
-    padding: 10,
-    borderRadius: 10,
-    width: "98%",
-    marginBottom: 5,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
   },
   header: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
     alignItems: "center",
   },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+  },
+  scrollContainer: {
+    paddingHorizontal: 12,
+    paddingBottom: 20,
+  },
+  container: {
+    padding: 16,
+    borderRadius: 16,
+    marginTop: 12,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "700",
+    marginBottom: 12,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
   moreButton: {
-    backgroundColor: "#b2762d",
-    paddingVertical: 4,
-    paddingHorizontal: 7,
+    backgroundColor: "#FFA500",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
     borderRadius: 20,
   },
   moreButtonText: {
     color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 10,
+    fontWeight: "700",
+    fontSize: 11,
   },
   iconRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-evenly",
-    marginTop: 5,
+    justifyContent: "space-around",
+    gap: 8,
   },
   iconWrapper: {
     alignItems: "center",
-    width: "25%",
-    marginBottom: 5,
+    width: "22%",
+    marginBottom: 12,
   },
   icon: {
-    width: 37,
+    width: 40,
     height: 40,
     resizeMode: "contain",
-    marginBottom: 0,
+    marginBottom: 6,
   },
   iconText: {
-    fontSize: 12,
+    fontSize: 11,
     textAlign: "center",
-    color: "#555",
-    fontWeight: "700",
+    fontWeight: "600",
   },
-
-  // Free Zone Pills
   freeZonePillsRow: {
     flexDirection: "row",
-    justifyContent: "space-evenly",
-    marginTop: 5,
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+    marginTop: 8,
+    gap: 8,
   },
   pill: {
     borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    gap: 6,
   },
   pillImage: {
-    width: 10, // Adjust size as needed
-    height: 10,
+    width: 12,
+    height: 12,
   },
   pillText: {
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: "700",
     fontSize: 10,
   },
-
-  // Modal backdrop styles the transparent overlay.
   modalBackdrop: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.3)",
+    backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
     alignItems: "center",
   },
-  // Modal container is the centered box.
   modalContainer: {
-    width: "80%",
-    maxHeight: "80%",
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 15,
+    width: "85%",
+    maxHeight: "75%",
+    borderRadius: 20,
+    padding: 20,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
   },
-
   modalTitle: {
-    fontSize: 25,
-    fontWeight: "bold",
-    marginBottom: 10,
-    alignSelf: "center",
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 16,
+    textAlign: "center",
   },
   modalContent: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-evenly",
+    justifyContent: "space-around",
     paddingVertical: 10,
   },
   modeliconWrapper: {
-    width: "48%", // Ensures two items per row with some spacing
-    alignItems: "center", // Centers content inside each item
-    marginBottom: 15, // Adds spacing between rows
+    width: "45%",
+    alignItems: "center",
+    marginBottom: 16,
   },
   closeButton: {
-    backgroundColor: "#C2A34B",
-    paddingVertical: 10,
-    paddingHorizontal: 100,
-    borderRadius: 20,
-    alignSelf: "center",
-    marginTop: 10,
-  },
-  closeButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  container: {
-    backgroundColor: "#fff",
-    width: 400,
-    padding: 20,
-    marginTop: 2,
-    borderRadius: 10,
-    marginBottom: 12,
-  },
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  viewAllButton: {
-    backgroundColor: "#b2762d",
-    paddingVertical: 4,
-    paddingHorizontal: 12,
+    backgroundColor: "#4F46E5",
+    paddingVertical: 12,
+    paddingHorizontal: 40,
     borderRadius: 12,
-  },
-  viewAllText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 10,
-  },
-  itemsRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-  },
-  itemContainer: {
-    alignItems: "center",
-  },
-  itemImage: {
-    width: 37,
-    height: 37,
-    resizeMode: "contain",
-  },
-  itemText: {
-    fontSize: 12,
-    fontWeight: "bold",
-    marginTop: 5,
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContainer: {
-    width: "80%",
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-  },
-  modalTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 10,
-  },
-  modalScrollView: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-  },
-  modalItemContainer: {
-    alignItems: "center",
-    width: 100,
-    marginBottom: 15,
-  },
-  closeButton: {
-    marginTop: 10,
-    backgroundColor: "#b2762d",
-    padding: 8,
-    borderRadius: 5,
-    alignItems: "center",
+    alignSelf: "center",
+    marginTop: 12,
   },
   closeButtonText: {
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: "700",
+    fontSize: 15,
   },
 });
 

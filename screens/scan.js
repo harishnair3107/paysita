@@ -51,13 +51,13 @@ export default function Scan() {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    alert(`Scanned QR Code: ${data}`);
+    //alert(`Scanned QR Code: ${data}`);
 
     setTimeout(() => {
       setScanned(false);
     }, 3000);
-    //navigation.navigate("PaymentqrScreen", { scannedData: data });
-        Alert.alert("Sucess","Coming Soon......");
+    navigation.navigate("PaymentqrScreen", { scannedData: data });
+        //Alert.alert("Sucess","Coming Soon......");
   };
 
   if (!permission) {

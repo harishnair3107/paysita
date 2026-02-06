@@ -8,7 +8,7 @@ const Stack = createStackNavigator();
 
 export default function PayStack() {
     return (
-    <Stack.Navigator screenOptions={{ headerShown: true }}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Electricity bill" component={Paybill} />
     <Stack.Screen name="PaySubdivision" component={PaySubdivision} />
     <Stack.Screen name="PayConsumer" component={PayConsumer} />

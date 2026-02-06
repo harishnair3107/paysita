@@ -9,6 +9,9 @@ const hlrCheckRoute = require('./routes/hlrCheck'); // 👈 Use correct case (ca
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
+const addressRoutes = require("./routes/address");
+const userDetails =require("./routes/userDetails");
+const securityRoutes=require("./routes/security");
 
 
 const app = express();
@@ -35,8 +38,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-
+app.use("/api/address", addressRoutes);
+app.use('/api/userDetails',userDetails);
 app.use('/api', hlrCheckRoute);
+app.use("/api/security", securityRoutes);
+
 // MySQL Connection
 const db = mysql.createConnection({
   host: process.env.DB_HOST || 'localhost',
@@ -69,36 +75,36 @@ app.get('/users', (req, res) => {
 });
 // server.js or routes/token.js
 // JWT Token Utilities
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 
-// Base64-encoded secret key
-const secretKey = 'UFMwMDYxMzU2YjI2NDQ1MjI1NmMwNWE2MGQzMTZjNmY0ODc3MzhmOTE3NDcyODY5NDY=';
+// // Base64-encoded secret key
+// const secretKey = 'UFMwMDYxMzU2YjI2NDQ1MjI1NmMwNWE2MGQzMTZjNmY0ODc3MzhmOTE3NDcyODY5NDY=';
 
-const generateReqId = () => {
-  return `REQ_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-};
+// const generateReqId = () => {
+//   return `REQ_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+// };
 
-const getTimestamp = () => Math.floor(Date.now() / 1000);
+// const getTimestamp = () => Math.floor(Date.now() / 1000);
 
-// Flexible token generator with product name
-const getToken = (product = 'WALLET') => {
-  return jwt.sign(
-    {
-      timestamp: getTimestamp(),
-      partnerId: 'PS006135',
-      product: product,
-      reqid: generateReqId()
-    },
-    secretKey,
-    {
-      algorithm: 'HS256',
-      header: {
-        typ: 'JWT',
-        alg: 'HS256'
-      }
-    }
-  );
-};
+// // Flexible token generator with product name
+// const getToken = (product = 'WALLET') => {
+//   return jwt.sign(
+//     {
+//       timestamp: getTimestamp(),
+//       partnerId: 'PS006135',
+//       product: product,
+//       reqid: generateReqId()
+//     },
+//     secretKey,
+//     {
+//       algorithm: 'HS256',
+//       header: {
+//         typ: 'JWT',
+//         alg: 'HS256'
+//       }
+//     }
+//   );
+// };
 
 // Endpoint to return 2 tokens
 app.get('/api/token', (req, res) => {

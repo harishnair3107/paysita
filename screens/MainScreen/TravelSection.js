@@ -8,7 +8,8 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   StyleSheet,
-  Alert
+  Alert,
+  Linking
 } from "react-native";
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "../../theme/Theme";
@@ -17,22 +18,22 @@ const travelOptions = [
   {
     nameKey: "travels.flight",
     image: require("../../assets2/airplane-ticket.png"),
-    screen: "Tours-travelForm",
+    url: "https://packmytrip.in/flights",
   },
   {
     nameKey: "travels.hotel",
     image: require("../../assets2/hotel.png"),
-    screen: "Tours-travelForm",
+    url: "https://packmytrip.in/hotels/offers",
   },
   {
     nameKey: "travels.packages",
     image: require("../../assets2/beach.png"),
-    screen: "PackagesStack",
+    url: "https://packmytrip.in/buses",
   },
   {
     nameKey: "travels.bus",
     image: require("../../assets2/bus.png"),
-    screen: "Tours-travelForm",
+    url: "https://packmytrip.in/buses/routes",
   },
 ];
 
@@ -67,8 +68,8 @@ export default function TravelSection({ navigation }) {
           <TouchableOpacity
             key={index}
             style={styles.item}
-            onPress={() => //navigation.navigate(item.screen)
-               {Alert.alert("Coming Soon");}  
+            onPress={() => Linking.openURL(item.url)
+               //{Alert.alert("Coming Soon");}  
             }
           >
             <Image source={item.image} style={styles.icon} />
@@ -97,8 +98,8 @@ export default function TravelSection({ navigation }) {
                         style={styles.modalItem}
                         onPress={() => {
                           setTravelModalVisible(false);
-                          //navigation.navigate(item.screen);
-                           Alert.alert("Coming Soon");
+                          Linking.openURL(item.url);
+                           //Alert.alert("Coming Soon");
                         }}
                       >
                         <Image

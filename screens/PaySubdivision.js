@@ -1,17 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useContext, useLayoutEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TextInput,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+  StatusBar,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { ThemeContext } from '../theme/Theme';
 
 const API_URL = ''; // Replace with actual API if available
 
-const PaySubdivision = ({ navigation, route }) => {
+const PaySubdivision = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { colors } = useContext(ThemeContext);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Hide the default navigator header
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
+
   // Get name & logo from previous screen
   const { name, logo } = route.params || {};
-  const resolvedLogo = typeof logo === 'number' ? logo : { uri: logo }; // Handle local & remote images
+  const resolvedLogo = typeof logo === 'number' ? logo : { uri: logo };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,7 +65,6 @@ const PaySubdivision = ({ navigation, route }) => {
       }
       setLoading(false);
     };
-
     fetchData();
   }, []);
 
@@ -52,81 +73,271 @@ const PaySubdivision = ({ navigation, route }) => {
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  return (
-    <SafeAreaView style={styles.container}>
-      {/* Company Logo and Name */}
-      {logo && <Image source={resolvedLogo} style={styles.logo} />}
-      {name && <Text style={styles.companyName}>{name}</Text>}
+  const renderItem = ({ item, index }) => (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate('PayConsumer', {
+          name,
+          logo,
+          subdivision: item,
+        })
+      }
+      style={[
+        styles.itemContainer,
+        { backgroundColor: colors.option },
+        index < filteredData.length - 1 && [styles.itemDivider, { borderBottomColor: colors.border || '#E5E7EB' }],
+      ]}
+    >
+      <View style={[styles.itemIconWrapper, { backgroundColor: colors.background }]}>
+        <Ionicons name="layers" size={18} color="#4F46E5" />
+      </View>
+      <View style={styles.itemTextGroup}>
+        <Text style={[styles.itemName, { color: colors.text }]}>{item.name}</Text>
+        <Text style={[styles.itemCode, { color: colors.text, opacity: 0.5 }]}>{item.code}</Text>
+      </View>
+      <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+    </TouchableOpacity>
+  );
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Image source={require('../assets/electric/search.png')} style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchtextStyle}
-          placeholder="Select Sub Division/ERO/BU"
-          keyboardType="default"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
+  const renderEmpty = () => (
+    <View style={styles.emptyContainer}>
+      <View style={styles.emptyIconWrapper}>
+        <Ionicons name="search" size={44} color="#9CA3AF" />
+      </View>
+      <Text style={[styles.emptyTitle, { color: colors.text }]}>No Results Found</Text>
+      <Text style={styles.emptySubtitle}>Try a different search term</Text>
+    </View>
+  );
+
+  return (
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top', 'left', 'right']}>
+      <StatusBar
+        backgroundColor={colors.background}
+        barStyle="dark-content"
+        translucent={false}
+      />
+
+      {/* Header */}
+      <View style={[styles.header, { backgroundColor: colors.background }]}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
+        </TouchableOpacity>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Select Sub Division</Text>
+        <View style={{ width: 40 }} />
       </View>
 
-      {/* Loading Indicator */}
-      {loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
-
-      {/* List of Subdivisions */}
-      <FlatList
-        data={filteredData}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('PayConsumer', {
-                name, // Company Name
-                logo, // Logo
-                subdivision: item, // Selected Subdivision
-              })
-            }
-            style={styles.itemContainer}
-          >
-            <Image source={require('../assets/electric/best.png')} style={styles.itemIcon} />
-            <View>
-              <Text style={styles.itemName}>{item.name}</Text>
-              <Text style={styles.itemCode}>{item.code}</Text>
-            </View>
-          </TouchableOpacity>
+      {/* Company Logo Card */}
+      <View style={[styles.companyCard, { backgroundColor: colors.option }]}>
+        {logo && (
+          <View style={[styles.logoWrapper, { backgroundColor: colors.background }]}>
+            <Image source={resolvedLogo} style={styles.logo} />
+          </View>
         )}
-      />
+        {name && <Text style={[styles.companyName, { color: colors.text }]}>{name}</Text>}
+      </View>
+
+      {/* Search Bar */}
+      <View style={styles.searchWrapper}>
+        <View style={[styles.searchContainer, { backgroundColor: colors.option }]}>
+          <Ionicons name="search" size={20} color="#9CA3AF" />
+          <TextInput
+            style={[styles.searchInput, { color: colors.text }]}
+            placeholder="Search Sub Division"
+            placeholderTextColor="#9CA3AF"
+            keyboardType="default"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchQuery('')}>
+              <Ionicons name="close-circle" size={20} color="#9CA3AF" />
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
+
+      {/* Loading or List */}
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#4F46E5" />
+        </View>
+      ) : (
+        <View style={[styles.listCard, { backgroundColor: colors.option }]}>
+          <FlatList
+            data={filteredData}
+            keyExtractor={item => item.id}
+            renderItem={renderItem}
+            ListEmptyComponent={renderEmpty}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 10 },
-  logo: { width: 50, height: 50, alignSelf: 'center', marginBottom: 10, resizeMode: 'contain' },
-  companyName: { fontSize: 18, fontWeight: 'bold', textAlign: 'center', marginBottom: 10 },
-  searchContainer: {
+  container: {
+    flex: 1,
+  },
+
+  // Header
+  header: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    borderColor: '#000000',
-    borderWidth: 1,
-    padding: 10,
-    marginBottom: 10,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  searchIcon: { width: 25, height: 25, marginRight: 5 },
-  searchtextStyle: { flex: 1, fontSize: 16, color: '#807C7C' },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+
+  // Company card
+  companyCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    marginHorizontal: 16,
+    marginTop: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+  },
+  logoWrapper: {
+    width: 52,
+    height: 52,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logo: {
+    width: 36,
+    height: 36,
+    resizeMode: 'contain',
+  },
+  companyName: {
+    fontSize: 16,
+    fontWeight: '700',
+    flex: 1,
+  },
+
+  // Search
+  searchWrapper: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    gap: 10,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 15,
+  },
+
+  // List card wrapper
+  listCard: {
+    flex: 1,
+    marginHorizontal: 16,
+    marginBottom: 16,
+    borderRadius: 16,
+    overflow: 'hidden',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+  },
+
+  // List items
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-    backgroundColor: '#f9f9f9',
+    paddingHorizontal: 14,
+    paddingVertical: 14,
   },
-  itemIcon: { width: 30, height: 30, marginRight: 10 },
-  itemName: { fontSize: 16, fontWeight: 'bold' },
-  itemCode: { fontSize: 14, color: 'gray' },
+  itemDivider: {
+    borderBottomWidth: 1,
+  },
+  itemIconWrapper: {
+    width: 42,
+    height: 42,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  itemTextGroup: {
+    flex: 1,
+  },
+  itemName: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  itemCode: {
+    fontSize: 13,
+  },
+
+  // Loading
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // Empty state
+  emptyContainer: {
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  emptyIconWrapper: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: '#F3F4F6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 18,
+  },
+  emptyTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: '#9CA3AF',
+  },
 });
 
 export default PaySubdivision;

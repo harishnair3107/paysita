@@ -87,44 +87,73 @@ router.put("/updateName", (req, res) => {
     });
   });
 });
-
-
-
-
-router.post('/getUsers', (req, res) => {
-  const { mobile, name } = req.body;
-
-  if (!mobile || !name) {
-    return res.status(400).json({ message: "Enter all fields" });
-  }
-
-  db.query(
-    'SELECT * FROM user WHERE mobile = ? AND name = ?',
-    [mobile, name],
-    (err, results) => {
-
-      if (err) {
-        return res.status(500).json({ message: 'Database error' });
-      }
-
-      if (results.length === 0) {
-        return res.status(401).json({ message: "Enter valid credentials" });
-      }
-
-      // ✅ SUCCESS → only ONE response
-      return res.status(201).json({
-        message: "Logged in successfully",
-        token: generateToken(results[0].id),
-        user: {
-          id: results[0].id,
-          name: results[0].name,
-          mobile: results[0].mobile,
-          countryCode:results[0].country_code,
+router.post('/addAddresses',(req,res)=>{
+    const {user_id,address,type}=req.body;
+    const insertAddress ="INSERT INTO addresses (user_id,address,type) VALUES(?,?,?)";
+    db.query(insertAddress,[user_id,address,type],(err,insertRes)=>{
+        if(err){
+          console.log(err);
+          return res.status(500).json({message:"Error adding address"});
         }
-      });
-    }
-  );
+        return res.status(201).json({
+          address,
+          type
+        });
+
+    });
+
 });
+router.get('/getAddresses',(req,res)=>{
+  const userId=req.body;
+  const query="SELECT address,type FROM addresses WHERE user_id= ? ";
+  db.query(query,userId,(err,dbres)=>{
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ message: "DB error" });
+    }
+    if(dbres.length == 0){
+      return res.json({message:"No Saved Address !"})
+    }
+     return res.json(dbres);
+  })
+})
+
+
+
+// router.post('/getUsers', (req, res) => {
+//   const { mobile, name } = req.body;
+
+//   if (!mobile || !name) {
+//     return res.status(400).json({ message: "Enter all fields" });
+//   }
+
+//   db.query(
+//     'SELECT * FROM user WHERE mobile = ? AND name = ?',
+//     [mobile, name],
+//     (err, results) => {
+
+//       if (err) {
+//         return res.status(500).json({ message: 'Database error' });
+//       }
+
+//       if (results.length === 0) {
+//         return res.status(401).json({ message: "Enter valid credentials" });
+//       }
+
+//       // ✅ SUCCESS → only ONE response
+//       return res.status(201).json({
+//         message: "Logged in successfully",
+//         token: generateToken(results[0].id),
+//         user: {
+//           id: results[0].id,
+//           name: results[0].name,
+//           mobile: results[0].mobile,
+//           countryCode:results[0].country_code,
+//         }
+//       });
+//     }
+//   );
+// });
 
 
 

@@ -1,203 +1,339 @@
-import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Pressable, StatusBar } from "react-native";
+import React, { useState, useContext } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Pressable,
+  Alert,
+  ScrollView,
+  StatusBar,
+  ActivityIndicator,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { ThemeContext } from "../../theme/Theme";
 
-const Addaddress = () => {
-  const { t } = useTranslation();
+const AddAddress = () => {
   const navigation = useNavigation();
-  const [house, setHouse] = useState("");
-  const [address, setAddress] = useState("");
-  const [landmark, setLandmark] = useState("");
-  const [selectedType, setSelectedType] = useState(null);
+  const { t } = useTranslation();
+  const { colors } = useContext(ThemeContext);
 
-  const handleSaveAddress = () => {
-    navigation.navigate("profile", {
-      house,
-      address,
-      landmark,
-      type: selectedType,
-    });
+  const [address, setAddress] = useState("");
+  const [type, setType] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const addressTypes = ["Home", "Work", "Other"];
+
+  const handleSubmit = async () => {
+    // Validation
+    if (!address.trim()) {
+      Alert.alert(t("error"), "Please enter an address");
+      return;
+    }
+
+    if (!type) {
+      Alert.alert(t("error"), "Please select address type");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // Get user from AsyncStorage
+      const userStr = await AsyncStorage.getItem("user");
+      
+      if (!userStr) {
+        Alert.alert(t("error"), "User not found. Please login again.");
+        return;
+      }
+
+      const userData = JSON.parse(userStr);
+      const userId = userData.id;
+
+      console.log("Adding address for user_id:", userId);
+
+      // Send POST request to add address
+      const response = await axios.post(
+        "http://192.168.29.22:5000/api/address",
+        {
+          userId: userId,
+          address: address.trim(),
+          type: type,
+        }
+      );
+
+      console.log("Address added:", response.data);
+
+      Alert.alert(
+        t("success"),
+        "Address added successfully!",
+        [
+          {
+            text: "OK",
+            onPress: () => navigation.goBack(),
+          },
+        ]
+      );
+
+    } catch (error) {
+      console.error("Error adding address:", error.response?.data || error.message);
+      Alert.alert(
+        t("error"),
+        error.response?.data?.message || "Failed to add address. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const renderOption = (type, iconName, labelKey) => (
-    <TouchableOpacity
-      style={[styles.optionCard, selectedType === type && styles.optionCardSelected]}
-      onPress={() => setSelectedType(type)}
-    >
-      <Ionicons
-        name={iconName}
-        size={24}
-        color={selectedType === type ? "#fff" : "#1D154A"}
-      />
-      <Text style={[styles.optionLabel, selectedType === type && styles.optionLabelSelected]}>
-        {t(labelKey)}
-      </Text>
-    </TouchableOpacity>
-  );
-
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor="#f5f5f5" barStyle="dark-content" />
-      {/* <View style={styles.header}>
-        <Pressable onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#1D154A" />
-          <Text style={styles.headerText}>{t('add_address')}</Text>
-        </Pressable>
-      </View> */}
-
-      <Text style={styles.label}>{t('house_flat_floor_number')}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder={t('house_placeholder')}
-        value={house}
-        onChangeText={setHouse}
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={["top", "left", "right"]}>
+      <StatusBar
+        backgroundColor={colors.background}
+        barStyle="dark-content"
+        translucent={false}
       />
 
-      <Text style={styles.label}>{t('complete_address')}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder={t('address_placeholder')}
-        value={address}
-        onChangeText={setAddress}
-      />
-
-      <Text style={styles.label}>{t('landmark_optional')}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder={t('landmark_placeholder')}
-        value={landmark}
-        onChangeText={setLandmark}
-      />
-
-      <Text style={styles.label}>{t('save_as')}</Text>
-      <View style={styles.optionsRow}>
-{renderOption("home", "home-outline", "address.home")}
-        {renderOption("work", "briefcase-outline", "work")}
-        {renderOption("other", "location-outline", "other")}
-      </View>
-
-      <View style={styles.buttonRow}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.cancelButton}>
-          <Text style={styles.cancelText}>{t('cancel')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.saveButton, !selectedType && styles.saveButtonDisabled]}
-          disabled={!selectedType}
-          onPress={handleSaveAddress}
+      {/* Header */}
+      <View style={[styles.header, { backgroundColor: colors.background }]}>
+        <Pressable
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          android_ripple={{ color: "rgba(0, 0, 0, 0.1)", borderless: true }}
         >
-          <Text style={styles.saveText}>{t('save')}</Text>
-        </TouchableOpacity>
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
+        </Pressable>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>
+          Add Address
+        </Text>
+        <View style={{ width: 40 }} />
       </View>
-    </View>
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Address Input */}
+        <View style={styles.section}>
+          <Text style={[styles.label, { color: colors.text }]}>
+            Address <Text style={styles.required}>*</Text>
+          </Text>
+          <View style={[styles.inputContainer, { backgroundColor: colors.option, borderColor: colors.border || "#E5E7EB" }]}>
+            <Ionicons name="location-outline" size={20} color="#9CA3AF" />
+            <TextInput
+              style={[styles.input, { color: colors.text }]}
+              placeholder="Enter your complete address"
+              placeholderTextColor="#9CA3AF"
+              value={address}
+              onChangeText={setAddress}
+              multiline
+              numberOfLines={4}
+              textAlignVertical="top"
+            />
+          </View>
+        </View>
+
+        {/* Address Type */}
+        <View style={styles.section}>
+          <Text style={[styles.label, { color: colors.text }]}>
+            Address Type <Text style={styles.required}>*</Text>
+          </Text>
+          <View style={styles.typeContainer}>
+            {addressTypes.map((addressType) => (
+              <Pressable
+                key={addressType}
+                style={[
+                  styles.typeButton,
+                  { backgroundColor: colors.option, borderColor: colors.border || "#E5E7EB" },
+                  type === addressType && styles.typeButtonActive,
+                ]}
+                onPress={() => setType(addressType)}
+                android_ripple={{ color: "rgba(79, 70, 229, 0.1)" }}
+              >
+                <View style={styles.typeIconContainer}>
+                  <Ionicons
+                    name={
+                      addressType === "Home"
+                        ? "home"
+                        : addressType === "Work"
+                        ? "briefcase"
+                        : "location"
+                    }
+                    size={24}
+                    color={type === addressType ? "#4F46E5" : "#6B7280"}
+                  />
+                </View>
+                <Text
+                  style={[
+                    styles.typeText,
+                    { color: colors.text },
+                    type === addressType && styles.typeTextActive,
+                  ]}
+                >
+                  {addressType}
+                </Text>
+                {type === addressType && (
+                  <View style={styles.checkIcon}>
+                    <Ionicons name="checkmark-circle" size={20} color="#4F46E5" />
+                  </View>
+                )}
+              </Pressable>
+            ))}
+          </View>
+        </View>
+
+        {/* Submit Button */}
+        <Pressable
+          style={[styles.submitButton, loading && styles.submitButtonDisabled]}
+          onPress={handleSubmit}
+          disabled={loading}
+          android_ripple={{ color: "rgba(255, 255, 255, 0.2)" }}
+        >
+          {loading ? (
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          ) : (
+            <>
+              <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
+              <Text style={styles.submitButtonText}>Save Address</Text>
+            </>
+          )}
+        </Pressable>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
-export default Addaddress;
+export default AddAddress;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#F8F9FA",
   },
   header: {
-    marginBottom: 20,
-  },
-  backButton: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
   },
-  headerText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#1D154A",
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+  },
+  scrollContent: {
+    padding: 20,
+  },
+  section: {
+    marginBottom: 24,
   },
   label: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "600",
-    color: "#333",
-    marginBottom: 6,
-    marginTop: 10,
+    marginBottom: 10,
   },
-  input: {
-    backgroundColor: "#fff",
+  required: {
+    color: "#EF4444",
+  },
+  inputContainer: {
+    flexDirection: "row",
+    borderWidth: 1.5,
     borderRadius: 12,
-    padding: 14,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    marginBottom: 15,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    minHeight: 120,
+    elevation: 1,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 2,
+    shadowRadius: 2,
   },
-  optionsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginVertical: 15,
-  },
-  optionCard: {
+  input: {
     flex: 1,
-    marginHorizontal: 4,
+    fontSize: 15,
+    marginLeft: 12,
+    paddingTop: 0,
+  },
+  typeContainer: {
+    gap: 12,
+  },
+  typeButton: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 12,
-    backgroundColor: "#fff",
-    borderColor: "#1D154A",
-    borderWidth: 1,
-    borderRadius: 10,
-    justifyContent: "center",
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    elevation: 1,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.07,
+    shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2,
   },
-  optionCardSelected: {
-    backgroundColor: "#1D154A",
+  typeButtonActive: {
+    borderColor: "#4F46E5",
+    borderWidth: 2,
+    backgroundColor: "rgba(79, 70, 229, 0.05)",
   },
-  optionLabel: {
+  typeIconContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: "#F3F4F6",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  typeText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  typeTextActive: {
+    fontWeight: "700",
+    color: "#4F46E5",
+  },
+  checkIcon: {
     marginLeft: 8,
-    fontWeight: "600",
-    color: "#1D154A",
   },
-  optionLabelSelected: {
-    color: "#fff",
-  },
-  buttonRow: {
+  submitButton: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: "auto",
-    paddingTop: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#4F46E5",
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginTop: 20,
+    gap: 8,
+    elevation: 3,
+    shadowColor: "#4F46E5",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
-  cancelButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+  submitButtonDisabled: {
+    backgroundColor: "#9CA3AF",
   },
-  cancelText: {
+  submitButtonText: {
+    color: "#FFFFFF",
     fontSize: 16,
-    color: "#1D154A",
-    fontWeight: "600",
-  },
-  saveButton: {
-    backgroundColor: "#1D154A",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    marginBottom:200
-  },
-  saveButtonDisabled: {
-    backgroundColor: "#aaa",
-  },
-  saveText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "700",
   },
 });

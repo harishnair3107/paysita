@@ -14,10 +14,10 @@ import { useTranslation } from "react-i18next";
 import { ThemeContext } from "../../theme/Theme";
 
 const SERVICES = [
-  { key: "mobile_recharge", image: require("../../assets2/mobileRecharge.png") },
-  { key: "electricity_bill", image: require("../../assets2/electricity-bill.png") },
-  { key: "dth_recharge", image: require("../../assets2/smart-tv.png") },
-  { key: "credit_card_payment", image: require("../../assets2/atm-card.png") },
+  { key: "mobile_recharge", image: require("../../assets2/mobileRecharge.png"),screen:"MobileStack" },
+  { key: "electricity_bill", image: require("../../assets2/electricity-bill.png"),screen:"PayStack"  },
+  { key: "dth_recharge", image: require("../../assets2/smart-tv.png"),screen:"DTHStack"  },
+  { key: "credit_card_payment", image: require("../../assets2/atm-card.png"),screen:"CCStack"  },
   // { key: "piped_gas", image: require("../../assets/gas.png") }, 
   // // { key: "wifi_recharge", image: require("./assets/wifi.png") }, 
   // // { key: "loan_payment", image: require("../../assets/Rent.png") },
@@ -62,8 +62,8 @@ export default function ServicesSection({ navigation }) {
               key={index}
               style={styles.serviceItem}
               onPress={() =>
-                //navigation.navigate(serviceNavigationMap[item.key])
-                 Alert.alert("Coming Soon")
+                navigation.navigate(item.screen)
+                 //Alert.alert("Coming Soon")
               }
             >
               <View style={styles.imageWrapper}>
@@ -99,8 +99,8 @@ export default function ServicesSection({ navigation }) {
                         style={styles.modalItem}
                         onPress={() => {
                           setModalVisible(false);
-                          //navigation.navigate()
-                           Alert.alert("Coming Soon");
+                          navigation.navigate(item.screen)
+                           //Alert.alert("Coming Soon");
                         }}
                       >
                         <View style={styles.imageWrapper}>

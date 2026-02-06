@@ -71,8 +71,7 @@ export default function InsuranceSection({ navigation }) {
         <View style={styles.spacer} />
 
         <TouchableOpacity
-          onPress={() => //navigation.navigate("MovieBookingScreen")
-             Alert.alert("Coming Soon")
+          onPress={() => navigation.navigate("MovieBookingScreen")
           }
           style={[styles.card, styles.smallCard]}
         >
